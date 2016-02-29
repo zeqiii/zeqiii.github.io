@@ -5,16 +5,19 @@
     <link>https://zeqiii.github.io/topics/android/</link>
     <description>Recent content in Android on Zeqi&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <language>en-EN</language>
+    <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
+    <webMaster>zeqiii@163.com (zeqi)</webMaster>
+    <copyright>(c) 2016 zeqi</copyright>
     <lastBuildDate>Mon, 29 Feb 2016 16:34:11 +0800</lastBuildDate>
     <atom:link href="https://zeqiii.github.io/topics/android/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Analysis of cve-2014-7911</title>
-      <link>https://zeqiii.github.io/post/cve-2014-7911/</link>
+      <link>https://zeqiii.github.io/2016/02/29/analysis-of-cve-2014-7911/</link>
       <pubDate>Mon, 29 Feb 2016 16:34:11 +0800</pubDate>
-      
-      <guid>https://zeqiii.github.io/post/cve-2014-7911/</guid>
+      <author>zeqiii@163.com (zeqi)</author>
+      <guid>https://zeqiii.github.io/2016/02/29/analysis-of-cve-2014-7911/</guid>
       <description>&lt;p&gt;##A brief look
 System_server is a process has &lt;strong&gt;system&lt;/strong&gt; permission, to which one can send any serializable data. Although system_server won&amp;rsquo;t invoke any functions of the received objected, but &lt;strong&gt;finalize&lt;/strong&gt; will be called when&lt;strong&gt;GC&lt;/strong&gt;.
 Function &lt;strong&gt;finalize&lt;/strong&gt; in &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; calls a native function which has pointers, the pointers may be controlled by attackers. So &lt;strong&gt;GC&lt;/strong&gt; may resulting in arbitrary code execution. &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; isn&amp;rsquo;t serializable, however, java.io.ObjectInputStream doesn&amp;rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
