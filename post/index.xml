@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on ���˲���</title>
+    <title>Posts on Personal Blog</title>
     <link>http://zeqiii.github.io/post/</link>
-    <description>Recent content in Posts on ���˲���</description>
+    <description>Recent content in Posts on Personal Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <managingEditor>zeqiii@163.com (zeqiii)</managingEditor>
