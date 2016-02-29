@@ -25,8 +25,11 @@
 &lt;p&gt;System_server is a process has &lt;strong&gt;system&lt;/strong&gt; permission, to which one can send any serializable data. Although system_server won&amp;rsquo;t invoke any functions of the received objected, but &lt;strong&gt;finalize&lt;/strong&gt; will be called when&lt;strong&gt;GC&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;Function &lt;strong&gt;finalize&lt;/strong&gt; in &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; calls a native function which has pointers, the pointers may be controlled by attackers. So &lt;strong&gt;GC&lt;/strong&gt; may resulting in arbitrary code execution. &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; isn&amp;rsquo;t serializable, however, java.io.ObjectInputStream doesn&amp;rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
-As other one&amp;rsquo;s blog says:
-&amp;gt; ObjectInputStream doesn&amp;rsquo;t validate that the serialized object&amp;rsquo;s class type, as described in the serialized object, is actually serializable. It creates an instance of the wanted class anyway with the deserialized values of the object. Therefore, one can create object of any class, and control its private variables, by serializing objects from another class, that would be deserialized as data members of the wanted class.&lt;/p&gt;
+As other one&amp;rsquo;s blog says:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;ObjectInputStream doesn&amp;rsquo;t validate that the serialized object&amp;rsquo;s class type, as described in the serialized object, is actually serializable. It creates an instance of the wanted class anyway with the deserialized values of the object. Therefore, one can create object of any class, and control its private variables, by serializing objects from another class, that would be deserialized as data members of the wanted class.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;Let&amp;rsquo;s just see the POC written by &lt;strong&gt;Jann Horn&lt;/strong&gt;&lt;/p&gt;
 
