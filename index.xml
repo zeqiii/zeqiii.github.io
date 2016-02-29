@@ -6,8 +6,22 @@
     <description>Recent content on Zeqi&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Mon, 29 Feb 2016 16:26:47 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 29 Feb 2016 16:34:11 +0800</lastBuildDate>
     <atom:link href="https://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Analysis of cve-2014-7911</title>
+      <link>https://zeqiii.github.io/post/cve-2014-7911/</link>
+      <pubDate>Mon, 29 Feb 2016 16:34:11 +0800</pubDate>
+      
+      <guid>https://zeqiii.github.io/post/cve-2014-7911/</guid>
+      <description>&lt;p&gt;²Î¿¼Á´½Ó£º
+&lt;a href=&#34;http://seclists.org/fulldisclosure/2014/Nov/51&#34;&gt;http://seclists.org/fulldisclosure/2014/Nov/51&lt;/a&gt;
+&lt;a href=&#34;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&#34;&gt;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&lt;/a&gt;
+&lt;a href=&#34;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&#34;&gt;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&lt;/a&gt;
+&lt;a href=&#34;http://drops.wooyun.org/mobile/6082&#34;&gt;http://drops.wooyun.org/mobile/6082&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>about</title>
