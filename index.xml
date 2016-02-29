@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Personal Blog</title>
-    <link>http://zeqiii.github.io/</link>
-    <description>Recent content on Personal Blog</description>
+    <title></title>
+    <link>/</link>
+    <description>Recent content on </description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
     <lastBuildDate>Mon, 29 Feb 2016 13:27:02 +0800</lastBuildDate>
-    <atom:link href="http://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>welcome</title>
-      <link>http://zeqiii.github.io/post/welcome/</link>
+      <link>/post/welcome/</link>
       <pubDate>Mon, 29 Feb 2016 13:27:02 +0800</pubDate>
       
-      <guid>http://zeqiii.github.io/post/welcome/</guid>
+      <guid>/post/welcome/</guid>
       <description>&lt;p&gt;Hello World!&lt;/p&gt;
 </description>
     </item>
