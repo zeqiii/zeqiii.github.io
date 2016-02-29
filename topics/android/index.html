@@ -139,7 +139,7 @@
   <p class="container content">
   
   
-    ##A brief look System_server is a process has system permission, to which one can send any serializable data. Although system_server won&rsquo;t invoke any functions of the received objected, but finalize will be called whenGC. Function finalize in android.os.BinderProxy calls a native function which has pointers, the pointers may be controlled by attackers. So GC may resulting in arbitrary code execution. android.os.BinderProxy isn&rsquo;t serializable, however, java.io.ObjectInputStream doesn&rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
+    A brief look System_server is a process has system permission, to which one can send any serializable data. Although system_server won&rsquo;t invoke any functions of the received objected, but finalize will be called whenGC. Function finalize in android.os.BinderProxy calls a native function which has pointers, the pointers may be controlled by attackers. So GC may resulting in arbitrary code execution. android.os.BinderProxy isn&rsquo;t serializable, however, java.io.ObjectInputStream doesn&rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
   
 
 
