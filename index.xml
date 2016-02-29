@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My Blog</title>
+    <link>https://zeqiii.github.io/</link>
+    <description>Recent content on My Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-EN</language>
+    <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
+    <webMaster>zeqiii@163.com (zeqi)</webMaster>
+    <copyright>(c) 2016 zeqi.</copyright>
+    <atom:link href="https://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+  </channel>
+</rss>
