@@ -22,9 +22,9 @@
 
 &lt;h2 id=&#34;a-brief-look:acd576735d79af9c00f02f7cf3030262&#34;&gt;A brief look&lt;/h2&gt;
 
-&lt;p&gt;System_server is a process has &lt;strong&gt;system&lt;/strong&gt; permission, to which one can send any serializable data. Although system_server won&amp;rsquo;t invoke any functions of the received objected, but &lt;strong&gt;finalize&lt;/strong&gt; will be called when&lt;strong&gt;GC&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;System_server is a process has &lt;strong&gt;system&lt;/strong&gt; permission, to which one can send any serializable data. Although system_server won&amp;rsquo;t invoke any functions of the received objected, but &lt;strong&gt;finalize&lt;/strong&gt; will be called when &lt;strong&gt;GC&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;p&gt;Function &lt;strong&gt;finalize&lt;/strong&gt; in &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; calls a native function which has pointers, the pointers may be controlled by attackers. So &lt;strong&gt;GC&lt;/strong&gt; may resulting in arbitrary code execution. &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; isn&amp;rsquo;t serializable, however, java.io.ObjectInputStream doesn&amp;rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
+&lt;p&gt;Function &lt;strong&gt;finalize&lt;/strong&gt; in &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; calls a native function which has pointers, the pointers may be controlled by attackers. So &lt;strong&gt;GC&lt;/strong&gt; may result in arbitrary code execution. &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; isn&amp;rsquo;t serializable, however, java.io.ObjectInputStream doesn&amp;rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
 As other one&amp;rsquo;s blog says:&lt;/p&gt;
 
 &lt;blockquote&gt;
@@ -132,13 +132,17 @@ public void setApplicationRestrictions(java.lang.String packageName, android.os.
 }
 &lt;/code&gt;&lt;/pre&gt;
 
+&lt;p&gt;From the POC we know that a fake object is created and put into a bundle. In function &lt;strong&gt;setApplicationRestrictions&lt;/strong&gt; the bundle object is written to parcel using &lt;strong&gt;restrictions.writeToParcel&lt;/strong&gt;, this parcel is marshalled to a byte array. POC uses a loop to find string &amp;laquo;AAdr&amp;raquo;, and change &amp;laquo;AA&amp;raquo; to &amp;laquo;an&amp;raquo;, thus, &amp;laquo;AAdroid.os.BinderProxy&amp;raquo; finally becomes &amp;laquo;android.os.BinderProxy&amp;raquo;. When &lt;strong&gt;java.io.ObjectInputStream&lt;/strong&gt; deserializes this object, it will be cast into a &lt;strong&gt;android.os.BinderProxy&lt;/strong&gt; object.&lt;/p&gt;
+
 &lt;h2 id=&#34;references:acd576735d79af9c00f02f7cf3030262&#34;&gt;References&lt;/h2&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;http://seclists.org/fulldisclosure/2014/Nov/51&#34;&gt;http://seclists.org/fulldisclosure/2014/Nov/51&lt;/a&gt;
-&lt;a href=&#34;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&#34;&gt;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&lt;/a&gt;
-&lt;a href=&#34;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&#34;&gt;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&lt;/a&gt;
-&lt;a href=&#34;http://drops.wooyun.org/mobile/6082&#34;&gt;http://drops.wooyun.org/mobile/6082&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://seclists.org/fulldisclosure/2014/Nov/51&#34;&gt;http://seclists.org/fulldisclosure/2014/Nov/51&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&#34;&gt;http://www.droidsec.cn/cve-2014-7911%E5%AE%89%E5%8D%93%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&#34;&gt;http://www.droidsec.cn/%E5%86%8D%E8%AE%BAcve-2014-7911%E5%AE%89%E5%8D%93%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://drops.wooyun.org/mobile/6082&#34;&gt;http://drops.wooyun.org/mobile/6082&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/blockquote&gt;
 </description>
     </item>
