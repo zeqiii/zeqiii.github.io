@@ -6,7 +6,28 @@
     <description>Recent content on Zeqi&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 29 Feb 2016 16:26:47 +0800</lastBuildDate>
     <atom:link href="https://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>about</title>
+      <link>https://zeqiii.github.io/about/</link>
+      <pubDate>Mon, 29 Feb 2016 16:26:47 +0800</pubDate>
+      
+      <guid>https://zeqiii.github.io/about/</guid>
+      <description>&lt;p&gt;This is a blog for writing notes.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Welcome</title>
+      <link>https://zeqiii.github.io/post/1/</link>
+      <pubDate>Mon, 29 Feb 2016 16:24:39 +0800</pubDate>
+      
+      <guid>https://zeqiii.github.io/post/1/</guid>
+      <description>&lt;p&gt;This is the first blog!&lt;/p&gt;
+</description>
+    </item>
     
   </channel>
 </rss>
