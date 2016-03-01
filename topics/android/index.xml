@@ -20,7 +20,7 @@
       <guid>https://zeqiii.github.io/2016/02/29/analysis-of-cve-2014-7911/</guid>
       <description>
 
-&lt;h2 id=&#34;a-brief-look:acd576735d79af9c00f02f7cf3030262&#34;&gt;A brief look&lt;/h2&gt;
+&lt;h2 id=&#34;a-brief-look&#34;&gt;A brief look&lt;/h2&gt;
 
 &lt;p&gt;System_server is a process has &lt;strong&gt;system&lt;/strong&gt; permission, to which one can send any serializable data. Although system_server won&amp;rsquo;t invoke any functions of the received objected, but &lt;code&gt;finalize&lt;/code&gt; will be called when &lt;strong&gt;GC&lt;/strong&gt;.&lt;/p&gt;
 
@@ -31,7 +31,7 @@ As other one&amp;rsquo;s blog says:&lt;/p&gt;
 &lt;p&gt;ObjectInputStream doesn&amp;rsquo;t validate that the serialized object&amp;rsquo;s class type, as described in the serialized object, is actually serializable. It creates an instance of the wanted class anyway with the deserialized values of the object. Therefore, one can create object of any class, and control its private variables, by serializing objects from another class, that would be deserialized as data members of the wanted class.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h2 id=&#34;poc:acd576735d79af9c00f02f7cf3030262&#34;&gt;POC&lt;/h2&gt;
+&lt;h2 id=&#34;poc&#34;&gt;POC&lt;/h2&gt;
 
 &lt;p&gt;Let&amp;rsquo;s just see the POC written by &lt;strong&gt;Jann Horn&lt;/strong&gt;&lt;/p&gt;
 
@@ -134,9 +134,9 @@ public void setApplicationRestrictions(java.lang.String packageName, android.os.
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;From the POC we know that a fake object is created and put into a bundle. It&amp;rsquo;s &lt;code&gt;mObject&lt;/code&gt; and &lt;code&gt;mOrgue&lt;/code&gt; is under attacker&amp;rsquo;s controll and can be set to any values. In function &lt;code&gt;setApplicationRestrictions&lt;/code&gt;, the bundle object is written to a parcel using &lt;code&gt;restrictions.writeToParcel&lt;/code&gt;. After the parcel marshalled to a byte array, a loop appears to find string &lt;code&gt;AAdr&lt;/code&gt;, and change &lt;code&gt;AA&lt;/code&gt; to &lt;code&gt;an&lt;/code&gt;. Thus, &lt;code&gt;AAdroid.os.BinderProxy&lt;/code&gt; finally becomes &lt;code&gt;android.os.BinderProxy&lt;/code&gt;. When &lt;code&gt;java.io.ObjectInputStream&lt;/code&gt; deserializes this object, a &lt;code&gt;android.os.BinderProxy&lt;/code&gt; object will be created. In this way, attackers can create any object and set the field value as they want.&lt;/p&gt;
+&lt;p&gt;From the POC we know that a fake object is created and put into a bundle. It&amp;rsquo;s &lt;code&gt;mObject&lt;/code&gt; and &lt;code&gt;mOrgue&lt;/code&gt; is under attacker&amp;rsquo;s controll and can be set to any values. In function &lt;code&gt;setApplicationRestrictions()&lt;/code&gt;, the bundle object is written to a parcel using &lt;code&gt;restrictions.writeToParcel()&lt;/code&gt;. After the parcel marshalled to a byte array, a loop appears to find string &lt;code&gt;AAdr&lt;/code&gt;, and change &lt;code&gt;AA&lt;/code&gt; to &lt;code&gt;an&lt;/code&gt;. Thus, &lt;code&gt;AAdroid.os.BinderProxy&lt;/code&gt; finally becomes &lt;code&gt;android.os.BinderProxy&lt;/code&gt;. When &lt;code&gt;java.io.ObjectInputStream&lt;/code&gt; deserializes this object, a &lt;code&gt;android.os.BinderProxy&lt;/code&gt; object will be created. In this way, attackers can create any object and set the field value as they want.&lt;/p&gt;
 
-&lt;h2 id=&#34;why-binderproxy:acd576735d79af9c00f02f7cf3030262&#34;&gt;Why BinderProxy?&lt;/h2&gt;
+&lt;h2 id=&#34;why-binderproxy&#34;&gt;Why BinderProxy?&lt;/h2&gt;
 
 &lt;p&gt;So why attackers choose &lt;code&gt;android.os.BinderProxy&lt;/code&gt;? Here is the source code of it.&lt;/p&gt;
 
@@ -223,7 +223,158 @@ blx     r2            ; execute code pointed by r2
 
 &lt;p&gt;If everything goes smoothly, the code pointed by r2 will be executed.&lt;/p&gt;
 
-&lt;h2 id=&#34;references:acd576735d79af9c00f02f7cf3030262&#34;&gt;References&lt;/h2&gt;
+&lt;h2 id=&#34;key-point-one-how-aadroid-os-binderproxy-becomes-android-os-binderproxy&#34;&gt;Key Point One: How AAdroid.os.BinderProxy Becomes android.os.BinderProxy&lt;/h2&gt;
+
+&lt;p&gt;From the POC, we know the fake object is put into a bundle which is written to a parcel. Using &lt;code&gt;Parcel.marshall()&lt;/code&gt; we get a byte array and modify its content, change &lt;code&gt;AA&lt;/code&gt; to &lt;code&gt;an&lt;/code&gt;. Then &lt;code&gt;unmarshall()&lt;/code&gt; this array to get a new parcel object and send this parcel to system_server.&lt;/p&gt;
+
+&lt;p&gt;Look into android source code, we can find:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Function &lt;code&gt;putSerializable()&lt;/code&gt; puts the fake object into &lt;code&gt;Bundle.mMap&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;writeToParcel()&lt;/code&gt; calls &lt;code&gt;writeArrayMapInternal()&lt;/code&gt;, write the data in &lt;code&gt;mMap&lt;/code&gt; to parcel.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;writeArrayMapInternal()&lt;/code&gt; calls &lt;code&gt;writeValue(Object v)&lt;/code&gt;, write the value of &lt;code&gt;mMap&lt;/code&gt; into parcel. If the value is an instance of &lt;code&gt;Serializable&lt;/code&gt;, it calls &lt;code&gt;writeSerializable(Serializable serial)&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In android 4.4.2, &lt;code&gt;writeSerializable()&lt;/code&gt; is implemented as below.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    public final void writeSerializable(Serializable s) {
+        if (s == null) {
+            writeString(null);
+            return;
+        }
+        String name = s.getClass().getName();
+        writeString(name);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            // Output flat
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(s);
+            oos.close();
+            writeByteArray(baos.toByteArray());
+        } catch (IOException ioe) {
+            throw new RuntimeException(&amp;quot;Parcelable encountered &amp;quot; +
+                &amp;quot;IOException writing serializable object (name = &amp;quot; + name +
+                &amp;quot;)&amp;quot;, ioe);
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once system_server receive a parcel object from &lt;code&gt;Stub&lt;/code&gt;, function &lt;code&gt;onTransact()&lt;/code&gt; takes the responsibility for reading data from parcel. So the bundle will be restore by &lt;code&gt;Parcel.readBundle()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    public final Bundle readBundle(ClassLoader loader) {
+        int length = readInt();
+        if (length &amp;lt; 0) {
+            if (Bundle.DEBUG) Log.d(TAG, &amp;quot;null bundle: length=&amp;quot; + length);
+            return null;
+        }
+        
+        final Bundle bundle = new Bundle(this, length);
+        if (loader != null) {
+            bundle.setClassLoader(loader);
+        }
+        return bundle;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;In Bundle.java&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    /* package */ Bundle(Parcel parcelledData, int length) {
+        readFromParcelInner(parcelledData, length);
+    }
+
+    void readFromParcelInner(Parcel parcel, int length) {
+
+        /* zeqi: empty, abnormal parcel handling, omitted */
+
+        // Advance within this Parcel
+        int offset = parcel.dataPosition();
+        parcel.setDataPosition(offset + length);
+
+        Parcel p = Parcel.obtain();
+        p.setDataPosition(0);
+        /* zeqi: Get parcel data */
+        p.appendFrom(parcel, offset, length);
+        if (DEBUG) Log.d(TAG, &amp;quot;Retrieving &amp;quot;  + Integer.toHexString(System.identityHashCode(this))
+                + &amp;quot;: &amp;quot; + length + &amp;quot; bundle bytes starting at &amp;quot; + offset);
+        p.setDataPosition(0);
+
+        /* zeqi: Init field mParcelledData */
+        mParcelledData = p;
+        mHasFds = p.hasFileDescriptors();
+        mFdsKnown = true;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Fake object is get out by fucntion &lt;code&gt;Bundle.getSerializable()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    public Serializable getSerializable(String key) {
+        /* zeqi: Read data from mParcelledData to mMap */
+        unparcel();
+        Object o = mMap.get(key);
+        if (o == null) {
+            return null;
+        }
+        try {
+            return (Serializable) o;
+        } catch (ClassCastException e) {
+            typeWarning(key, o, &amp;quot;Serializable&amp;quot;, e);
+            return null;
+        }
+    }
+
+    /* package */ synchronized void unparcel() {
+        
+        /* zeqi: empty parcel handling, omitted */
+
+        int N = mParcelledData.readInt();
+        if (N &amp;lt; 0) {
+            return;
+        }
+        if (mMap == null) {
+            mMap = new ArrayMap&amp;lt;String, Object&amp;gt;(N);
+        } else {
+            mMap.erase();
+            mMap.ensureCapacity(N);
+        }
+        /* zeqi: readArrayMapInternal is correspond to writeArrayMapInternal */
+        mParcelledData.readArrayMapInternal(mMap, N, mClassLoader);
+        mParcelledData.recycle();
+        mParcelledData = null;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;According to the code above, we know &lt;code&gt;mMap&lt;/code&gt; can also be init from &lt;code&gt;mParcelledData&lt;/code&gt; by &lt;code&gt;readArrayMapInternal&lt;/code&gt; which calls &lt;code&gt;Parcel.readValue()&lt;/code&gt;, if it comes with a serializable object, &lt;code&gt;readSerializable()&lt;/code&gt; is called.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    public final Serializable readSerializable() {
+        String name = readString();
+        if (name == null) {
+            // For some reason we were unable to read the name of the Serializable (either there
+            // is nothing left in the Parcel to read, or the next value wasn&#39;t a String), so
+            // return null, which indicates that the name wasn&#39;t found in the parcel.
+            return null;
+        }
+
+        byte[] serializedData = createByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(serializedData);
+        try {
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            /* zeqi: Problems exist here */
+            return (Serializable) ois.readObject();
+        } catch (IOException ioe) {
+            throw new RuntimeException(&amp;quot;Parcelable encountered &amp;quot; +
+                &amp;quot;IOException reading a Serializable object (name = &amp;quot; + name +
+                &amp;quot;)&amp;quot;, ioe);
+        } catch (ClassNotFoundException cnfe) {
+            throw new RuntimeException(&amp;quot;Parcelable encountered&amp;quot; +
+                &amp;quot;ClassNotFoundException reading a Serializable object (name = &amp;quot;
+                + name + &amp;quot;)&amp;quot;, cnfe);
+        }
+    
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
 
 &lt;blockquote&gt;
 &lt;ul&gt;
