@@ -225,154 +225,225 @@ blx     r2            ; execute code pointed by r2
 
 &lt;h2 id=&#34;key-point-one-how-aadroid-os-binderproxy-becomes-android-os-binderproxy&#34;&gt;Key Point One: How AAdroid.os.BinderProxy Becomes android.os.BinderProxy&lt;/h2&gt;
 
-&lt;p&gt;From the POC, we know the fake object is put into a bundle which is written to a parcel. Using &lt;code&gt;Parcel.marshall()&lt;/code&gt; we get a byte array and modify its content, change &lt;code&gt;AA&lt;/code&gt; to &lt;code&gt;an&lt;/code&gt;. Then &lt;code&gt;unmarshall()&lt;/code&gt; this array to get a new parcel object and send this parcel to system_server.&lt;/p&gt;
-
-&lt;p&gt;Look into android source code, we can find:&lt;/p&gt;
+&lt;p&gt;Firstly, a fake BinderProxy object is put into a Bundle. Look into android source code, we can find:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Function &lt;code&gt;putSerializable()&lt;/code&gt; puts the fake object into &lt;code&gt;Bundle.mMap&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;writeToParcel()&lt;/code&gt; calls &lt;code&gt;writeArrayMapInternal()&lt;/code&gt;, write the data in &lt;code&gt;mMap&lt;/code&gt; to parcel.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;writeArrayMapInternal()&lt;/code&gt; calls &lt;code&gt;writeValue(Object v)&lt;/code&gt;, write the value of &lt;code&gt;mMap&lt;/code&gt; into parcel. If the value is an instance of &lt;code&gt;Serializable&lt;/code&gt;, it calls &lt;code&gt;writeSerializable(Serializable serial)&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;In android 4.4.2, &lt;code&gt;writeSerializable()&lt;/code&gt; is implemented as below.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    public final void writeSerializable(Serializable s) {
-        if (s == null) {
-            writeString(null);
-            return;
-        }
-        String name = s.getClass().getName();
-        writeString(name);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            // Output flat
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(s);
-            oos.close();
-            writeByteArray(baos.toByteArray());
-        } catch (IOException ioe) {
-            throw new RuntimeException(&amp;quot;Parcelable encountered &amp;quot; +
-                &amp;quot;IOException writing serializable object (name = &amp;quot; + name +
-                &amp;quot;)&amp;quot;, ioe);
-        }
-    }
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Once system_server receive a parcel object from &lt;code&gt;Stub&lt;/code&gt;, function &lt;code&gt;onTransact()&lt;/code&gt; takes the responsibility for reading data from parcel. So the bundle will be restore by &lt;code&gt;Parcel.readBundle()&lt;/code&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    public final Bundle readBundle(ClassLoader loader) {
-        int length = readInt();
-        if (length &amp;lt; 0) {
-            if (Bundle.DEBUG) Log.d(TAG, &amp;quot;null bundle: length=&amp;quot; + length);
-            return null;
-        }
-        
-        final Bundle bundle = new Bundle(this, length);
-        if (loader != null) {
-            bundle.setClassLoader(loader);
-        }
-        return bundle;
-    }
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then the Bundle object is written to a parcel.&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;In Bundle.java&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;writeToParcel()&lt;/code&gt; calls &lt;code&gt;writeArrayMapInternal()&lt;/code&gt;, write the data in &lt;code&gt;mMap&lt;/code&gt; to parcel.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;writeArrayMapInternal()&lt;/code&gt; calls &lt;code&gt;writeValue(Object v)&lt;/code&gt;, to write the value of &lt;code&gt;mMap&lt;/code&gt; into parcel. If the value is an instance of &lt;code&gt;Serializable&lt;/code&gt;, it calls &lt;code&gt;writeSerializable(Serializable serial)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;In android 4.4.2, &lt;code&gt;writeSerializable()&lt;/code&gt; is implemented as below. It uses &lt;code&gt;ObjectOutputStream&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    /* package */ Bundle(Parcel parcelledData, int length) {
-        readFromParcelInner(parcelledData, length);
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public final void writeSerializable(Serializable s) {
+    if (s == null) {
+        writeString(null);
+        return;
     }
-
-    void readFromParcelInner(Parcel parcel, int length) {
-
-        /* zeqi: empty, abnormal parcel handling, omitted */
-
-        // Advance within this Parcel
-        int offset = parcel.dataPosition();
-        parcel.setDataPosition(offset + length);
-
-        Parcel p = Parcel.obtain();
-        p.setDataPosition(0);
-        /* zeqi: Get parcel data */
-        p.appendFrom(parcel, offset, length);
-        if (DEBUG) Log.d(TAG, &amp;quot;Retrieving &amp;quot;  + Integer.toHexString(System.identityHashCode(this))
-                + &amp;quot;: &amp;quot; + length + &amp;quot; bundle bytes starting at &amp;quot; + offset);
-        p.setDataPosition(0);
-
-        /* zeqi: Init field mParcelledData */
-        mParcelledData = p;
-        mHasFds = p.hasFileDescriptors();
-        mFdsKnown = true;
+    String name = s.getClass().getName();
+    writeString(name);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try {
+        // Output flat
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(s);
+        oos.close();
+        writeByteArray(baos.toByteArray());
+    } catch (IOException ioe) {
+        throw new RuntimeException(&amp;quot;Parcelable encountered &amp;quot; +
+            &amp;quot;IOException writing serializable object (name = &amp;quot; + name +
+            &amp;quot;)&amp;quot;, ioe);
     }
+}
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;**Then the POC uses &lt;code&gt;Parcel.marshall()&lt;/code&gt; to get a byte array and modify its content, changing &lt;code&gt;AA&lt;/code&gt; to &lt;code&gt;an&lt;/code&gt;. **&lt;/p&gt;
+
+&lt;p&gt;Then &lt;code&gt;unmarshall()&lt;/code&gt; this array to get a new parcel object and send to system_server.&lt;/p&gt;
+
+&lt;h2 id=&#34;key-point-two-how-it-is-triggered&#34;&gt;Key Point Two: How it is triggered&lt;/h2&gt;
+
+&lt;p&gt;Once system_server receive a parcel object from &lt;code&gt;Stub&lt;/code&gt;, function &lt;code&gt;onTransact()&lt;/code&gt; takes the responsibility for reading data from parcel. The bundle will be restore by &lt;code&gt;Parcel.readBundle()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public final Bundle readBundle(ClassLoader loader) {
+    int length = readInt();
+    if (length &amp;lt; 0) {
+        ... /* omitted */
+    }    
+    final Bundle bundle = new Bundle(this, length);
+    if (loader != null) {
+        bundle.setClassLoader(loader);
+    }
+    return bundle;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Constructor &lt;code&gt;Bundle(Parcel, int)&lt;/code&gt; init &lt;code&gt;Bundle.mParcelledData&lt;/code&gt;, which can be parsed into &lt;code&gt;Bundle.mMap&lt;/code&gt; by &lt;code&gt;unparcel()&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;Fake object is get out by fucntion &lt;code&gt;Bundle.getSerializable()&lt;/code&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    public Serializable getSerializable(String key) {
-        /* zeqi: Read data from mParcelledData to mMap */
-        unparcel();
-        Object o = mMap.get(key);
-        if (o == null) {
-            return null;
-        }
-        try {
-            return (Serializable) o;
-        } catch (ClassCastException e) {
-            typeWarning(key, o, &amp;quot;Serializable&amp;quot;, e);
-            return null;
-        }
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public Serializable getSerializable(String key) {
+    unparcel();
+    Object o = mMap.get(key);
+    if (o == null) {
+        return null;
     }
+    try {
+        return (Serializable) o;
+    } catch (ClassCastException e) {
+        typeWarning(key, o, &amp;quot;Serializable&amp;quot;, e);
+        return null;
+    }
+}
 
-    /* package */ synchronized void unparcel() {
+synchronized void unparcel() {
         
-        /* zeqi: empty parcel handling, omitted */
+    /* omitted */
 
-        int N = mParcelledData.readInt();
-        if (N &amp;lt; 0) {
-            return;
-        }
-        if (mMap == null) {
-            mMap = new ArrayMap&amp;lt;String, Object&amp;gt;(N);
-        } else {
-            mMap.erase();
-            mMap.ensureCapacity(N);
-        }
-        /* zeqi: readArrayMapInternal is correspond to writeArrayMapInternal */
-        mParcelledData.readArrayMapInternal(mMap, N, mClassLoader);
-        mParcelledData.recycle();
-        mParcelledData = null;
+    mParcelledData.readArrayMapInternal(mMap, N, mClassLoader);
+    mParcelledData.recycle();
+    mParcelledData = null;
+}
+
+// when readArrayMapInternal encounters a serializable type, it invokes readSerializable()
+public final Serializable readSerializable() {
+    String name = readString();
+    if (name == null) {
+        /* omitted */
     }
+
+    byte[] serializedData = createByteArray();
+    ByteArrayInputStream bais = new ByteArrayInputStream(serializedData);
+    try {
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        /* Problems exist here, an mal-formed BinderProxy obj will be created. */
+        /* When GC, the vulnerability is triggered */
+        return (Serializable) ois.readObject();
+    } catch (IOException ioe) {
+        /* omitted */
+    }
+}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;According to the code above, we know &lt;code&gt;mMap&lt;/code&gt; can also be init from &lt;code&gt;mParcelledData&lt;/code&gt; by &lt;code&gt;readArrayMapInternal&lt;/code&gt; which calls &lt;code&gt;Parcel.readValue()&lt;/code&gt;, if it comes with a serializable object, &lt;code&gt;readSerializable()&lt;/code&gt; is called.&lt;/p&gt;
+&lt;h2 id=&#34;patch&#34;&gt;Patch&lt;/h2&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;    public final Serializable readSerializable() {
-        String name = readString();
-        if (name == null) {
-            // For some reason we were unable to read the name of the Serializable (either there
-            // is nothing left in the Parcel to read, or the next value wasn&#39;t a String), so
-            // return null, which indicates that the name wasn&#39;t found in the parcel.
-            return null;
-        }
-
-        byte[] serializedData = createByteArray();
-        ByteArrayInputStream bais = new ByteArrayInputStream(serializedData);
-        try {
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            /* zeqi: Problems exist here */
-            return (Serializable) ois.readObject();
-        } catch (IOException ioe) {
-            throw new RuntimeException(&amp;quot;Parcelable encountered &amp;quot; +
-                &amp;quot;IOException reading a Serializable object (name = &amp;quot; + name +
-                &amp;quot;)&amp;quot;, ioe);
-        } catch (ClassNotFoundException cnfe) {
-            throw new RuntimeException(&amp;quot;Parcelable encountered&amp;quot; +
-                &amp;quot;ClassNotFoundException reading a Serializable object (name = &amp;quot;
-                + name + &amp;quot;)&amp;quot;, cnfe);
-        }
-    
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;+    public Class&amp;lt;?&amp;gt; checkAndGetTcObjectClass() throws InvalidClassException {
++        // We check some error possibilities that might cause problems later.
++        boolean wasSerializable = (flags &amp;amp; ObjectStreamConstants.SC_SERIALIZABLE) != 0;
++        boolean wasExternalizable = (flags &amp;amp; ObjectStreamConstants.SC_EXTERNALIZABLE) != 0;
++        if (wasSerializable == wasExternalizable) {
++            throw new InvalidClassException(
++                    getName() + &amp;quot; stream data is corrupt: SC_SERIALIZABLE=&amp;quot; + wasSerializable
++                            + &amp;quot; SC_EXTERNALIZABLE=&amp;quot; + wasExternalizable
++                            + &amp;quot;, classDescFlags must have one or the other&amp;quot;);
++        }
++
++        // TC_ENUM is handled elsewhere. See checkAndGetTcEnumClass().
++        if (isEnum()) {
++            throw new InvalidClassException(
++                    getName() + &amp;quot; local class is incompatible: Local class is an enum, streamed&amp;quot;
++                            + &amp;quot; data is tagged with TC_OBJECT&amp;quot;);
++        }
++
++        // isSerializable() is true if the local class implements Serializable. Externalizable
++        // classes are also Serializable via inheritance.
++        if (!isSerializable()) {
++            throw new InvalidClassException(getName() + &amp;quot; local class is incompatible: Not&amp;quot;
++                    + &amp;quot; Serializable&amp;quot;);
++        }
++
++        // The stream class was externalizable, but is only serializable locally.
++        if (wasExternalizable != isExternalizable()) {
++            throw new InvalidClassException(
++                    getName() + &amp;quot; local class is incompatible: Local class is Serializable, stream&amp;quot;
++                            + &amp;quot; data requires Externalizable&amp;quot;);
++        }
++
++        // The following are left unchecked and thus are treated leniently at this point.
++        // SC_BLOCK_DATA may be set iff SC_EXTERNALIZABLE is set AND version 2 of the protocol is in
++        // use.
++        // SC_ENUM should not be set.
++
++        return forClass();
++    }
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;More information in detail, see &lt;a href=&#34;https://android.googlesource.com/platform/libcore/+/738c833d38d41f8f76eb7e77ab39add82b1ae1e2&#34;&gt;android.googlesource.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;my-experiment&#34;&gt;My Experiment&lt;/h2&gt;
+
+&lt;h3 id=&#34;one-demo-on-hongmi-android-4-2&#34;&gt;One: Demo on HongMi (android 4.2)&lt;/h3&gt;
+
+&lt;p&gt;I write two apks, a client and a server.&lt;/p&gt;
+
+&lt;p&gt;Client represents the attacker, server represents a system_server. The things client does are the same as POC. Partial of the server&amp;rsquo;s code is:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class ServiceImpl extends MyService.Stub {
+    @Override
+    public void setApplicationRestrictions(String packageName, Bundle restrictions, int userHandler) throws RemoteException {
+        Log.e(&amp;quot;remote&amp;quot;, packageName);
+        Object obj = restrictions.get(&amp;quot;eathis&amp;quot;);
+        Log.e(&amp;quot;remote&amp;quot;, obj.getClass().getName());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Running client doesn&amp;rsquo;t cause a crash of the phone, but the exceptions below:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;03-02 11:21:20.802 4855-4866/cn.ac.iie.cve20147911_server E/remote: test
+03-02 11:21:20.815 4855-4866/cn.ac.iie.cve20147911_server E/JavaBinder: *** Uncaught remote exception!  (Exceptions are not yet supported across processes.)
+    java.lang.RuntimeException: Parcelable encountered IOException reading a Serializable object (name = AAdroid.os.BinderProxy)
+    at android.os.Parcel.readSerializable(Parcel.java:2144)
+    at android.os.Parcel.readValue(Parcel.java:2016)
+    at android.os.Parcel.readMapInternal(Parcel.java:2226)
+    at android.os.Bundle.unparcel(Bundle.java:223)
+    at android.os.Bundle.get(Bundle.java:282)
+    at cn.ac.iie.cve20147911_server.ServiceImpl.setApplicationRestrictions(ServiceImpl.java:17)
+    at cn.ac.iie.cve20147911_server.MyService$Stub.onTransact(MyService.java:61)
+    at android.os.Binder.execTransact(Binder.java:351)
+    at dalvik.system.NativeStart.run(Native Method)
+    Caused by: java.io.InvalidClassException: android.os.BinderProxy local class is incompatible: Not Serializable
+        at java.io.ObjectStreamClass.checkAndGetTcObjectClass(ObjectStreamClass.java:1330)
+        at java.io.ObjectInputStream.readNewObject(ObjectInputStream.java:1818)
+        at java.io.ObjectInputStream.readNonPrimitiveContent(ObjectInputStream.java:787)
+        at java.io.ObjectInputStream.readObject(ObjectInputStream.java:2013)
+        at java.io.ObjectInputStream.readObject(ObjectInputStream.java:1970)
+        at android.os.Parcel.readSerializable(Parcel.java:2142)
+        at android.os.Parcel.readValue(Parcel.java:2016) 
+        at android.os.Parcel.readMapInternal(Parcel.java:2226) 
+        at android.os.Bundle.unparcel(Bundle.java:223) 
+        at android.os.Bundle.get(Bundle.java:282) 
+        at cn.ac.iie.cve20147911_server.ServiceImpl.setApplicationRestrictions(ServiceImpl.java:17) 
+        at cn.ac.iie.cve20147911_server.MyService$Stub.onTransact(MyService.java:61) 
+        at android.os.Binder.execTransact(Binder.java:351) 
+        at dalvik.system.NativeStart.run(Native Method) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From the call stack, we conclude that the analysis we did before are right, and HongMi&amp;rsquo;s system is patched because there is an exception raised from fucntion &lt;code&gt;ObjectStreamClass.checkAndGetTcObjectClass()&lt;/code&gt; which is added in the patch. Notice that &lt;code&gt;android.os.BinderProxy&lt;/code&gt; appears on the exception.&lt;/p&gt;
+
+&lt;h3 id=&#34;demo-on-huawei-android-4-1&#34;&gt;Demo on HuaWei (android 4.1)&lt;/h3&gt;
+
+&lt;p&gt;Do the same thing on an HuaWei phone, the second exception disappeared!&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;03-02 14:37:00.357 31139-31154/cn.ac.iie.cve20147911_server E/remote: test
+03-02 14:37:00.360 31139-31154/cn.ac.iie.cve20147911_server E/JavaBinder: *** Uncaught remote exception!  (Exceptions are not yet supported across processes.)
+    java.lang.ClassCastException: android.os.BinderProxy cannot be cast to java.io.Serializable
+    at android.os.Parcel.readSerializable(Parcel.java:2142)
+    at android.os.Parcel.readValue(Parcel.java:2016)
+    at android.os.Parcel.readMapInternal(Parcel.java:2226)
+    at android.os.Bundle.unparcel(Bundle.java:223)
+    at android.os.Bundle.get(Bundle.java:282)
+    at cn.ac.iie.cve20147911_server.ServiceImpl.setApplicationRestrictions(ServiceImpl.java:17)
+    at cn.ac.iie.cve20147911_server.MyService$Stub.onTransact(MyService.java:61)
+    at android.os.Binder.execTransact(Binder.java:367)
+    at dalvik.system.NativeStart.run(Native Method)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This exception is just a ClassCastException, which means android.os.BinderProxy has been created, it just can&amp;rsquo;t be casted to java.io.Serializable.&lt;/p&gt;
 
 &lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
 
