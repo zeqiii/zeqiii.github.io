@@ -449,7 +449,7 @@ public final Serializable readSerializable() {
 
 &lt;p&gt;Set a breakpoint in our simulated system-server at this line:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/cve-2014-7911/cvebreakpoint.png&#34; alt=&#34;breakpoint screenshot&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/cve-2014-7911/breakpoint.png&#34; alt=&#34;breakpoint screenshot&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Attach debugger to the process and follow the steps analyzed before, we can track the exucetion to &lt;code&gt;Parcel.readSerializable()&lt;/code&gt;&lt;/p&gt;
 
