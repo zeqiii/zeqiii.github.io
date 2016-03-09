@@ -13,16 +13,16 @@
     <atom:link href="https://zeqiii.github.io/tags/programming/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>C/C&#43;&#43; Programming knowledge</title>
-      <link>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</link>
+      <title>C/Cplus Programming knowledge</title>
+      <link>https://zeqiii.github.io/2016/03/08/c/cplus-programming-knowledge/</link>
       <pubDate>Tue, 08 Mar 2016 10:12:52 +0800</pubDate>
       <author>zeqiii@163.com (zeqi)</author>
-      <guid>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</guid>
+      <guid>https://zeqiii.github.io/2016/03/08/c/cplus-programming-knowledge/</guid>
       <description>
 
-&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+&lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
 
-&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
 
 &lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
 
@@ -37,7 +37,7 @@ funcP(value);
 
 &lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
 
-&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+&lt;h3 id=&#34;macro-with-variable-argument-list:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Macro with variable argument list&lt;/h3&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 
