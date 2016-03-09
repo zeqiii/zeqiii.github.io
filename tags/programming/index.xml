@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Programming on Zeqi&#39;s Blog</title>
+    <link>https://zeqiii.github.io/tags/programming/</link>
+    <description>Recent content in Programming on Zeqi&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-EN</language>
+    <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
+    <webMaster>zeqiii@163.com (zeqi)</webMaster>
+    <copyright>(c) 2016 zeqi</copyright>
+    <lastBuildDate>Tue, 08 Mar 2016 10:12:52 +0800</lastBuildDate>
+    <atom:link href="https://zeqiii.github.io/tags/programming/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>C/C&#43;&#43; Programming knowledge</title>
+      <link>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</link>
+      <pubDate>Tue, 08 Mar 2016 10:12:52 +0800</pubDate>
+      <author>zeqiii@163.com (zeqi)</author>
+      <guid>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</guid>
+      <description>
+
+&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+
+&lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;typedef int (*FunctionPointer)(int); 
+int value = 21; 
+FunctionPointer funcP; 
+funcP = reinterpret_cast&amp;lt;FunctionPointer&amp;gt; (&amp;amp;value); 
+funcP(value);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
+
+&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#define LOG(format, ...) fprintf(stdout, format, __VA_ARGS__)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;...&lt;/code&gt; means the arguments are variable, &lt;code&gt;__VA_ARGS__&lt;/code&gt; represents the variable arguments.&lt;/p&gt;
+
+&lt;p&gt;In GCC, we can also:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#define LOG(format, args...) fprintf(stdout, format, args)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With the macros defined above, we can:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;LOG(&amp;quot;%d,%s&amp;quot;, 1, &amp;quot;hello&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
