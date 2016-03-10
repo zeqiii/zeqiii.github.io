@@ -5,36 +5,32 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>C/C&#43;&#43; Programming knowledge  &middot; Zeqi&#39;s Blog</title>
+  <title>Methods of Debugging Java Programs  &middot; Zeqi&#39;s Blog</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="description" content="Tips of C/C&#43;&#43; programming" />
+<meta name="description" content="Methods of debugging Java programs." />
 
-<meta name="keywords" content="C, C&#43;&#43;, programming, ">
+<meta name="keywords" content="Java, ">
 
 
-<meta property="og:title" content="C/C&#43;&#43; Programming knowledge  &middot; Zeqi&#39;s Blog ">
+<meta property="og:title" content="Methods of Debugging Java Programs  &middot; Zeqi&#39;s Blog ">
 <meta property="og:site_name" content="Zeqi&#39;s Blog"/>
-<meta property="og:url" content="https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/" />
+<meta property="og:url" content="https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/" />
 <meta property="og:locale" content="en-EN">
 
 
 <meta property="og:type" content="article" />
-<meta property="og:description" content="Tips of C/C&#43;&#43; programming"/>
-<meta property="og:article:published_time" content="2016-03-08T10:12:52&#43;08:00" />
-<meta property="og:article:modified_time" content="2016-03-08T10:12:52&#43;08:00" />
+<meta property="og:description" content="Methods of debugging Java programs."/>
+<meta property="og:article:published_time" content="2016-03-10T17:20:53&#43;08:00" />
+<meta property="og:article:modified_time" content="2016-03-10T17:20:53&#43;08:00" />
 
   
     
-<meta property="og:article:tag" content="C">
-    
-<meta property="og:article:tag" content="C&#43;&#43;">
-    
-<meta property="og:article:tag" content="programming">
+<meta property="og:article:tag" content="Java">
     
   
 
@@ -42,9 +38,9 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@" />
 <meta name="twitter:creator" content="@" />
-<meta name="twitter:title" content="C/C&#43;&#43; Programming knowledge" />
-<meta name="twitter:description" content="Tips of C/C&#43;&#43; programming" />
-<meta name="twitter:url" content="https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/" />
+<meta name="twitter:title" content="Methods of Debugging Java Programs" />
+<meta name="twitter:description" content="Methods of debugging Java programs." />
+<meta name="twitter:url" content="https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/" />
 <meta name="twitter:domain" content="https://zeqiii.github.io/">
   
 
@@ -52,20 +48,20 @@
   {
     "@context": "http://schema.org",
     "@type": "Article",
-    "headline": "C\/C\x2b\x2b Programming knowledge",
+    "headline": "Methods of Debugging Java Programs",
     "author": {
       "@type": "Person",
       "name": "http://profiles.google.com/+?rel=author"
     },
-    "datePublished": "2016-03-08",
-    "description": "Tips of C\/C\x2b\x2b programming",
-    "wordCount":  83 
+    "datePublished": "2016-03-10",
+    "description": "Methods of debugging Java programs.",
+    "wordCount":  0 
   }
 </script>
 
 
 
-<link rel="canonical" href="https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/" />
+<link rel="canonical" href="https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/" />
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zeqiii.github.io/touch-icon-144-precomposed.png">
 <link href="https://zeqiii.github.io/favicon.png" rel="icon">
@@ -157,23 +153,21 @@
 
 <article id="main-content" class="container main_content single">
   <header class="container hat">
-  <h1>C/C&#43;&#43; Programming knowledge
+  <h1>Methods of Debugging Java Programs
 </h1>
 
   <div class="metas">
-<time datetime="2016-03-08">8 Mar, 2016</time>
+<time datetime="2016-03-10">10 Mar, 2016</time>
 
 
   
     &middot; by zeqi
   
-  &middot; Read in about 1 min
-  &middot; (83 Words)
+  &middot; Read in about 0 min
+  &middot; (0 Words)
   <br>
   
-<a class="label" href="https://zeqiii.github.io/tags/c/c">C/C&#43;&#43;</a>
-
-<a class="label" href="https://zeqiii.github.io/tags/programming">programming</a>
+<a class="label" href="https://zeqiii.github.io/tags/java">Java</a>
 
 
 
@@ -183,43 +177,6 @@
 
   <div class="container content">
   
-
-<h2 id="functions-reserved-words-and-macros">Functions, Reserved Words and Macros</h2>
-
-<h3 id="reinterpret-cast-new-type-expression">reinterpret_cast <new_type> (expression)</h3>
-
-<p>Cast the <code>expression</code> to a <code>new_type</code>.</p>
-
-<p>For example:</p>
-
-<pre><code>typedef int (*FunctionPointer)(int); 
-int value = 21; 
-FunctionPointer funcP; 
-funcP = reinterpret_cast&lt;FunctionPointer&gt; (&amp;value); 
-funcP(value);
-</code></pre>
-
-<p>Of course, this program will crash after being executed.</p>
-
-<h3 id="macro-with-variable-argument-list">Macro with variable argument list</h3>
-
-<p>For example:</p>
-
-<pre><code>#define LOG(format, ...) fprintf(stdout, format, __VA_ARGS__)
-</code></pre>
-
-<p><code>...</code> means the arguments are variable, <code>__VA_ARGS__</code> represents the variable arguments.</p>
-
-<p>In GCC, we can also:</p>
-
-<pre><code>#define LOG(format, args...) fprintf(stdout, format, args)
-</code></pre>
-
-<p>With the macros defined above, we can:</p>
-
-<pre><code>LOG(&quot;%d,%s&quot;, 1, &quot;hello&quot;)
-</code></pre>
-
 </div>
 
 
@@ -230,7 +187,7 @@ funcP(value);
   
 
     
-    <a class="prev" href="https://zeqiii.github.io/2016/03/07/analysis-of-cve-2015-3837/" title="Analysis of cve-2015-3837">
+    <a class="prev" href="https://zeqiii.github.io/2016/03/08/c/cplus-programming-knowledge/" title="C/Cplus Programming knowledge">
       Previous
     </a>
     
