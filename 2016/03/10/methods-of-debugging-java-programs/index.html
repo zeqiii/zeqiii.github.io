@@ -55,7 +55,7 @@
     },
     "datePublished": "2016-03-10",
     "description": "Methods of debugging Java programs.",
-    "wordCount":  0 
+    "wordCount":  330 
   }
 </script>
 
@@ -163,8 +163,8 @@
   
     &middot; by zeqi
   
-  &middot; Read in about 0 min
-  &middot; (0 Words)
+  &middot; Read in about 2 min
+  &middot; (330 Words)
   <br>
   
 <a class="label" href="https://zeqiii.github.io/tags/java">Java</a>
@@ -177,6 +177,125 @@
 
   <div class="container content">
   
+
+<h2 id="debug-java-source-code-in-eclipse">Debug Java Source Code In Eclipse</h2>
+
+<p>Sometimes we want to know how a Java API works. It is a good idea to write a testing program, debug it and step into the API function to see how it works.</p>
+
+<p>But when I first try this, I encounter a problem like this:</p>
+
+<p><img src="/img/methods_of_debugging_java_programs/source_not_found.png" alt="source not found" /></p>
+
+<p>To solve this problem.</p>
+
+<ol>
+<li>Select <code>Window</code>-&gt;<code>Preferences</code>-&gt;<code>Java</code>-&gt;<code>Installed JREs</code></li>
+</ol>
+
+<p><img src="/img/methods_of_debugging_java_programs/installed_jres.png" alt="installed jres" /></p>
+
+<ol>
+<li>Click <code>Add...</code>, select <code>Standard VM</code> and click <code>Next&gt;</code>, in the dialog, add your JDK_HOME to the <code>JRE home:</code>, give a name for the new JRE definition, then click <code>Finish</code>.</li>
+</ol>
+
+<p><img src="/img/methods_of_debugging_java_programs/jre_definition.png" alt="jre definition" /></p>
+
+<ol>
+<li>Return to your project, right click on the project and select <code>Properties</code>-&gt;<code>Java Build Path</code>-&gt;<code>Libraries</code>, select the <code>JRE System Library</code> then click <code>Edit...</code>. Replace the original JRE system library with your newly defined JRE library.</li>
+</ol>
+
+<p><img src="/img/methods_of_debugging_java_programs/edit_library.png" alt="jre definition" /></p>
+
+<ol>
+<li>Select <code>Run</code>-&gt;<code>Debug Configurations...</code>-&gt;<code>Source</code>, add your project folder to the <code>Source Lookup Path</code>.</li>
+</ol>
+
+<p><img src="/img/methods_of_debugging_java_programs/add_project_source_folder.png" alt="add project source folder" /></p>
+
+<p>Let&rsquo;s debug!</p>
+
+<p><img src="/img/methods_of_debugging_java_programs/debug.png" alt="debug" /></p>
+
+<h2 id="debug-with-jdi">Debug with JDI</h2>
+
+<p>Referring to <a href="http://illegalargumentexception.blogspot.com/2009/03/java-using-jpda-to-write-debugger.html">llegalargumentexception.blogspot.com</a>, using Java code to connect to the VM can help us debug a Java program.</p>
+
+<p>The routine to debug.</p>
+
+<pre><code class="language-java">public class Test {
+
+  int foo;
+
+  public static void main(String[] args) {
+    Random random = new Random();
+    Test test = new Test();
+    for (int i = 0; i &lt; 10; i++) {
+      test.foo = random.nextInt();
+      System.out.println(test.foo);
+    }
+  }
+}
+</code></pre>
+
+<p>Firstly, import <code>tools.jar</code> to the classpath.</p>
+
+<p>Code connecting to the VM:</p>
+
+<pre><code class="language-java">public class VMAcquirer {
+
+  /**
+   * Call this with the localhost port to connect to.
+   */
+  public VirtualMachine connect(int port)
+      throws IOException {
+    String strPort = Integer.toString(port);
+    AttachingConnector connector = getConnector();
+    try {
+      VirtualMachine vm = connect(connector, strPort);
+      return vm;
+    } catch (IllegalConnectorArgumentsException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private AttachingConnector getConnector() {
+    VirtualMachineManager vmManager = Bootstrap
+        .virtualMachineManager();
+    for (Connector connector : vmManager
+        .attachingConnectors()) {
+      System.out.println(connector.name());
+      if (&quot;com.sun.jdi.SocketAttach&quot;.equals(connector
+          .name())) {
+        return (AttachingConnector) connector;
+      }
+    }
+    throw new IllegalStateException();
+  }
+
+  private VirtualMachine connect(
+      AttachingConnector connector, String port)
+      throws IllegalConnectorArgumentsException,
+      IOException {
+    Map&lt;String, Connector.Argument&gt; args = connector
+        .defaultArguments();
+    Connector.Argument pidArgument = args.get(&quot;port&quot;);
+    if (pidArgument == null) {
+      throw new IllegalStateException();
+    }
+    pidArgument.setValue(port);
+
+    return connector.attach(args);
+  }
+
+}
+</code></pre>
+
+<p>Then, monitoring Test.foo with code.</p>
+
+<pre><code class="language-java">
+
+</code></pre>
+
 </div>
 
 
