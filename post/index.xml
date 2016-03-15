@@ -141,16 +141,16 @@
     </item>
     
     <item>
-      <title>C/Cplus Programming knowledge</title>
-      <link>https://zeqiii.github.io/2016/03/08/c/cplus-programming-knowledge/</link>
+      <title>C/C&#43;&#43; Programming knowledge</title>
+      <link>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</link>
       <pubDate>Tue, 08 Mar 2016 10:12:52 +0800</pubDate>
       <author>zeqiii@163.com (zeqi)</author>
-      <guid>https://zeqiii.github.io/2016/03/08/c/cplus-programming-knowledge/</guid>
+      <guid>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</guid>
       <description>
 
-&lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
 
-&lt;h3 id=&#34;reinterpret-cast-new-type-expression:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
 
 &lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
 
@@ -165,7 +165,7 @@ funcP(value);
 
 &lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
 
-&lt;h3 id=&#34;macro-with-variable-argument-list:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 
@@ -194,11 +194,11 @@ funcP(value);
       <guid>https://zeqiii.github.io/2016/03/07/analysis-of-cve-2015-3837/</guid>
       <description>
 
-&lt;h2 id=&#34;introduction:df901cdc25ce32f8498cb57282f623b5&#34;&gt;Introduction&lt;/h2&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 
 &lt;p&gt;CVE-2015-3837 is another java deserialzation vulnerability in android. &lt;a href=&#34;http://drops.wooyun.org/papers/10235&#34;&gt;Wooyun&lt;/a&gt; had analyzed it.&lt;/p&gt;
 
-&lt;h2 id=&#34;description-on-cve:df901cdc25ce32f8498cb57282f623b5&#34;&gt;Description on CVE&lt;/h2&gt;
+&lt;h2 id=&#34;description-on-cve&#34;&gt;Description on CVE&lt;/h2&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;The OpenSSLX509Certificate class in org/conscrypt/OpenSSLX509Certificate.java in Android before 5.1.1 LMY48I improperly includes certain context data during serialization and deserialization, which allows attackers to execute arbitrary code via an application that sends a crafted Intent, aka internal bug 21437603.&lt;/p&gt;
@@ -206,7 +206,7 @@ funcP(value);
 
 &lt;p&gt;We know that Google had patched the bug disclosed in CVE-2014-7911, in which &lt;code&gt;ObjectInputStream&lt;/code&gt; didn&amp;rsquo;t validate an object can be serialzed or not. The bug can be used to create arbitrary object by deserialization, even the object is not a serializable object, such as &lt;code&gt;android.os.BinderProxy&lt;/code&gt;. After being patched, an object will be checked whether it is serializable before deserialization. But if there is an serializable class which overrides &lt;code&gt;finalize()&lt;/code&gt; method like BinderProxy, the attacker can still leverage it to execute arbitrary code.&lt;/p&gt;
 
-&lt;h2 id=&#34;finalize-of-opensslx509certificate:df901cdc25ce32f8498cb57282f623b5&#34;&gt;finalize() of OpenSSLX509Certificate&lt;/h2&gt;
+&lt;h2 id=&#34;finalize-of-opensslx509certificate&#34;&gt;finalize() of OpenSSLX509Certificate&lt;/h2&gt;
 
 &lt;p&gt;The location of OpenSSLX509Certificate.java is &lt;code&gt;/external/conscrypt/src/main/java/org/conscrypt/OpenSSLX509Certificate.java&lt;/code&gt;&lt;/p&gt;
 
@@ -399,15 +399,15 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;poc:df901cdc25ce32f8498cb57282f623b5&#34;&gt;POC&lt;/h2&gt;
+&lt;h2 id=&#34;poc&#34;&gt;POC&lt;/h2&gt;
 
 &lt;p&gt;I write the POC by modifying cve-2014-7911&amp;rsquo;s POC, but it didn&amp;rsquo;t work. I&amp;rsquo;ll continue working on it.&lt;/p&gt;
 
-&lt;h2 id=&#34;google-s-patch:df901cdc25ce32f8498cb57282f623b5&#34;&gt;Google&amp;rsquo;s Patch&lt;/h2&gt;
+&lt;h2 id=&#34;google-s-patch&#34;&gt;Google&amp;rsquo;s Patch&lt;/h2&gt;
 
 &lt;p&gt;To patch this vulnerability, Google just adds &amp;laquo;transient&amp;raquo; before the definition of the field &lt;code&gt;OpenSSLX509Certificate.mContext&lt;/code&gt;, in order to disable it to be serialized.&lt;/p&gt;
 
-&lt;h2 id=&#34;related-papers:df901cdc25ce32f8498cb57282f623b5&#34;&gt;Related Papers&lt;/h2&gt;
+&lt;h2 id=&#34;related-papers&#34;&gt;Related Papers&lt;/h2&gt;
 
 &lt;p&gt;I&amp;rsquo;ve read the paper &lt;a href=&#34;https://www.usenix.org/conference/woot15/workshop-program/presentation/peles&#34;&gt;One Class to Rule Them All&lt;/a&gt;, where this vulnerability disclosure to public. In this paper, a method is raised to find the vulnerable classes automatically, by defining some criterias and implementing a JDI to check on them. For how to debugging Java programs using Java code, read &lt;a href=&#34;https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/&#34;&gt;Methods of Debugging Java Programs&lt;/a&gt;&lt;/p&gt;
 </description>
