@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Analysis of Java Serialization  &middot; Zeqi&#39;s Blog</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="description" content="Analysis of Java Serialization" />
+
+<meta name="keywords" content="Analysis, ">
+
+
+<meta property="og:title" content="Analysis of Java Serialization  &middot; Zeqi&#39;s Blog ">
+<meta property="og:site_name" content="Zeqi&#39;s Blog"/>
+<meta property="og:url" content="https://zeqiii.github.io/2016/03/15/analysis-of-java-serialization/" />
+<meta property="og:locale" content="en-EN">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:description" content="Analysis of Java Serialization"/>
+<meta property="og:article:published_time" content="2016-03-15T10:28:28&#43;08:00" />
+<meta property="og:article:modified_time" content="2016-03-15T10:28:28&#43;08:00" />
+
+  
+    
+<meta property="og:article:tag" content="Analysis">
+    
+  
+
+  
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@" />
+<meta name="twitter:creator" content="@" />
+<meta name="twitter:title" content="Analysis of Java Serialization" />
+<meta name="twitter:description" content="Analysis of Java Serialization" />
+<meta name="twitter:url" content="https://zeqiii.github.io/2016/03/15/analysis-of-java-serialization/" />
+<meta name="twitter:domain" content="https://zeqiii.github.io/">
+  
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "headline": "Analysis of Java Serialization",
+    "author": {
+      "@type": "Person",
+      "name": "http://profiles.google.com/+?rel=author"
+    },
+    "datePublished": "2016-03-15",
+    "description": "Analysis of Java Serialization",
+    "wordCount":  1690 
+  }
+</script>
+
+
+
+<link rel="canonical" href="https://zeqiii.github.io/2016/03/15/analysis-of-java-serialization/" />
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://zeqiii.github.io/touch-icon-144-precomposed.png">
+<link href="https://zeqiii.github.io/favicon.png" rel="icon">
+
+<meta name="generator" content="Hugo 0.15" />
+
+  <!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link href='https://fonts.googleapis.com/css?family=Merriweather:300%7CRaleway%7COpen+Sans' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://zeqiii.github.io/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://zeqiii.github.io/css/style.css">
+<link rel="stylesheet" href="https://zeqiii.github.io/css/highlight/default.css">
+
+  
+</head>
+<body>
+  <main id="main-wrapper" class="container main_wrapper has-sidebar">
+    <header id="main-header" class="container main_header">
+  <div class="container brand">
+  <div class="container title h1-like">
+  <a class="baselink" href="https://zeqiii.github.io/">
+  Zeqi&#39;s Blog
+
+</a>
+
+</div>
+
+  
+<div class="container topline">
+  
+
+</div>
+
+
+</div>
+
+  <nav class="container nav primary no-print">
+  
+
+<a class="homelink" href="https://zeqiii.github.io/">Home</a>
+
+
+  
+<a href="https://zeqiii.github.io/post" title="Show list of posts">Posts</a>
+
+<a href="https://zeqiii.github.io/tags" title="Show list of tags">Tags</a>
+
+<a href="https://zeqiii.github.io/topics" title="Show list of topics">Topics</a>
+
+
+</nav>
+
+<div class="container nav secondary no-print">
+  
+<a id="contact-link-email" class="contact_link" href="mailto:zeqiii@163.com">
+  <span class="fa fa-envelope-square"></span><span>email</span></a>
+
+
+
+<a id="contact-link-github" class="contact_link" href="https://github.com/zeqiii">
+  <span class="fa fa-github-square"></span><span>github</span></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+  
+
+</header>
+
+
+<article id="main-content" class="container main_content single">
+  <header class="container hat">
+  <h1>Analysis of Java Serialization
+</h1>
+
+  <div class="metas">
+<time datetime="2016-03-15">15 Mar, 2016</time>
+
+
+  
+    &middot; by zeqi
+  
+  &middot; Read in about 8 min
+  &middot; (1690 Words)
+  <br>
+  
+<a class="label" href="https://zeqiii.github.io/tags/analysis">Analysis</a>
+
+
+
+</div>
+
+</header>
+
+  <div class="container content">
+  
+
+<h3 id="demo:68a7f84eae0d34438ed8064af9699a4b">Demo</h3>
+
+<p>Class <code>MySerial</code> contains these fields and methods.</p>
+
+<pre><code class="language-java">public class MySerial implements Serializable{
+	private static final long serialVersionUID = -7524021481133441646L;
+	private int mArg = 1;
+	private int mOrg = 2;
+	
+	public String toString() {
+		return &quot;mArg:&quot; + mArg + &quot; mOrg:&quot; + mOrg;
+	}
+}
+</code></pre>
+
+<p>In main function.</p>
+
+<pre><code class="language-java">public static void main(String[] argv) {
+	MySerial mySerial = new MySerial();
+	try {
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;obj.bin&quot;));
+		oos.writeObject(mySerial);     // Set a break point here.
+		oos.flush();
+		oos.close();
+	
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(&quot;obj.bin&quot;));
+		Object obj = ois.readObject(); // Set a break point here.
+		System.out.println(obj.getClass().getName());
+	} catch (Exception e) {
+		...
+	}
+</code></pre>
+
+<h3 id="debugging-objectinputstream-readobject:68a7f84eae0d34438ed8064af9699a4b">Debugging ObjectInputStream.readObject()</h3>
+
+<p>The constructor of <code>ObjectInputStream</code>.</p>
+
+<pre><code class="language-java">public ObjectInputStream(InputStream in) throws IOException {
+    verifySubclass();
+    bin = new BlockDataInputStream(in);
+    handles = new HandleTable(10);
+    vlist = new ValidationList();
+    enableOverride = false;
+    readStreamHeader();
+    bin.setBlockDataMode(true);
+}
+</code></pre>
+
+<pre><code class="language-java">protected void readStreamHeader() throws IOException, StreamCorruptedException
+{
+    short s0 = bin.readShort();
+    short s1 = bin.readShort();
+    // STREAM_MAGIC=-21267, STREAM_VERSION=5
+    if (s0 != STREAM_MAGIC || s1 != STREAM_VERSION) {
+        throw new StreamCorruptedException(
+            String.format(&quot;invalid stream header: %04X%04X&quot;, s0, s1));
+    }
+}
+</code></pre>
+
+<p><img src="/img/analysis_of_java_serialization/magic_and_version.png" alt="magic and version" /></p>
+
+<p>Step into function <code>ois.readObject</code>, see how an object is created during deserialization.</p>
+
+<pre><code class="language-java">public final Object readObject() throws IOException, ClassNotFoundException
+{
+    if (enableOverride) {
+        return readObjectOverride();
+    }
+
+    // if nested read, passHandle contains handle of enclosing object
+    int outerHandle = passHandle;
+    try {
+        Object obj = readObject0(false);  // Step into this function
+        handles.markDependency(outerHandle, passHandle);
+        ClassNotFoundException ex = handles.lookupException(passHandle);
+        if (ex != null) {
+            throw ex;
+        }
+        if (depth == 0) {
+            vlist.doCallbacks();
+        }
+        return obj;
+    } finally {
+        passHandle = outerHandle;
+        if (closed &amp;&amp; depth == 0) {
+            clear();
+        }
+    }
+}
+</code></pre>
+
+<p>Step into <code>Object obj = readObject0(false)</code></p>
+
+<pre><code class="language-java">/**
+ * Underlying readObject implementation.
+ */
+private Object readObject0(boolean unshared) throws IOException {
+
+    ...
+
+    byte tc;
+    // TC_RESET = 121 = 0x79
+    while ((tc = bin.peekByte()) == TC_RESET) {
+        bin.readByte();
+        handleReset();
+    }
+
+    depth++;
+
+    ...
+
+}
+</code></pre>
+
+<p><img src="/img/analysis_of_java_serialization/tc_reset.png" alt="tc_reset" /></p>
+
+<p>In obj.bin, there is no <code>TC_RESET</code>, so let&rsquo;s continue.</p>
+
+<pre><code class="language-java">private Object readObject0(boolean unshared) throws IOException {
+    
+    ...
+
+    depth++;
+    try {
+        switch (tc) {
+            case TC_NULL:
+                return readNull();
+
+            ...
+
+            // TC_OBJECT = 115 = 0x73
+            case TC_OBJECT:
+                return checkResolve(readOrdinaryObject(unshared));
+
+            default:
+                throw new StreamCorruptedException(
+                    String.format(&quot;invalid type code: %02X&quot;, tc));
+        }
+    } finally {
+        depth--;
+        bin.setBlockDataMode(oldMode);
+    }
+}
+</code></pre>
+
+<p><img src="/img/analysis_of_java_serialization/tc_reset.png" alt="tc_reset" /></p>
+
+<p>0x73 equals <code>TC_OBJECT</code>, so next we step into <code>readOrdinaryObject(unshared)</code></p>
+
+<pre><code class="language-java">private Object readOrdinaryObject(boolean unshared) throws IOException
+{
+    if (bin.readByte() != TC_OBJECT) {
+        throw new InternalError();
+    }
+
+    ObjectStreamClass desc = readClassDesc(false);
+    desc.checkDeserialize();
+
+    ...
+
+}
+</code></pre>
+
+<p><img src="/img/analysis_of_java_serialization/tc_reset.png" alt="tc_reset" /></p>
+
+<p>Step into `readClassDesc(false)</p>
+
+<pre><code class="language-java">/**
+ * Reads in and returns (possibly null) class descriptor.  Sets passHandle
+ * to class descriptor's assigned handle.  If class descriptor cannot be
+ * resolved to a class in the local VM, a ClassNotFoundException is
+ * associated with the class descriptor's handle.
+ */
+private ObjectStreamClass readClassDesc(boolean unshared) throws IOException
+{
+    byte tc = bin.peekByte();
+    switch (tc) {
+        case TC_NULL:
+            return (ObjectStreamClass) readNull();
+
+        case TC_REFERENCE:
+            return (ObjectStreamClass) readHandle(unshared);
+
+        case TC_PROXYCLASSDESC:
+            return readProxyDesc(unshared);
+        
+        // TC_CLASSDESC = 114 = 0x72
+        case TC_CLASSDESC:
+            return readNonProxyDesc(unshared);
+
+        default:
+            throw new StreamCorruptedException(
+                String.format(&quot;invalid type code: %02X&quot;, tc));
+    }
+}
+</code></pre>
+
+<p><img src="/img/analysis_of_java_serialization/class_desc.png" alt="class desc" /></p>
+
+<p>Step into <code>readNonProxyDesc(unshared)</code></p>
+
+<pre><code class="language-java">private ObjectStreamClass readNonProxyDesc(boolean unshared)
+    throws IOException
+{
+    if (bin.readByte() != TC_CLASSDESC) {
+        throw new InternalError();
+    }
+
+    ObjectStreamClass desc = new ObjectStreamClass();
+    int descHandle = handles.assign(unshared ? unsharedMarker : desc);
+    passHandle = NULL_HANDLE;
+
+    ObjectStreamClass readDesc = null;
+    try {
+        readDesc = readClassDescriptor();
+    } catch (ClassNotFoundException ex) {
+        throw (IOException) new InvalidClassException(
+            &quot;failed to read class descriptor&quot;).initCause(ex);
+    }
+
+    ...
+
+}
+
+</code></pre>
+
+<p>Step into <code>readClassDescriptor()</code></p>
+
+<pre><code class="language-java">/**
+ * Read a class descriptor from the serialization stream.  This method is
+ * called when the ObjectInputStream expects a class descriptor as the next
+ * item in the serialization stream.  Subclasses of ObjectInputStream may
+ * override this method to read in class descriptors that have been written
+ * in non-standard formats (by subclasses of ObjectOutputStream which have
+ * overridden the &lt;code&gt;writeClassDescriptor&lt;/code&gt; method).  By default,
+ * this method reads class descriptors according to the format defined in
+ * the Object Serialization specification.
+ *
+ * @return  the class descriptor read
+ * @throws  IOException If an I/O error has occurred.
+ * @throws  ClassNotFoundException If the Class of a serialized object used
+ *          in the class descriptor representation cannot be found
+ * @see java.io.ObjectOutputStream#writeClassDescriptor(java.io.ObjectStreamClass)
+ * @since 1.3
+ */
+protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException
+{
+    ObjectStreamClass desc = new ObjectStreamClass();
+    desc.readNonProxy(this);
+    return desc;
+}
+</code></pre>
+
+<p>Step into <code>desc.readNonProxy(this)</code></p>
+
+<pre><code class="language-java">void readNonProxy(ObjectInputStream in) throws IOException, ClassNotFoundException
+{
+    name = in.readUTF();
+    suid = Long.valueOf(in.readLong());
+    isProxy = false;
+
+    byte flags = in.readByte();
+    hasWriteObjectData =
+        ((flags &amp; ObjectStreamConstants.SC_WRITE_METHOD) != 0);
+    hasBlockExternalData =
+        ((flags &amp; ObjectStreamConstants.SC_BLOCK_DATA) != 0);
+    externalizable =
+        ((flags &amp; ObjectStreamConstants.SC_EXTERNALIZABLE) != 0);
+    boolean sflag =
+        ((flags &amp; ObjectStreamConstants.SC_SERIALIZABLE) != 0);
+    if (externalizable &amp;&amp; sflag) {
+        throw new InvalidClassException(
+            name, &quot;serializable and externalizable flags conflict&quot;);
+    }
+    serializable = externalizable || sflag;
+    isEnum = ((flags &amp; ObjectStreamConstants.SC_ENUM) != 0);
+    if (isEnum &amp;&amp; suid.longValue() != 0L) {
+        throw new InvalidClassException(name,
+            &quot;enum descriptor has non-zero serialVersionUID: &quot; + suid);
+    }
+
+    int numFields = in.readShort();
+    if (isEnum &amp;&amp; numFields != 0) {
+        throw new InvalidClassException(name,
+            &quot;enum descriptor has non-zero field count: &quot; + numFields);
+    }
+    fields = (numFields &gt; 0) ?
+        new ObjectStreamField[numFields] : NO_FIELDS;
+    for (int i = 0; i &lt; numFields; i++) {
+        char tcode = (char) in.readByte();
+        String fname = in.readUTF();
+        String signature = ((tcode == 'L') || (tcode == '[')) ?
+            in.readTypeString() : new String(new char[] { tcode });
+        try {
+            fields[i] = new ObjectStreamField(fname, signature, false);
+        } catch (RuntimeException e) {
+            throw (IOException) new InvalidClassException(name,
+                &quot;invalid descriptor for field &quot; + fname).initCause(e);
+        }
+    }
+    computeFieldOffsets();
+}
+</code></pre>
+
+<p><code>in.readUTF()</code> read a <code>String</code> from the stream and give it to <code>name</code>.</p>
+
+<p><img src="/img/analysis_of_java_serialization/read_utf.png" alt="read_utf" /></p>
+
+<p><code>in.readLong()</code> read a 64 bit <code>Long</code> and give it to <code>suid</code>. This long value is just the <code>MySerial.serialVersionUID</code> in our demo.</p>
+
+<p><img src="/img/analysis_of_java_serialization/read_long.png" alt="read_long" /></p>
+
+<p><code>byte flags = in.readByte();</code> we get the flags <code>0x02</code></p>
+
+<p><img src="/img/analysis_of_java_serialization/read_byte.png" alt="read_byte" /></p>
+
+<p>Step over to <code>serializable = externalizable || sflag;</code>, the value of <code>serializable</code> is set to true.</p>
+
+<p>Step over to <code>int numFields = in.readShort();</code>, the value of numFields is 2.</p>
+
+<p><img src="/img/analysis_of_java_serialization/read_short.png" alt="read_short" /></p>
+
+<p>Then read two fields.</p>
+
+<p><img src="/img/analysis_of_java_serialization/read_field.png" alt="read_field" /></p>
+
+<p><code>computeFieldOffsets()</code> calculates and sets serializable field offsets, as well as primitive data size and object field count totals.</p>
+
+<p>Return to <code>readNonProxyDesc()</code>, now we&rsquo;ve got an object of ObjectStreamClass, <code>readDesc</code>.</p>
+
+<pre><code class="language-java">private ObjectStreamClass readNonProxyDesc(boolean unshared) {
+    
+    ...
+
+    Class cl = null;
+    ClassNotFoundException resolveEx = null;
+    bin.setBlockDataMode(true);
+
+    // Return true if this class is a custom subclass of ObjectInputStream
+    final boolean checksRequired = isCustomSubclass();
+    try {
+        if ((cl = resolveClass(readDesc)) == null) {
+            resolveEx = new ClassNotFoundException(&quot;null class&quot;);
+        } else if (checksRequired) {
+            ReflectUtil.checkPackageAccess(cl);
+        }
+    } catch (ClassNotFoundException ex) {
+        resolveEx = ex;
+    }
+    skipCustomData();
+
+    desc.initNonProxy(readDesc, cl, resolveEx, readClassDesc(false));
+
+    handles.finish(descHandle);
+    passHandle = descHandle;
+    return desc;
+}
+</code></pre>
+
+<p>Step into <code>resolveClass(readDesc)</code> we can find this:</p>
+
+<pre><code class="language-java">String name = desc.getName();
+return Class.forName(name, false, latestUserDefinedLoader());
+</code></pre>
+
+<p>So after we step out from <code>resolveClass(readDesc)</code>, we step into <code>skipCustomData()</code></p>
+
+<pre><code class="language-java">/**
+ * Skips over all block data and objects until TC_ENDBLOCKDATA is
+ * encountered.
+ */
+private void skipCustomData() throws IOException {
+    int oldHandle = passHandle;
+    for (;;) {
+        if (bin.getBlockDataMode()) {
+            bin.skipBlockData();
+            bin.setBlockDataMode(false);
+        }
+        switch (bin.peekByte()) {
+            case TC_BLOCKDATA:
+            case TC_BLOCKDATALONG:
+                bin.setBlockDataMode(true);
+                break;
+
+            // TC_ENDBLOCKDATA = 120 = 0x78
+            case TC_ENDBLOCKDATA:
+                bin.readByte();
+                passHandle = oldHandle;
+                return;
+
+            default:
+                readObject0(false);
+                break;
+        }
+    }
+}
+</code></pre>
+
+<p><img src="/img/analysis_of_java_serialization/tc_endblockdata.png" alt="tc endblockdata" /></p>
+
+<p>Return to <code>readNonProxyDesc()</code>, we step into <code>desc.initNonProxy(readDesc, cl, resolveEx, readClassDesc(false));</code></p>
+
+<pre><code class="language-java">void initNonProxy(ObjectStreamClass model,
+                      Class&lt;?&gt; cl,
+                      ClassNotFoundException resolveEx,
+                      ObjectStreamClass superDesc)
+</code></pre>
+
+<p>Firstly, we step into <code>readClassDesc(false)</code>, according to the definition of <code>initNonProxy</code>, we know this is for reading the description of the serializable object&rsquo;s super class description.</p>
+
+<p>The <code>readClassDesc(false)</code> is the same as above, but falls in case <code>TC_NULL</code>, which means the serializable object has no super class.</p>
+
+<pre><code class="language-java">// TC_NULL = 112 = 0x70
+case TC_NULL:
+    return (ObjectStreamClass) readNull()
+</code></pre>
+
+<p><img src="/img/analysis_of_java_serialization/tc_null.png" alt="tc null" /></p>
+
+<pre><code class="language-java">/**
+ * Initializes class descriptor representing a non-proxy class.
+ */
+void initNonProxy(ObjectStreamClass model,
+                  Class&lt;?&gt; cl,
+                  ClassNotFoundException resolveEx,
+                  ObjectStreamClass superDesc) throws InvalidClassException
+{
+    // init this object from model
+    this.cl = cl;
+    this.resolveEx = resolveEx;
+    this.superDesc = superDesc;
+    name = model.name;
+    suid = Long.valueOf(model.getSerialVersionUID());
+    isProxy = false;
+    isEnum = model.isEnum;
+    serializable = model.serializable;
+    externalizable = model.externalizable;
+    hasBlockExternalData = model.hasBlockExternalData;
+    hasWriteObjectData = model.hasWriteObjectData;
+    fields = model.fields;
+    primDataSize = model.primDataSize;
+    numObjFields = model.numObjFields;
+
+    if (cl != null) {
+        // important, looks up and returns class descriptor for a given class
+        localDesc = lookup(cl, true);
+
+        // beginning of validations
+        if (localDesc.isProxy) {
+            throw new InvalidClassException(
+                &quot;cannot bind non-proxy descriptor to a proxy class&quot;);
+        }
+        if (isEnum != localDesc.isEnum) {
+            throw new InvalidClassException(isEnum ?
+                &quot;cannot bind enum descriptor to a non-enum class&quot; :
+                &quot;cannot bind non-enum descriptor to an enum class&quot;);
+        }
+
+        if (serializable == localDesc.serializable &amp;&amp;
+            !cl.isArray() &amp;&amp;
+            suid.longValue() != localDesc.getSerialVersionUID())
+        {
+            throw new InvalidClassException(localDesc.name,
+                &quot;local class incompatible: &quot; +
+                &quot;stream classdesc serialVersionUID = &quot; + suid +
+                &quot;, local class serialVersionUID = &quot; +
+                localDesc.getSerialVersionUID());
+        }
+
+        if (!classNamesEqual(name, localDesc.name)) {
+            throw new InvalidClassException(localDesc.name,
+                &quot;local class name incompatible with stream class &quot; +
+                &quot;name \&quot;&quot; + name + &quot;\&quot;&quot;);
+        }
+
+        if (!isEnum) {
+            if ((serializable == localDesc.serializable) &amp;&amp;
+                (externalizable != localDesc.externalizable))
+            {
+                throw new InvalidClassException(localDesc.name,
+                    &quot;Serializable incompatible with Externalizable&quot;);
+            }
+
+            if ((serializable != localDesc.serializable) ||
+                (externalizable != localDesc.externalizable) ||
+                !(serializable || externalizable))
+            {
+                deserializeEx = new ExceptionInfo(
+                    localDesc.name, &quot;class invalid for deserialization&quot;);
+            }
+        }
+        // ending of validations
+
+        // Constructor of MySerial
+        cons = localDesc.cons;
+        writeObjectMethod = localDesc.writeObjectMethod;
+        readObjectMethod = localDesc.readObjectMethod;
+        readObjectNoDataMethod = localDesc.readObjectNoDataMethod;
+        writeReplaceMethod = localDesc.writeReplaceMethod;
+        readResolveMethod = localDesc.readResolveMethod;
+        if (deserializeEx == null) {
+            deserializeEx = localDesc.deserializeEx;
+        }
+    }
+    fieldRefl = getReflector(fields, localDesc);
+    // reassign to matched fields so as to reflect local unshared settings
+    fields = fieldRefl.getFields();
+}
+</code></pre>
+
+<p><code>initNonProxy()</code> will initialize <code>desc</code>, which will be returned to <code>readOrdinaryObject(unshared)</code>. Let&rsquo;s go back to this function.</p>
+
+<pre><code class="language-java">private Object readOrdinaryObject(boolean unshared) throws IOException {
+
+    ... // get an ObjectStreamClass
+
+    Class&lt;?&gt; cl = desc.forClass();
+    if (cl == String.class || cl == Class.class
+            || cl == ObjectStreamClass.class) {
+        throw new InvalidClassException(&quot;invalid class descriptor&quot;);
+    }
+
+    Object obj;
+    try {
+        // if desc.cons != null, isInstantiable() returns true
+        // desc.newInstance() returns desc.cons.newInstance()
+        obj = desc.isInstantiable() ? desc.newInstance() : null;
+    } catch (Exception ex) {
+        throw (IOException) new InvalidClassException(
+            desc.forClass().getName(),
+            &quot;unable to create instance&quot;).initCause(ex);
+    }
+
+    passHandle = handles.assign(unshared ? unsharedMarker : obj);
+    ClassNotFoundException resolveEx = desc.getResolveException();
+    if (resolveEx != null) {
+        handles.markException(passHandle, resolveEx);
+    }
+
+    if (desc.isExternalizable()) {
+        readExternalData((Externalizable) obj, desc);
+    } else {
+        // read field data from obj.bin
+        readSerialData(obj, desc);
+    }
+
+    handles.finish(passHandle);
+
+    if (obj != null &amp;&amp;
+        handles.lookupException(passHandle) == null &amp;&amp;
+        desc.hasReadResolveMethod())
+    {
+        Object rep = desc.invokeReadResolve(obj);
+        if (unshared &amp;&amp; rep.getClass().isArray()) {
+            rep = cloneArray(rep);
+        }
+        if (rep != obj) {
+            handles.setObject(passHandle, obj = rep);
+        }
+    }
+
+    return obj;
+}
+</code></pre>
+
+<p><img src="/img/analysis_of_java_serialization/fields.png" alt="field values" /></p>
+
+</div>
+
+
+  <footer class="container">
+  <div class="container navigation no-print">
+  <h2>Navigation</h2>
+  
+  
+
+    
+    <a class="prev" href="https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/" title="Methods of Debugging Java Programs">
+      Previous
+    </a>
+    
+
+    
+
+  
+
+
+</div>
+
+  <div class="container comments">
+  <h2>Comments</h2>
+  
+
+</div>
+
+</footer>
+
+</article>
+      <footer id="main-footer" class="container main_footer">
+  
+
+  <div class="container nav foot no-print">
+  
+
+  <a class="toplink" href="#">back to top</a>
+
+</div>
+
+  <div class="container credits">
+  
+<div class="container footline">
+  
+
+</div>
+
+
+  
+<div class="container copyright">
+  
+  &copy; 2016 zeqi
+
+
+</div>
+
+
+</div>
+
+</footer>
+
+    </main>
+    
+
+
+<script src="https://zeqiii.github.io/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+    
+  </body>
+</html>
+
