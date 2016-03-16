@@ -55,7 +55,7 @@
     },
     "datePublished": "2016-03-15",
     "description": "Analysis of Java Serialization",
-    "wordCount":  1690 
+    "wordCount":  1849 
   }
 </script>
 
@@ -163,8 +163,8 @@
   
     &middot; by zeqi
   
-  &middot; Read in about 8 min
-  &middot; (1690 Words)
+  &middot; Read in about 9 min
+  &middot; (1849 Words)
   <br>
   
 <a class="label" href="https://zeqiii.github.io/tags/analysis">Analysis</a>
@@ -538,9 +538,11 @@ protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFo
 }
 </code></pre>
 
-<p>Step into <code>resolveClass(readDesc)</code> we can find this:</p>
+<p>Step into <code>resolveClass(readDesc)</code> we can find this, which is vulnerable:</p>
 
-<pre><code class="language-java">String name = desc.getName();
+<pre><code class="language-java">// get class name, which can b modified by an attacker
+String name = desc.getName();
+// according to the class name, get the Class object
 return Class.forName(name, false, latestUserDefinedLoader());
 </code></pre>
 
@@ -623,6 +625,7 @@ void initNonProxy(ObjectStreamClass model,
     numObjFields = model.numObjFields;
 
     if (cl != null) {
+
         // important, looks up and returns class descriptor for a given class
         localDesc = lookup(cl, true);
 
@@ -672,7 +675,7 @@ void initNonProxy(ObjectStreamClass model,
         }
         // ending of validations
 
-        // Constructor of MySerial
+        // Constructor of MySerial !!!
         cons = localDesc.cons;
         writeObjectMethod = localDesc.writeObjectMethod;
         readObjectMethod = localDesc.readObjectMethod;
@@ -689,11 +692,13 @@ void initNonProxy(ObjectStreamClass model,
 }
 </code></pre>
 
-<p><code>initNonProxy()</code> will initialize <code>desc</code>, which will be returned to <code>readOrdinaryObject(unshared)</code>. Let&rsquo;s go back to this function.</p>
+<p><code>desc.initNonProxy()</code> will initialize <code>desc</code>, which will be returned. It read the fields values of the parameter <code>model</code>, and init <code>desc</code>&rsquo;s fields with these values. It also find a local class descriptor of parameter <code>cl</code> from local cache, and read the fields values of it, and init <code>desc</code>&rsquo;s fields with these values.</p>
+
+<p>Then the initiated <code>desc</code> will finally be returned to <code>readOrdinaryObject(unshared)</code>.</p>
 
 <pre><code class="language-java">private Object readOrdinaryObject(boolean unshared) throws IOException {
 
-    ... // get an ObjectStreamClass
+    ... // get an ObjectStreamClass, here we get the returned desc.
 
     Class&lt;?&gt; cl = desc.forClass();
     if (cl == String.class || cl == Class.class
@@ -705,6 +710,7 @@ void initNonProxy(ObjectStreamClass model,
     try {
         // if desc.cons != null, isInstantiable() returns true
         // desc.newInstance() returns desc.cons.newInstance()
+        // this is like calling the constructor of MySerial
         obj = desc.isInstantiable() ? desc.newInstance() : null;
     } catch (Exception ex) {
         throw (IOException) new InvalidClassException(
@@ -745,6 +751,14 @@ void initNonProxy(ObjectStreamClass model,
 </code></pre>
 
 <p><img src="/img/analysis_of_java_serialization/fields.png" alt="field values" /></p>
+
+<p><img src="/img/analysis_of_java_serialization/readObject.png" alt="read object" /></p>
+
+<h3 id="thinking-with-cve-2014-7911:68a7f84eae0d34438ed8064af9699a4b">Thinking with CVE-2014-7911</h3>
+
+<p>To leverage this vulnerability, one of the steps is to change <code>AAdroid</code> to <code>android</code> in the serialized data, so that <code>readObject()</code> create a new <code>android.os.BinderProxy</code> object with the fields <code>mArgs</code> and <code>mOrgs</code> being set as the value of the fake <code>AAdroid.os.BinderProxy</code> object.</p>
+
+<p>So, the problem is because of the improper validation during deserialzation. By changing the class name fields of the serialized data, attacker can misguide Java to create arbitrary class.</p>
 
 </div>
 
