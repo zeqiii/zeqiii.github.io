@@ -143,7 +143,7 @@
   <p class="container content">
   
   
-    Introduction In Nexus Security Bulletin-April 2016, cve-2016-0847 is disclosed. Let&rsquo;s analysis! Overview of Telecom When a phone call arrives, android framework will send a notification to Telephony. The latter will call function addNewIncomingCall() like this: TelecomManager.from(context).addNewIncomingCall(phoneAccount, extras); This somehow equals: TelecomManager telecomManager = (TelecomManager) context.getSystemService(context.TELECOM_SERVICE); telecomManager.addNewIncomingCall(phoneAccount, extras); TelecomManager can be get by context.getSystemService(context.TELECOM_SERVICE). Now we should find where telecom service is registered. Android has a system service named TelecomLoaderService whose function onBootPhase is: @Override public void onBootPhase(int phase) { if (phase == PHASE_ACTIVITY_MANAGER_READY) { registerDefaultAppNotifier(); registerCarrierConfigChangedReceiver(); connectToTelecom(); } } onBootPhase() is called during booting, it calls another function connectToTelecom(): private static final ComponentName SERVICE_COMPONENT = new ComponentName( &quot;com.android.server.telecom&quot;, &quot;com.android.server.telecom.components.TelecomService&quot;); private void connectToTelecom() { synchronized (mLock) { if (mServiceConnection != null) { // TODO: Is unbinding worth doing or wait for system to rebind?
+    Analysis of cve-2016-0847
   
 
 
@@ -259,7 +259,7 @@
   <p class="container content">
   
   
-    Introduction CVE-2015-3837 is another java deserialzation vulnerability in android. Wooyun had analyzed it. Description on CVE The OpenSSLX509Certificate class in org/conscrypt/OpenSSLX509Certificate.java in Android before 5.1.1 LMY48I improperly includes certain context data during serialization and deserialization, which allows attackers to execute arbitrary code via an application that sends a crafted Intent, aka internal bug 21437603. We know that Google had patched the bug disclosed in CVE-2014-7911, in which ObjectInputStream didn&rsquo;t validate an object can be serialzed or not.
+    Analysis of cve-2015-3837
   
 
 
@@ -288,7 +288,7 @@
   <p class="container content">
   
   
-    Apache Commons Collections Apache Commons Collections implements TransformedMap whose decorate() method can perform some operations on a Map. public static Map decorate(Map map, Transformer keyTransformer, Transformer valueTransformer) { return new TransformedMap(map, keyTransformer, valueTransformer); } Transformer is an implementation to transform an object. public interface Transformer { public Object transform(Object input); } Map has key and value. Parameters of decorate(), keyTransformer is responsible for the transformation of the keys of a Map, valueTransformer is responsible for values of a Map.
+    Analysis of cve-2015-6420
   
 
 
@@ -317,7 +317,7 @@
   <p class="container content">
   
   
-    A brief look System_server is a process has system permission, to which one can send any serializable data. Although system_server won&rsquo;t invoke any functions of the received objected, but finalize will be called when GC. Function finalize in android.os.BinderProxy calls a native function which has pointers, the pointers may be controlled by attackers. So GC may result in arbitrary code execution. android.os.BinderProxy isn&rsquo;t serializable, however, java.io.ObjectInputStream doesn&rsquo;t check whether an object really is serializable, attackers can craft a fake BinderProxy to acheive the goals.
+    Analysis of cve-2014-7911
   
 
 
