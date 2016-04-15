@@ -124,11 +124,40 @@
     <h1>Zeqi&#39;s Blog
 </h1>
 
-    <span>last update: <time datetime="2016-03-15T10:28:28&#43;08:00">15 March at 10:28am</time>
+    <span>last update: <time datetime="2016-04-08T15:55:52&#43;08:00">8 April at 3:55pm</time>
 </span>
 
   </header>
   
+  
+    <article class="container content summary">
+  <div class="container hat">
+  <h2><a href="https://zeqiii.github.io/2016/04/08/analysis-of-cve-2016-0847/">Analysis of cve-2016-0847
+</a>
+</h2>
+
+  <time datetime="2016-04-08">8 Apr, 2016</time>
+
+</div>
+
+  <p class="container content">
+  
+  
+    Introduction In Nexus Security Bulletin-April 2016, cve-2016-0847 is disclosed. Let&rsquo;s analysis! Overview of Telecom When a phone call arrives, android framework will send a notification to Telephony. The latter will call function addNewIncomingCall() like this: TelecomManager.from(context).addNewIncomingCall(phoneAccount, extras); This somehow equals: TelecomManager telecomManager = (TelecomManager) context.getSystemService(context.TELECOM_SERVICE); telecomManager.addNewIncomingCall(phoneAccount, extras); TelecomManager can be get by context.getSystemService(context.TELECOM_SERVICE). Now we should find where telecom service is registered. Android has a system service named TelecomLoaderService whose function onBootPhase is: @Override public void onBootPhase(int phase) { if (phase == PHASE_ACTIVITY_MANAGER_READY) { registerDefaultAppNotifier(); registerCarrierConfigChangedReceiver(); connectToTelecom(); } } onBootPhase() is called during booting, it calls another function connectToTelecom(): private static final ComponentName SERVICE_COMPONENT = new ComponentName( &quot;com.android.server.telecom&quot;, &quot;com.android.server.telecom.components.TelecomService&quot;); private void connectToTelecom() { synchronized (mLock) { if (mServiceConnection != null) { // TODO: Is unbinding worth doing or wait for system to rebind?
+  
+
+
+</p>
+
+
+  <div class="container readlink">
+  <a href="https://zeqiii.github.io/2016/04/08/analysis-of-cve-2016-0847/">Read more &rarr;</a>
+
+</div>
+
+
+</article>
+
   
     <article class="container content summary">
   <div class="container hat">
