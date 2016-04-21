@@ -178,7 +178,7 @@
   <div class="container content">
   
 
-<h3 id="demo">Demo</h3>
+<h3 id="demo:68a7f84eae0d34438ed8064af9699a4b">Demo</h3>
 
 <p>Class <code>MySerial</code> contains these fields and methods.</p>
 
@@ -211,7 +211,7 @@
 	}
 </code></pre>
 
-<h3 id="debugging-objectinputstream-readobject">Debugging ObjectInputStream.readObject()</h3>
+<h3 id="debugging-objectinputstream-readobject:68a7f84eae0d34438ed8064af9699a4b">Debugging ObjectInputStream.readObject()</h3>
 
 <p>The constructor of <code>ObjectInputStream</code>.</p>
 
@@ -754,7 +754,7 @@ void initNonProxy(ObjectStreamClass model,
 
 <p><img src="/img/analysis_of_java_serialization/readObject.png" alt="read object" /></p>
 
-<h3 id="thinking-with-cve-2014-7911">Thinking with CVE-2014-7911</h3>
+<h3 id="thinking-with-cve-2014-7911:68a7f84eae0d34438ed8064af9699a4b">Thinking with CVE-2014-7911</h3>
 
 <p>To leverage this vulnerability, one of the steps is to change <code>AAdroid</code> to <code>android</code> in the serialized data, so that <code>readObject()</code> create a new <code>android.os.BinderProxy</code> object with the fields <code>mArgs</code> and <code>mOrgs</code> being set as the value of the fake <code>AAdroid.os.BinderProxy</code> object.</p>
 
