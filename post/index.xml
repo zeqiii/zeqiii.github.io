@@ -13,14 +13,14 @@
     <atom:link href="https://zeqiii.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Analysis of cve-2016-0848</title>
-      <link>https://zeqiii.github.io/2016/05/09/analysis-of-cve-2016-0848/</link>
+      <title>Analysis of cve-2016-2458</title>
+      <link>https://zeqiii.github.io/2016/05/09/analysis-of-cve-2016-2458/</link>
       <pubDate>Mon, 09 May 2016 19:17:06 +0800</pubDate>
       <author>zeqiii@163.com (zeqi)</author>
-      <guid>https://zeqiii.github.io/2016/05/09/analysis-of-cve-2016-0848/</guid>
+      <guid>https://zeqiii.github.io/2016/05/09/analysis-of-cve-2016-2458/</guid>
       <description>
 
-&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;h2 id=&#34;introduction:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Introduction&lt;/h2&gt;
 
 &lt;p&gt;A breif introduction of cve-2016-2458 can be found in &lt;a href=&#34;https://source.android.com/security/bulletin/2016-05-01.html&#34;&gt;Security Bulletin&lt;/a&gt;.&lt;/p&gt;
 
@@ -472,7 +472,7 @@ label_24:
 
 &lt;p&gt;In this condition, racing condition in DownloadManager will lead to a privilege escalation of reading files.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;img/cve-2016-0848/racing_read.png&#34; alt=&#34;racing_read&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/cve-2016-0848/racing_read.png&#34; alt=&#34;racing_read&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Start two thread, one continuously read downloaded file by &lt;code&gt;openDownloadedFile(long id)&lt;/code&gt;. the other thread continuously changing the target of symlink between one valid downloaded path and one invalid private file.&lt;/p&gt;
 
@@ -486,6 +486,8 @@ label_24:
                 ParcelFileDescriptor pfd = MainActivity.downloadManager.openDownloadedFile(id);
                 Log.e(&amp;quot;msg&amp;quot;, &amp;quot;open success&amp;quot;);
                 long size = pfd.getStatSize();
+                // The valid file we have downloaded has a size 13502084
+                // So, skip the opened file if we found it has this size
                 if (size != 13502084) {
                     Log.e(&amp;quot;FD&amp;quot;, &amp;quot;size=&amp;quot; + size);
                     long native_fd = pfd.getFd();
@@ -1516,7 +1518,7 @@ void initNonProxy(ObjectStreamClass model,
       <guid>https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/</guid>
       <description>
 
-&lt;h2 id=&#34;debug-java-source-code-in-eclipse:71104563d2f4707e3c3b17590a7ace2b&#34;&gt;Debug Java Source Code In Eclipse&lt;/h2&gt;
+&lt;h2 id=&#34;debug-java-source-code-in-eclipse&#34;&gt;Debug Java Source Code In Eclipse&lt;/h2&gt;
 
 &lt;p&gt;Sometimes we want to know how a Java API works. It is a good idea to write a testing program, debug it and step into the API function to see how it works.&lt;/p&gt;
 
@@ -1554,7 +1556,7 @@ void initNonProxy(ObjectStreamClass model,
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/methods_of_debugging_java_programs/debug.png&#34; alt=&#34;debug&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;debug-with-jdi:71104563d2f4707e3c3b17590a7ace2b&#34;&gt;Debug with JDI&lt;/h2&gt;
+&lt;h2 id=&#34;debug-with-jdi&#34;&gt;Debug with JDI&lt;/h2&gt;
 
 &lt;p&gt;Referring to &lt;a href=&#34;http://illegalargumentexception.blogspot.com/2009/03/java-using-jpda-to-write-debugger.html&#34;&gt;llegalargumentexception.blogspot.com&lt;/a&gt;, using Java code to connect to the VM can help us debug a Java program.&lt;/p&gt;
 
@@ -1644,9 +1646,9 @@ void initNonProxy(ObjectStreamClass model,
       <guid>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</guid>
       <description>
 
-&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+&lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
 
-&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
 
 &lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
 
@@ -1661,7 +1663,7 @@ funcP(value);
 
 &lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
 
-&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+&lt;h3 id=&#34;macro-with-variable-argument-list:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Macro with variable argument list&lt;/h3&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 
@@ -1917,7 +1919,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
       <guid>https://zeqiii.github.io/2016/03/05/analysis-of-cve-2015-6420/</guid>
       <description>
 
-&lt;h2 id=&#34;apache-commons-collections:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;Apache Commons Collections&lt;/h2&gt;
+&lt;h2 id=&#34;apache-commons-collections&#34;&gt;Apache Commons Collections&lt;/h2&gt;
 
 &lt;p&gt;Apache Commons Collections implements &lt;code&gt;TransformedMap&lt;/code&gt; whose &lt;code&gt;decorate()&lt;/code&gt; method can perform some operations on a &lt;code&gt;Map&lt;/code&gt;.&lt;/p&gt;
 
@@ -1938,7 +1940,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/cve-2015-6420/transform.png&#34; alt=&#34;TransformMap&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;invokertransformer:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;InvokerTransformer&lt;/h2&gt;
+&lt;h2 id=&#34;invokertransformer&#34;&gt;InvokerTransformer&lt;/h2&gt;
 
 &lt;p&gt;&lt;code&gt;InvokerTransformer&lt;/code&gt; is one of the implementation of &lt;code&gt;Transformer&lt;/code&gt;, which can call any method through reflection.&lt;/p&gt;
 
@@ -1998,7 +2000,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;((Runtime)Runtime.class.getMethod(&amp;quot;getRuntime&amp;quot;,null).invoke(null,new Object[0])).exec(&amp;quot;calc.exe&amp;quot;);
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;annotationinvocationhandler:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;AnnotationInvocationHandler&lt;/h2&gt;
+&lt;h2 id=&#34;annotationinvocationhandler&#34;&gt;AnnotationInvocationHandler&lt;/h2&gt;
 
 &lt;p&gt;To now, we have known that we can craft a &lt;code&gt;TransformedMap&lt;/code&gt; to execute arbitrary code. To archieve our goal, we must find some way to modify the element of  &lt;code&gt;TransformedMap&lt;/code&gt; so that &lt;code&gt;transform()&lt;/code&gt; can be invoked.&lt;/p&gt;
 
@@ -2017,7 +2019,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 
 &lt;p&gt;So, we can initialize an &lt;code&gt;AnnotationInvocationHandler&lt;/code&gt;, set its &lt;code&gt;memberValues&lt;/code&gt; to  our crafted &lt;code&gt;TransformedMap&lt;/code&gt;, then serialize it to get a payload. If the target receives the payload and deserializes it, our code could be executed.&lt;/p&gt;
 
-&lt;h2 id=&#34;poc:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;POC&lt;/h2&gt;
+&lt;h2 id=&#34;poc&#34;&gt;POC&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws Exception {
     Transformer[] transformers = new Transformer[] {
@@ -2050,7 +2052,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;references:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;References&lt;/h2&gt;
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;&lt;a href=&#34;http://foxglovesecurity.com/2015/11/06/what-do-weblogic-websphere-jboss-jenkins-opennms-and-your-application-have-in-common-this-vulnerability/&#34;&gt;http://foxglovesecurity.com/2015/11/06/what-do-weblogic-websphere-jboss-jenkins-opennms-and-your-application-have-in-common-this-vulnerability/&lt;/a&gt;&lt;/p&gt;
