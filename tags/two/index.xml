@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Two on Zeqi&#39;s Blog</title>
+    <link>https://zeqiii.github.io/tags/two/</link>
+    <description>Recent content in Two on Zeqi&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-EN</language>
+    <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
+    <webMaster>zeqiii@163.com (zeqi)</webMaster>
+    <copyright>(c) 2016 zeqi</copyright>
+    <lastBuildDate>Tue, 17 May 2016 10:27:54 +0800</lastBuildDate>
+    <atom:link href="https://zeqiii.github.io/tags/two/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Race Condition</title>
+      <link>https://zeqiii.github.io/2016/05/17/race-condition/</link>
+      <pubDate>Tue, 17 May 2016 10:27:54 +0800</pubDate>
+      <author>zeqiii@163.com (zeqi)</author>
+      <guid>https://zeqiii.github.io/2016/05/17/race-condition/</guid>
+      <description>&lt;p&gt;CVE-2016-2458 is a race condition problem. This blog records some survey on race condition, and think about race condition in Android.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Wiki&amp;rsquo;s description about race condition&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A race condition or race hazard is the behavior of an electronic, software or other system where the output is dependent on the sequence or timing of other uncontrollable events. It becomes a bug when events do not happen in the order the programmer intended. The term originates with the idea of two signals racing each other to influence the output first.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
