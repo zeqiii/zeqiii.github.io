@@ -28,23 +28,23 @@
 
 &lt;p&gt;What we want is to flash the builded AOSP to a real nexus device, not just test the image on an emulator, so we need to download the drivers for a nexus deivce. From &lt;a href=&#34;https://developers.google.com/android/nexus/drivers&#34;&gt;https://developers.google.com/android/nexus/drivers&lt;/a&gt; we download sh files to our android source directory.&lt;/p&gt;
 
-&lt;p&gt;[](/img/flash_nexus_device/driver_sh_files.jpg)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/driver_sh_files.jpg&#34; alt=&#34;drivers&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;[](/img/flash_nexus_device/driver_sh_files2.jpg)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/driver_sh_files2.jpg&#34; alt=&#34;drivers&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Run these sh files and type &amp;laquo;I ACCEPT&amp;raquo;, then a &amp;laquo;vender&amp;raquo; directory will be created in our android source directory.&lt;/p&gt;
 
-&lt;p&gt;[](/img/flash_nexus_device/vendor.jpg)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/vendor.jpg&#34; alt=&#34;vendor&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;flashing&#34;&gt;Flashing&lt;/h2&gt;
 
 &lt;p&gt;After the building is completed, we copy these &amp;laquo;img&amp;raquo; file to some directory.&lt;/p&gt;
 
-&lt;p&gt;[](/img/flash_nexus_device/images.jpg)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/images.jpg&#34; alt=&#34;images&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;SDK provide us platforms which contains &amp;laquo;fastboot&amp;raquo;. Connect your device and your PC using an USB cable,  shutdown the device then press power button and volume down button at the same time, holding them until the device enters fastboot mode. Then use &lt;code&gt;fastboot devices&lt;/code&gt; to see if the devices has connected.&lt;/p&gt;
 
-&lt;p&gt;[](/img/flash_nexus_device/fastboot.jpg)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/fastboot.jpg&#34; alt=&#34;fastboot&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Using &lt;code&gt;fastboot flash&lt;/code&gt; command to flash the image into the device. For example.&lt;/p&gt;
 
