@@ -20,7 +20,7 @@
       <guid>https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/</guid>
       <description>
 
-&lt;h2 id=&#34;debug-java-source-code-in-eclipse&#34;&gt;Debug Java Source Code In Eclipse&lt;/h2&gt;
+&lt;h2 id=&#34;debug-java-source-code-in-eclipse:71104563d2f4707e3c3b17590a7ace2b&#34;&gt;Debug Java Source Code In Eclipse&lt;/h2&gt;
 
 &lt;p&gt;Sometimes we want to know how a Java API works. It is a good idea to write a testing program, debug it and step into the API function to see how it works.&lt;/p&gt;
 
@@ -58,7 +58,7 @@
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/methods_of_debugging_java_programs/debug.png&#34; alt=&#34;debug&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;debug-with-jdi&#34;&gt;Debug with JDI&lt;/h2&gt;
+&lt;h2 id=&#34;debug-with-jdi:71104563d2f4707e3c3b17590a7ace2b&#34;&gt;Debug with JDI&lt;/h2&gt;
 
 &lt;p&gt;Referring to &lt;a href=&#34;http://illegalargumentexception.blogspot.com/2009/03/java-using-jpda-to-write-debugger.html&#34;&gt;llegalargumentexception.blogspot.com&lt;/a&gt;, using Java code to connect to the VM can help us debug a Java program.&lt;/p&gt;
 
@@ -148,9 +148,9 @@
       <guid>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</guid>
       <description>
 
-&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+&lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
 
-&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
 
 &lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
 
@@ -165,7 +165,7 @@ funcP(value);
 
 &lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
 
-&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+&lt;h3 id=&#34;macro-with-variable-argument-list:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Macro with variable argument list&lt;/h3&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 
@@ -183,6 +183,33 @@ funcP(value);
 
 &lt;pre&gt;&lt;code&gt;LOG(&amp;quot;%d,%s&amp;quot;, 1, &amp;quot;hello&amp;quot;)
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;size-t:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;size_t&lt;/h3&gt;
+
+&lt;p&gt;Alias of one of the fundamental unsigned integer types. &lt;code&gt;size_t&lt;/code&gt; is unsigned integer defined in standard C lib, in 64-bit OS, it is long unsigned integer.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sizeof&lt;/code&gt; operation returns a size_t type value.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;size_t&lt;/code&gt; usually is used in array index, looping, pointer, memory location calculating.&lt;/p&gt;
+
+&lt;p&gt;See more &lt;a href=&#34;http://www.cplusplus.com/reference/cstring/size_t/&#34;&gt;DETAILS&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;mutable:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;mutable&lt;/h3&gt;
+
+&lt;p&gt;mutable variables always can be changed even if it is in a const function.&lt;/p&gt;
+
+&lt;p&gt;As we know, if a function doesn&amp;rsquo;t change any fields of a class, this function will be declared with &lt;code&gt;const&lt;/code&gt;. But sometimes this kind of functions need to modify some specific fields that have no business with the state of the class. In this condition, these specific fields should declared with the key word &lt;code&gt;mutable&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;volatile:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;volatile&lt;/h3&gt;
+
+&lt;p&gt;To optimize a program, commonly, the compiler make the executables read/write a variable from registers. But sometimes a varible may be changed frequently.&lt;/p&gt;
+
+&lt;p&gt;If a variable are declared with the key word &lt;code&gt;volatile&lt;/code&gt;, that means the variable can be changed at any moment,
+the compiler will compile the program to make this variable be read/write directly from the memory, which helps to avoid race condition.&lt;/p&gt;
+
+&lt;h3 id=&#34;misc-tips:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;misc tips&lt;/h3&gt;
+
+&lt;p&gt;Use &lt;code&gt;g++&lt;/code&gt; to compile your cpp file if you use c++ programming language, otherwise there will be some strange errors during complilation like &lt;code&gt;undefined reference to XXX&lt;/code&gt;.&lt;/p&gt;
 </description>
     </item>
     

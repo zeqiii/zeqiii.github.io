@@ -9,8 +9,59 @@
     <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
     <webMaster>zeqiii@163.com (zeqi)</webMaster>
     <copyright>(c) 2016 zeqi</copyright>
-    <lastBuildDate>Tue, 17 May 2016 10:27:54 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 10 Jul 2016 16:20:10 +0800</lastBuildDate>
     <atom:link href="https://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Flash Nexus Device with Compiled AOSP</title>
+      <link>https://zeqiii.github.io/2016/07/10/flash-nexus-device-with-compiled-aosp/</link>
+      <pubDate>Sun, 10 Jul 2016 16:20:10 +0800</pubDate>
+      <author>zeqiii@163.com (zeqi)</author>
+      <guid>https://zeqiii.github.io/2016/07/10/flash-nexus-device-with-compiled-aosp/</guid>
+      <description>
+
+&lt;h2 id=&#34;compiling-aosp&#34;&gt;Compiling AOSP&lt;/h2&gt;
+
+&lt;p&gt;About how to download and build AOSP source code, the android official site has provided us a very detailed instruction, see &lt;a href=&#34;https://source.android.com/source/requirements.html&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;downloading-drivers&#34;&gt;Downloading drivers&lt;/h2&gt;
+
+&lt;p&gt;What we want is to flash the builded AOSP to a real nexus device, not just test the image on an emulator, so we need to download the drivers for a nexus deivce. From &lt;a href=&#34;https://developers.google.com/android/nexus/drivers&#34;&gt;https://developers.google.com/android/nexus/drivers&lt;/a&gt; we download sh files to our android source directory.&lt;/p&gt;
+
+&lt;p&gt;[](/img/flash_nexus_device/driver_sh_files.jpg)&lt;/p&gt;
+
+&lt;p&gt;[](/img/flash_nexus_device/driver_sh_files2.jpg)&lt;/p&gt;
+
+&lt;p&gt;Run these sh files and type &amp;laquo;I ACCEPT&amp;raquo;, then a &amp;laquo;vender&amp;raquo; directory will be created in our android source directory.&lt;/p&gt;
+
+&lt;p&gt;[](/img/flash_nexus_device/vendor.jpg)&lt;/p&gt;
+
+&lt;h2 id=&#34;flashing&#34;&gt;Flashing&lt;/h2&gt;
+
+&lt;p&gt;After the building is completed, we copy these &amp;laquo;img&amp;raquo; file to some directory.&lt;/p&gt;
+
+&lt;p&gt;[](/img/flash_nexus_device/images.jpg)&lt;/p&gt;
+
+&lt;p&gt;SDK provide us platforms which contains &amp;laquo;fastboot&amp;raquo;. Connect your device and your PC using an USB cable,  shutdown the device then press power button and volume down button at the same time, holding them until the device enters fastboot mode. Then use &lt;code&gt;fastboot devices&lt;/code&gt; to see if the devices has connected.&lt;/p&gt;
+
+&lt;p&gt;[](/img/flash_nexus_device/fastboot.jpg)&lt;/p&gt;
+
+&lt;p&gt;Using &lt;code&gt;fastboot flash&lt;/code&gt; command to flash the image into the device. For example.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;fastboot flash system E:\system.img
+fastboot flash userdata E:\userdata.img
+fastboot flash boot E:\boot.img
+fastboot flash recovery E:\recovery.img
+fastboot flash cache E:\cache.img
+fastboot flash XXX YOUR_IMG_FILE
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Reboot your device.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;fastboot reboot
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Race Condition</title>
@@ -36,7 +87,7 @@
       <guid>https://zeqiii.github.io/2016/05/09/analysis-of-cve-2016-2458/</guid>
       <description>
 
-&lt;h2 id=&#34;introduction:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Introduction&lt;/h2&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 
 &lt;p&gt;A breif introduction of cve-2016-2458 can be found in &lt;a href=&#34;https://source.android.com/security/bulletin/2016-05-01.html&#34;&gt;Security Bulletin&lt;/a&gt;.&lt;/p&gt;
 
@@ -94,7 +145,7 @@
 
 &lt;p&gt;The main content of this patch is in function &lt;code&gt;handleAttachmentUrisFromIntent(List&amp;lt;Uri&amp;gt; uris)&lt;/code&gt;, which seems like having the ability to handle attachment of a mail. The following work is about studying how &lt;code&gt;com.android.email&lt;/code&gt; works and analyzing this vulnerability.&lt;/p&gt;
 
-&lt;h2 id=&#34;composeactivity:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;ComposeActivity&lt;/h2&gt;
+&lt;h2 id=&#34;composeactivity&#34;&gt;ComposeActivity&lt;/h2&gt;
 
 &lt;p&gt;&lt;code&gt;ComposeActivity&lt;/code&gt; is a compoenent of &lt;code&gt;com.android.mail&lt;/code&gt;, &lt;code&gt;ComposeActivityEmail&lt;/code&gt;, which is a component of &lt;code&gt;com.android.email&lt;/code&gt;, is its child. The edit page of email is actually the &lt;code&gt;ComposeActivityEmail&lt;/code&gt;&lt;/p&gt;
 
@@ -102,7 +153,7 @@
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/cve-2016-2458/composeactivity.png&#34; alt=&#34;ComposeActivity&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;analysis-of-the-patch:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Analysis of the patch&lt;/h2&gt;
+&lt;h2 id=&#34;analysis-of-the-patch&#34;&gt;Analysis of the patch&lt;/h2&gt;
 
 &lt;p&gt;Before patched, if a uri is passed to &lt;code&gt;handleAttachementUrisFromIntent()&lt;/code&gt;, and this uri doesn&amp;rsquo;t start with &amp;laquo;file&amp;raquo;, it will be handled by:&lt;/p&gt;
 
@@ -188,7 +239,7 @@ protected boolean handleSpecialAttachmentUri(final Uri contentUri) {
 
 &lt;p&gt;So, let&amp;rsquo;s try to construct an email whose attachement is a uri that start with &lt;code&gt;content://com.android.email.provider&lt;/code&gt;, and see what&amp;rsquo;s will happen.&lt;/p&gt;
 
-&lt;h2 id=&#34;how-email-works:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;How Email works&lt;/h2&gt;
+&lt;h2 id=&#34;how-email-works&#34;&gt;How Email works&lt;/h2&gt;
 
 &lt;p&gt;To craft our POC, we should firstly figure out how Android&amp;rsquo;s email works to compose an email.&lt;/p&gt;
 
@@ -297,7 +348,7 @@ protected void onActivityResult(int request, int result, Intent data) {
 
 &lt;p&gt;Here we come back to the &lt;code&gt;addAttachmentAndUpdateView()&lt;/code&gt; but with a parameter whose type is &lt;code&gt;Attachment&lt;/code&gt;.&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion-from-the-analysis:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Conclusion from the analysis&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion-from-the-analysis&#34;&gt;Conclusion from the analysis&lt;/h2&gt;
 
 &lt;p&gt;We can build an activity which can be selected to open when users add attachments. This activity&amp;rsquo;s &lt;code&gt;setResult()&lt;/code&gt; returns an intent whose &lt;code&gt;data&lt;/code&gt; is an uri starts with &amp;laquo;content://com.android.email.provider&amp;raquo;. This uri may point to a private resource.&lt;/p&gt;
 
@@ -315,7 +366,7 @@ protected void onActivityResult(int request, int result, Intent data) {
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;demo:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Demo&lt;/h2&gt;
+&lt;h2 id=&#34;demo&#34;&gt;Demo&lt;/h2&gt;
 </description>
     </item>
     
@@ -811,11 +862,11 @@ E/FD: fd=836
       <guid>https://zeqiii.github.io/2016/04/08/analysis-of-cve-2016-0847/</guid>
       <description>
 
-&lt;h2 id=&#34;introduction:3e2c06bc67180e971c44700697f99ccd&#34;&gt;Introduction&lt;/h2&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 
 &lt;p&gt;In &lt;a href=&#34;https://source.android.com/security/bulletin/2016-04-02.html&#34;&gt;Nexus Security Bulletin-April 2016&lt;/a&gt;, cve-2016-0847 is disclosed. Let&amp;rsquo;s analysis!&lt;/p&gt;
 
-&lt;h2 id=&#34;overview-of-telecom:3e2c06bc67180e971c44700697f99ccd&#34;&gt;Overview of Telecom&lt;/h2&gt;
+&lt;h2 id=&#34;overview-of-telecom&#34;&gt;Overview of Telecom&lt;/h2&gt;
 
 &lt;p&gt;When a phone call arrives, android framework will send a notification to &lt;code&gt;Telephony&lt;/code&gt;. The latter will call function addNewIncomingCall() like this:&lt;/p&gt;
 
@@ -921,7 +972,7 @@ private void connectToTelecom() {
 
 &lt;p&gt;&lt;code&gt;mBinderImpl&lt;/code&gt; implements the interfaces defined in &lt;code&gt;ITelecomService.aidl&lt;/code&gt;, including &lt;code&gt;addNewIncomingCall()&lt;/code&gt; and &lt;code&gt;addNewUnknownCall()&lt;/code&gt;.&lt;/p&gt;
 
-&lt;h2 id=&#34;start-from-the-patch:3e2c06bc67180e971c44700697f99ccd&#34;&gt;Start from the Patch&lt;/h2&gt;
+&lt;h2 id=&#34;start-from-the-patch&#34;&gt;Start from the Patch&lt;/h2&gt;
 
 &lt;p&gt;From the &lt;a href=&#34;https://android.googlesource.com/platform/packages/services/Telecomm/+/2750faaa1ec819eed9acffea7bd3daf867fda444%5E%21/#F0&#34;&gt;patch&lt;/a&gt; we can see the fix is in &lt;code&gt;TelecomServiceImple.java&lt;/code&gt;:&lt;/p&gt;
 
@@ -1037,7 +1088,7 @@ public void addNewUnknownCall(PhoneAccountHandle phoneAccountHandle, Bundle extr
 
 &lt;p&gt;By calling these functions, the attacker can leverage the vulnerability to make calls appear to come from any arbitrary number.&lt;/p&gt;
 
-&lt;h2 id=&#34;phoneaccounthandle:3e2c06bc67180e971c44700697f99ccd&#34;&gt;PhoneAccountHandle&lt;/h2&gt;
+&lt;h2 id=&#34;phoneaccounthandle&#34;&gt;PhoneAccountHandle&lt;/h2&gt;
 
 &lt;p&gt;Then, let&amp;rsquo;s see what is &lt;code&gt;PhoneAccountHandle&lt;/code&gt;.&lt;/p&gt;
 
@@ -1068,7 +1119,7 @@ public void addNewUnknownCall(PhoneAccountHandle phoneAccountHandle, Bundle extr
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;poc:3e2c06bc67180e971c44700697f99ccd&#34;&gt;POC&lt;/h2&gt;
+&lt;h2 id=&#34;poc&#34;&gt;POC&lt;/h2&gt;
 
 &lt;p&gt;AOSP provide us an example how to &amp;laquo;make a phone call&amp;raquo;.&lt;/p&gt;
 
@@ -1142,7 +1193,7 @@ private Connection createConnectionFor() {
 &amp;lt;/service&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;source-code-path:3e2c06bc67180e971c44700697f99ccd&#34;&gt;Source Code Path&lt;/h2&gt;
+&lt;h2 id=&#34;source-code-path&#34;&gt;Source Code Path&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;TelecomService: packages/services/Telecomm/src/com/android/server/telecom/components/TelecomService.java&lt;/li&gt;
@@ -1757,7 +1808,7 @@ void initNonProxy(ObjectStreamClass model,
       <guid>https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/</guid>
       <description>
 
-&lt;h2 id=&#34;debug-java-source-code-in-eclipse&#34;&gt;Debug Java Source Code In Eclipse&lt;/h2&gt;
+&lt;h2 id=&#34;debug-java-source-code-in-eclipse:71104563d2f4707e3c3b17590a7ace2b&#34;&gt;Debug Java Source Code In Eclipse&lt;/h2&gt;
 
 &lt;p&gt;Sometimes we want to know how a Java API works. It is a good idea to write a testing program, debug it and step into the API function to see how it works.&lt;/p&gt;
 
@@ -1795,7 +1846,7 @@ void initNonProxy(ObjectStreamClass model,
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/methods_of_debugging_java_programs/debug.png&#34; alt=&#34;debug&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;debug-with-jdi&#34;&gt;Debug with JDI&lt;/h2&gt;
+&lt;h2 id=&#34;debug-with-jdi:71104563d2f4707e3c3b17590a7ace2b&#34;&gt;Debug with JDI&lt;/h2&gt;
 
 &lt;p&gt;Referring to &lt;a href=&#34;http://illegalargumentexception.blogspot.com/2009/03/java-using-jpda-to-write-debugger.html&#34;&gt;llegalargumentexception.blogspot.com&lt;/a&gt;, using Java code to connect to the VM can help us debug a Java program.&lt;/p&gt;
 
@@ -1885,9 +1936,9 @@ void initNonProxy(ObjectStreamClass model,
       <guid>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</guid>
       <description>
 
-&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+&lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
 
-&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
 
 &lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
 
@@ -1902,7 +1953,7 @@ funcP(value);
 
 &lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
 
-&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+&lt;h3 id=&#34;macro-with-variable-argument-list:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Macro with variable argument list&lt;/h3&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 
@@ -1920,6 +1971,33 @@ funcP(value);
 
 &lt;pre&gt;&lt;code&gt;LOG(&amp;quot;%d,%s&amp;quot;, 1, &amp;quot;hello&amp;quot;)
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;size-t:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;size_t&lt;/h3&gt;
+
+&lt;p&gt;Alias of one of the fundamental unsigned integer types. &lt;code&gt;size_t&lt;/code&gt; is unsigned integer defined in standard C lib, in 64-bit OS, it is long unsigned integer.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sizeof&lt;/code&gt; operation returns a size_t type value.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;size_t&lt;/code&gt; usually is used in array index, looping, pointer, memory location calculating.&lt;/p&gt;
+
+&lt;p&gt;See more &lt;a href=&#34;http://www.cplusplus.com/reference/cstring/size_t/&#34;&gt;DETAILS&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;mutable:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;mutable&lt;/h3&gt;
+
+&lt;p&gt;mutable variables always can be changed even if it is in a const function.&lt;/p&gt;
+
+&lt;p&gt;As we know, if a function doesn&amp;rsquo;t change any fields of a class, this function will be declared with &lt;code&gt;const&lt;/code&gt;. But sometimes this kind of functions need to modify some specific fields that have no business with the state of the class. In this condition, these specific fields should declared with the key word &lt;code&gt;mutable&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;volatile:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;volatile&lt;/h3&gt;
+
+&lt;p&gt;To optimize a program, commonly, the compiler make the executables read/write a variable from registers. But sometimes a varible may be changed frequently.&lt;/p&gt;
+
+&lt;p&gt;If a variable are declared with the key word &lt;code&gt;volatile&lt;/code&gt;, that means the variable can be changed at any moment,
+the compiler will compile the program to make this variable be read/write directly from the memory, which helps to avoid race condition.&lt;/p&gt;
+
+&lt;h3 id=&#34;misc-tips:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;misc tips&lt;/h3&gt;
+
+&lt;p&gt;Use &lt;code&gt;g++&lt;/code&gt; to compile your cpp file if you use c++ programming language, otherwise there will be some strange errors during complilation like &lt;code&gt;undefined reference to XXX&lt;/code&gt;.&lt;/p&gt;
 </description>
     </item>
     
@@ -1931,11 +2009,11 @@ funcP(value);
       <guid>https://zeqiii.github.io/2016/03/07/analysis-of-cve-2015-3837/</guid>
       <description>
 
-&lt;h2 id=&#34;introduction:df901cdc25ce32f8498cb57282f623b5&#34;&gt;Introduction&lt;/h2&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 
 &lt;p&gt;CVE-2015-3837 is another java deserialzation vulnerability in android. &lt;a href=&#34;http://drops.wooyun.org/papers/10235&#34;&gt;Wooyun&lt;/a&gt; had analyzed it.&lt;/p&gt;
 
-&lt;h2 id=&#34;description-on-cve:df901cdc25ce32f8498cb57282f623b5&#34;&gt;Description on CVE&lt;/h2&gt;
+&lt;h2 id=&#34;description-on-cve&#34;&gt;Description on CVE&lt;/h2&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;The OpenSSLX509Certificate class in org/conscrypt/OpenSSLX509Certificate.java in Android before 5.1.1 LMY48I improperly includes certain context data during serialization and deserialization, which allows attackers to execute arbitrary code via an application that sends a crafted Intent, aka internal bug 21437603.&lt;/p&gt;
@@ -1943,7 +2021,7 @@ funcP(value);
 
 &lt;p&gt;We know that Google had patched the bug disclosed in CVE-2014-7911, in which &lt;code&gt;ObjectInputStream&lt;/code&gt; didn&amp;rsquo;t validate an object can be serialzed or not. The bug can be used to create arbitrary object by deserialization, even the object is not a serializable object, such as &lt;code&gt;android.os.BinderProxy&lt;/code&gt;. After being patched, an object will be checked whether it is serializable before deserialization. But if there is an serializable class which overrides &lt;code&gt;finalize()&lt;/code&gt; method like BinderProxy, the attacker can still leverage it to execute arbitrary code.&lt;/p&gt;
 
-&lt;h2 id=&#34;finalize-of-opensslx509certificate:df901cdc25ce32f8498cb57282f623b5&#34;&gt;finalize() of OpenSSLX509Certificate&lt;/h2&gt;
+&lt;h2 id=&#34;finalize-of-opensslx509certificate&#34;&gt;finalize() of OpenSSLX509Certificate&lt;/h2&gt;
 
 &lt;p&gt;The location of OpenSSLX509Certificate.java is &lt;code&gt;/external/conscrypt/src/main/java/org/conscrypt/OpenSSLX509Certificate.java&lt;/code&gt;&lt;/p&gt;
 
@@ -2136,15 +2214,15 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;poc:df901cdc25ce32f8498cb57282f623b5&#34;&gt;POC&lt;/h2&gt;
+&lt;h2 id=&#34;poc&#34;&gt;POC&lt;/h2&gt;
 
 &lt;p&gt;I write the POC by modifying cve-2014-7911&amp;rsquo;s POC, but it didn&amp;rsquo;t work. I&amp;rsquo;ll continue working on it.&lt;/p&gt;
 
-&lt;h2 id=&#34;google-s-patch:df901cdc25ce32f8498cb57282f623b5&#34;&gt;Google&amp;rsquo;s Patch&lt;/h2&gt;
+&lt;h2 id=&#34;google-s-patch&#34;&gt;Google&amp;rsquo;s Patch&lt;/h2&gt;
 
 &lt;p&gt;To patch this vulnerability, Google just adds &amp;laquo;transient&amp;raquo; before the definition of the field &lt;code&gt;OpenSSLX509Certificate.mContext&lt;/code&gt;, in order to disable it to be serialized.&lt;/p&gt;
 
-&lt;h2 id=&#34;related-papers:df901cdc25ce32f8498cb57282f623b5&#34;&gt;Related Papers&lt;/h2&gt;
+&lt;h2 id=&#34;related-papers&#34;&gt;Related Papers&lt;/h2&gt;
 
 &lt;p&gt;I&amp;rsquo;ve read the paper &lt;a href=&#34;https://www.usenix.org/conference/woot15/workshop-program/presentation/peles&#34;&gt;One Class to Rule Them All&lt;/a&gt;, where this vulnerability disclosure to public. In this paper, a method is raised to find the vulnerable classes automatically, by defining some criterias and implementing a JDI to check on them. For how to debugging Java programs using Java code, read &lt;a href=&#34;https://zeqiii.github.io/2016/03/10/methods-of-debugging-java-programs/&#34;&gt;Methods of Debugging Java Programs&lt;/a&gt;&lt;/p&gt;
 </description>
@@ -2158,7 +2236,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
       <guid>https://zeqiii.github.io/2016/03/05/analysis-of-cve-2015-6420/</guid>
       <description>
 
-&lt;h2 id=&#34;apache-commons-collections&#34;&gt;Apache Commons Collections&lt;/h2&gt;
+&lt;h2 id=&#34;apache-commons-collections:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;Apache Commons Collections&lt;/h2&gt;
 
 &lt;p&gt;Apache Commons Collections implements &lt;code&gt;TransformedMap&lt;/code&gt; whose &lt;code&gt;decorate()&lt;/code&gt; method can perform some operations on a &lt;code&gt;Map&lt;/code&gt;.&lt;/p&gt;
 
@@ -2179,7 +2257,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/cve-2015-6420/transform.png&#34; alt=&#34;TransformMap&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;invokertransformer&#34;&gt;InvokerTransformer&lt;/h2&gt;
+&lt;h2 id=&#34;invokertransformer:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;InvokerTransformer&lt;/h2&gt;
 
 &lt;p&gt;&lt;code&gt;InvokerTransformer&lt;/code&gt; is one of the implementation of &lt;code&gt;Transformer&lt;/code&gt;, which can call any method through reflection.&lt;/p&gt;
 
@@ -2239,7 +2317,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;((Runtime)Runtime.class.getMethod(&amp;quot;getRuntime&amp;quot;,null).invoke(null,new Object[0])).exec(&amp;quot;calc.exe&amp;quot;);
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;annotationinvocationhandler&#34;&gt;AnnotationInvocationHandler&lt;/h2&gt;
+&lt;h2 id=&#34;annotationinvocationhandler:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;AnnotationInvocationHandler&lt;/h2&gt;
 
 &lt;p&gt;To now, we have known that we can craft a &lt;code&gt;TransformedMap&lt;/code&gt; to execute arbitrary code. To archieve our goal, we must find some way to modify the element of  &lt;code&gt;TransformedMap&lt;/code&gt; so that &lt;code&gt;transform()&lt;/code&gt; can be invoked.&lt;/p&gt;
 
@@ -2258,7 +2336,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 
 &lt;p&gt;So, we can initialize an &lt;code&gt;AnnotationInvocationHandler&lt;/code&gt;, set its &lt;code&gt;memberValues&lt;/code&gt; to  our crafted &lt;code&gt;TransformedMap&lt;/code&gt;, then serialize it to get a payload. If the target receives the payload and deserializes it, our code could be executed.&lt;/p&gt;
 
-&lt;h2 id=&#34;poc&#34;&gt;POC&lt;/h2&gt;
+&lt;h2 id=&#34;poc:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;POC&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws Exception {
     Transformer[] transformers = new Transformer[] {
@@ -2291,7 +2369,7 @@ static void asn1_item_embed_free(ASN1_VALUE **pval, const ASN1_ITEM *it, int emb
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+&lt;h2 id=&#34;references:ef74d8aa59408b4c04e16ce890e41e31&#34;&gt;References&lt;/h2&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;&lt;a href=&#34;http://foxglovesecurity.com/2015/11/06/what-do-weblogic-websphere-jboss-jenkins-opennms-and-your-application-have-in-common-this-vulnerability/&#34;&gt;http://foxglovesecurity.com/2015/11/06/what-do-weblogic-websphere-jboss-jenkins-opennms-and-your-application-have-in-common-this-vulnerability/&lt;/a&gt;&lt;/p&gt;
