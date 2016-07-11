@@ -28,6 +28,8 @@
 
 &lt;p&gt;What we want is to flash the builded AOSP to a real nexus device, not just test the image on an emulator, so we need to download the drivers for a nexus deivce. From &lt;a href=&#34;https://developers.google.com/android/nexus/drivers&#34;&gt;https://developers.google.com/android/nexus/drivers&lt;/a&gt; we download sh files to our android source directory.&lt;/p&gt;
 
+&lt;p&gt;And here is my baidu cloud share link, driver for Nexus6-android6.0.1 can be downloaded from here too. &lt;a href=&#34;http://pan.baidu.com/s/1o7LuWvo&#34;&gt;http://pan.baidu.com/s/1o7LuWvo&lt;/a&gt;&lt;/p&gt;
+
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/driver_sh_files.jpg&#34; alt=&#34;drivers&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/driver_sh_files2.jpg&#34; alt=&#34;drivers&#34; /&gt;&lt;/p&gt;
