@@ -9,8 +9,155 @@
     <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
     <webMaster>zeqiii@163.com (zeqi)</webMaster>
     <copyright>(c) 2016 zeqi</copyright>
-    <lastBuildDate>Sun, 10 Jul 2016 16:20:10 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 11 Jul 2016 09:14:05 +0800</lastBuildDate>
     <atom:link href="https://zeqiii.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tips of Java Programming</title>
+      <link>https://zeqiii.github.io/2016/07/11/tips-of-java-programming/</link>
+      <pubDate>Mon, 11 Jul 2016 09:14:05 +0800</pubDate>
+      <author>zeqiii@163.com (zeqi)</author>
+      <guid>https://zeqiii.github.io/2016/07/11/tips-of-java-programming/</guid>
+      <description>
+
+&lt;h2 id=&#34;compile-resource-data-files-into-jars:1c55a72c09b2059aac55de6ef1fb52ae&#34;&gt;Compile resource/data files into JARs&lt;/h2&gt;
+
+&lt;p&gt;In some situations, the app needs to read some constant values from configuration files. We want these config or data files to be compiled along with the .class files, so that the app can read these files in anytime and anywhere.&lt;/p&gt;
+
+&lt;p&gt;To do so, we can create a package for the data files in our project and place the files in these package.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/tips_of_java_programming/data_file.jpg&#34; alt=&#34;data_file&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/tips_of_java_programming/data_file2.jpg&#34; alt=&#34;data_file2&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;So how to access these resources?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The answer is &lt;code&gt;Class.getResourceAsStream(String path)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class Config {
+	
+	String config = &amp;quot;&amp;quot;;
+	
+	public Config() throws IOException {
+		// Get InputStream of config.txt
+		InputStream in = this.getClass().getResourceAsStream(&amp;quot;/data/config.txt&amp;quot;);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		byte[] buffer = new byte[128];
+		while (true) {
+			int len = in.read(buffer);
+			if (len == -1)
+				break;
+			bos.write(buffer);
+		}
+		config = new String(bos.toByteArray());
+	}
+	
+	public String getConfig() {
+		return config;
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the &lt;code&gt;main&lt;/code&gt; function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws Exception {
+    Config config = new Config();		
+	System.out.println(config.getConfig());
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Running results:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/tips_of_java_programming/running_results.jpg&#34; alt=&#34;running_results&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;using-wait-notify-and-synchronized-to-handle-asynchronized-events:1c55a72c09b2059aac55de6ef1fb52ae&#34;&gt;Using &amp;lsquo;wait()&amp;rsquo;, &amp;lsquo;notify()&amp;rsquo; and &amp;lsquo;synchronized&amp;rsquo; to handle asynchronized events&lt;/h2&gt;
+
+&lt;p&gt;Image a certain situation like this, one thread is waiting for a event, data input for example. The thread should be suspended until this event happens.&lt;/p&gt;
+
+&lt;p&gt;We may use &lt;code&gt;while&lt;/code&gt; to achieve this goal, but this is not the best way because of wasting computing resource in &lt;code&gt;while&lt;/code&gt; loop.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;... //start waiting for event
+
+while (true) {
+   if (isEventHappened())
+        break;
+   Thread.sleep(1000);
+}
+... // continue
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But there is a more beatiful way to handle events.&lt;/p&gt;
+
+&lt;p&gt;Firstly, about the knowledge of Java synchronization, the official site gives us a very detailed instruction, see &lt;a href=&#34;http://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html&#34;&gt;http://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I write a demo.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class EventHandler extends Thread {
+	// event queue
+	ArrayList&amp;lt;String&amp;gt; queue = new ArrayList&amp;lt;String&amp;gt;();
+	
+	public EventHandler() {
+		this.start();
+	}
+	
+	@Override
+	public void run() {
+		// start processing input events
+		while (true) {
+			synchronized (this) { // request the intrinsic lock of this object
+				try {
+					if (queue.isEmpty()) {
+						// wait, release the intrinsic lock
+						this.wait();
+					}
+					// thread has been waked up by this.notify()
+					// there must be a coming event 
+					// continue to fetch and handle event
+					String value = null;
+					if (queue.size() &amp;gt; 0) {
+						value = queue.remove(0);
+					}
+					// handle event
+					handle(value);
+				} catch (InterruptedException e) {
+					break;
+				}
+			}
+		}
+	}
+	
+	// emulate keyboard pressing event
+	public void keyPressed(String value) {
+		synchronized(this) { // request the intrinsic lock of this object
+			queue.add(value);
+			this.notify(); // wake up a thread that is waiting for this object
+		}
+	}
+	
+	private void handle(String event) {
+		System.out.println(event);
+	}
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws Exception {
+	EventHandler handler = new EventHandler();
+	handler.keyPressed(&amp;quot;hello&amp;quot;);
+	Thread.sleep(1000);
+	handler.keyPressed(&amp;quot;word!&amp;quot;);
+	Thread.sleep(5000);
+	handler.keyPressed(&amp;quot;Bye!&amp;quot;);
+	handler.interrupt();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Running results:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/tips_of_java_programming/running_results2.jpg&#34; alt=&#34;running_results2&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Flash Nexus Device with Compiled AOSP</title>
@@ -20,11 +167,11 @@
       <guid>https://zeqiii.github.io/2016/07/10/flash-nexus-device-with-compiled-aosp/</guid>
       <description>
 
-&lt;h2 id=&#34;compiling-aosp&#34;&gt;Compiling AOSP&lt;/h2&gt;
+&lt;h2 id=&#34;compiling-aosp:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Compiling AOSP&lt;/h2&gt;
 
 &lt;p&gt;About how to download and build AOSP source code, the android official site has provided us a very detailed instruction, see &lt;a href=&#34;https://source.android.com/source/requirements.html&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;downloading-drivers&#34;&gt;Downloading drivers&lt;/h2&gt;
+&lt;h2 id=&#34;downloading-drivers:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Downloading drivers&lt;/h2&gt;
 
 &lt;p&gt;What we want is to flash the builded AOSP to a real nexus device, not just test the image on an emulator, so we need to download the drivers for a nexus deivce. From &lt;a href=&#34;https://developers.google.com/android/nexus/drivers&#34;&gt;https://developers.google.com/android/nexus/drivers&lt;/a&gt; we download sh files to our android source directory.&lt;/p&gt;
 
@@ -36,7 +183,7 @@
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/vendor.jpg&#34; alt=&#34;vendor&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;flashing&#34;&gt;Flashing&lt;/h2&gt;
+&lt;h2 id=&#34;flashing:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Flashing&lt;/h2&gt;
 
 &lt;p&gt;After the building is completed, we copy these &amp;laquo;img&amp;raquo; file to some directory.&lt;/p&gt;
 
@@ -87,7 +234,7 @@ fastboot flash XXX YOUR_IMG_FILE
       <guid>https://zeqiii.github.io/2016/05/09/analysis-of-cve-2016-2458/</guid>
       <description>
 
-&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;h2 id=&#34;introduction:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Introduction&lt;/h2&gt;
 
 &lt;p&gt;A breif introduction of cve-2016-2458 can be found in &lt;a href=&#34;https://source.android.com/security/bulletin/2016-05-01.html&#34;&gt;Security Bulletin&lt;/a&gt;.&lt;/p&gt;
 
@@ -145,7 +292,7 @@ fastboot flash XXX YOUR_IMG_FILE
 
 &lt;p&gt;The main content of this patch is in function &lt;code&gt;handleAttachmentUrisFromIntent(List&amp;lt;Uri&amp;gt; uris)&lt;/code&gt;, which seems like having the ability to handle attachment of a mail. The following work is about studying how &lt;code&gt;com.android.email&lt;/code&gt; works and analyzing this vulnerability.&lt;/p&gt;
 
-&lt;h2 id=&#34;composeactivity&#34;&gt;ComposeActivity&lt;/h2&gt;
+&lt;h2 id=&#34;composeactivity:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;ComposeActivity&lt;/h2&gt;
 
 &lt;p&gt;&lt;code&gt;ComposeActivity&lt;/code&gt; is a compoenent of &lt;code&gt;com.android.mail&lt;/code&gt;, &lt;code&gt;ComposeActivityEmail&lt;/code&gt;, which is a component of &lt;code&gt;com.android.email&lt;/code&gt;, is its child. The edit page of email is actually the &lt;code&gt;ComposeActivityEmail&lt;/code&gt;&lt;/p&gt;
 
@@ -153,7 +300,7 @@ fastboot flash XXX YOUR_IMG_FILE
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/cve-2016-2458/composeactivity.png&#34; alt=&#34;ComposeActivity&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;analysis-of-the-patch&#34;&gt;Analysis of the patch&lt;/h2&gt;
+&lt;h2 id=&#34;analysis-of-the-patch:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Analysis of the patch&lt;/h2&gt;
 
 &lt;p&gt;Before patched, if a uri is passed to &lt;code&gt;handleAttachementUrisFromIntent()&lt;/code&gt;, and this uri doesn&amp;rsquo;t start with &amp;laquo;file&amp;raquo;, it will be handled by:&lt;/p&gt;
 
@@ -239,7 +386,7 @@ protected boolean handleSpecialAttachmentUri(final Uri contentUri) {
 
 &lt;p&gt;So, let&amp;rsquo;s try to construct an email whose attachement is a uri that start with &lt;code&gt;content://com.android.email.provider&lt;/code&gt;, and see what&amp;rsquo;s will happen.&lt;/p&gt;
 
-&lt;h2 id=&#34;how-email-works&#34;&gt;How Email works&lt;/h2&gt;
+&lt;h2 id=&#34;how-email-works:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;How Email works&lt;/h2&gt;
 
 &lt;p&gt;To craft our POC, we should firstly figure out how Android&amp;rsquo;s email works to compose an email.&lt;/p&gt;
 
@@ -348,7 +495,7 @@ protected void onActivityResult(int request, int result, Intent data) {
 
 &lt;p&gt;Here we come back to the &lt;code&gt;addAttachmentAndUpdateView()&lt;/code&gt; but with a parameter whose type is &lt;code&gt;Attachment&lt;/code&gt;.&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion-from-the-analysis&#34;&gt;Conclusion from the analysis&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion-from-the-analysis:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Conclusion from the analysis&lt;/h2&gt;
 
 &lt;p&gt;We can build an activity which can be selected to open when users add attachments. This activity&amp;rsquo;s &lt;code&gt;setResult()&lt;/code&gt; returns an intent whose &lt;code&gt;data&lt;/code&gt; is an uri starts with &amp;laquo;content://com.android.email.provider&amp;raquo;. This uri may point to a private resource.&lt;/p&gt;
 
@@ -366,7 +513,7 @@ protected void onActivityResult(int request, int result, Intent data) {
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;demo&#34;&gt;Demo&lt;/h2&gt;
+&lt;h2 id=&#34;demo:28cc3a1bb77f1f8d78f5ad7043157a5a&#34;&gt;Demo&lt;/h2&gt;
 </description>
     </item>
     
@@ -1216,7 +1363,7 @@ private Connection createConnectionFor() {
       <guid>https://zeqiii.github.io/2016/03/15/analysis-of-java-serialization/</guid>
       <description>
 
-&lt;h3 id=&#34;demo:68a7f84eae0d34438ed8064af9699a4b&#34;&gt;Demo&lt;/h3&gt;
+&lt;h3 id=&#34;demo&#34;&gt;Demo&lt;/h3&gt;
 
 &lt;p&gt;Class &lt;code&gt;MySerial&lt;/code&gt; contains these fields and methods.&lt;/p&gt;
 
@@ -1249,7 +1396,7 @@ private Connection createConnectionFor() {
 	}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;debugging-objectinputstream-readobject:68a7f84eae0d34438ed8064af9699a4b&#34;&gt;Debugging ObjectInputStream.readObject()&lt;/h3&gt;
+&lt;h3 id=&#34;debugging-objectinputstream-readobject&#34;&gt;Debugging ObjectInputStream.readObject()&lt;/h3&gt;
 
 &lt;p&gt;The constructor of &lt;code&gt;ObjectInputStream&lt;/code&gt;.&lt;/p&gt;
 
@@ -1792,7 +1939,7 @@ void initNonProxy(ObjectStreamClass model,
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/analysis_of_java_serialization/readObject.png&#34; alt=&#34;read object&#34; /&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;thinking-with-cve-2014-7911:68a7f84eae0d34438ed8064af9699a4b&#34;&gt;Thinking with CVE-2014-7911&lt;/h3&gt;
+&lt;h3 id=&#34;thinking-with-cve-2014-7911&#34;&gt;Thinking with CVE-2014-7911&lt;/h3&gt;
 
 &lt;p&gt;To leverage this vulnerability, one of the steps is to change &lt;code&gt;AAdroid&lt;/code&gt; to &lt;code&gt;android&lt;/code&gt; in the serialized data, so that &lt;code&gt;readObject()&lt;/code&gt; create a new &lt;code&gt;android.os.BinderProxy&lt;/code&gt; object with the fields &lt;code&gt;mArgs&lt;/code&gt; and &lt;code&gt;mOrgs&lt;/code&gt; being set as the value of the fake &lt;code&gt;AAdroid.os.BinderProxy&lt;/code&gt; object.&lt;/p&gt;
 
@@ -1929,11 +2076,11 @@ void initNonProxy(ObjectStreamClass model,
     </item>
     
     <item>
-      <title>C/C&#43;&#43; Programming knowledge</title>
-      <link>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</link>
+      <title>Tips of C/C&#43;&#43; Programming</title>
+      <link>https://zeqiii.github.io/2016/03/08/tips-of-c/c-programming/</link>
       <pubDate>Tue, 08 Mar 2016 10:12:52 +0800</pubDate>
       <author>zeqiii@163.com (zeqi)</author>
-      <guid>https://zeqiii.github.io/2016/03/08/c/c-programming-knowledge/</guid>
+      <guid>https://zeqiii.github.io/2016/03/08/tips-of-c/c-programming/</guid>
       <description>
 
 &lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
