@@ -9,8 +9,40 @@
     <managingEditor>zeqiii@163.com (zeqi)</managingEditor>
     <webMaster>zeqiii@163.com (zeqi)</webMaster>
     <copyright>(c) 2016 zeqi</copyright>
-    <lastBuildDate>Mon, 11 Jul 2016 09:14:05 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 12 Jul 2016 10:12:45 +0800</lastBuildDate>
     <atom:link href="https://zeqiii.github.io/topics/tips/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tips of using Linux</title>
+      <link>https://zeqiii.github.io/2016/07/12/tips-of-using-linux/</link>
+      <pubDate>Tue, 12 Jul 2016 10:12:45 +0800</pubDate>
+      <author>zeqiii@163.com (zeqi)</author>
+      <guid>https://zeqiii.github.io/2016/07/12/tips-of-using-linux/</guid>
+      <description>
+
+&lt;h2 id=&#34;install-and-switch-between-multiple-java-environments:2b27e5ee5c0f94b8e079b3d0247ed008&#34;&gt;Install and Switch Between Multiple Java Environments&lt;/h2&gt;
+
+&lt;p&gt;Compiling android source code, install JBoss, and so on, all need different Java environments like jdk6, jdk7, openjdk&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;Can we install all these environments and switch to one version on the need?&lt;/p&gt;
+
+&lt;p&gt;Yes, by using command &lt;code&gt;sudo update-alternatives --install&lt;/code&gt;, we can achieve this goal.&lt;/p&gt;
+
+&lt;p&gt;Here is the help info about &lt;code&gt;update-alternatives&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/tips_of_linux/update_alternative_help.jpg&#34; alt=&#34;update_alternative help&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Assume that we have installed openjdk by &lt;code&gt;apt-get install openjdk-7-jdk&lt;/code&gt;, so that we have executable files &lt;code&gt;java&lt;/code&gt;, &lt;code&gt;javac&lt;/code&gt;, &lt;code&gt;javah&lt;/code&gt;, &lt;code&gt;jar&lt;/code&gt; in directory &lt;code&gt;/usr/bin&lt;/code&gt;. And we have an oracle jdk6 in &lt;code&gt;/opt/jdk6&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Use the commands below to install alternatives for these executables.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/tips_of_linux/update_alternative_commands.jpg&#34; alt=&#34;update_alternative commands&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To switch between the installed alternatives, do this.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/tips_of_linux/update_alternatives_switch.jpg&#34; alt=&#34;updatae_alternatives switch&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Tips of Java Programming</title>
@@ -20,7 +52,7 @@
       <guid>https://zeqiii.github.io/2016/07/11/tips-of-java-programming/</guid>
       <description>
 
-&lt;h2 id=&#34;compile-resource-data-files-into-jars&#34;&gt;Compile resource/data files into JARs&lt;/h2&gt;
+&lt;h2 id=&#34;compile-resource-data-files-into-jars:1c55a72c09b2059aac55de6ef1fb52ae&#34;&gt;Compile resource/data files into JARs&lt;/h2&gt;
 
 &lt;p&gt;In some situations, the app needs to read some constant values from configuration files. We want these config or data files to be compiled along with the .class files, so that the app can read these files in anytime and anywhere.&lt;/p&gt;
 
@@ -71,7 +103,7 @@
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/tips_of_java_programming/running_results.jpg&#34; alt=&#34;running_results&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;using-wait-notify-and-synchronized-to-handle-asynchronized-events&#34;&gt;Using &amp;lsquo;wait()&amp;rsquo;, &amp;lsquo;notify()&amp;rsquo; and &amp;lsquo;synchronized&amp;rsquo; to handle asynchronized events&lt;/h2&gt;
+&lt;h2 id=&#34;using-wait-notify-and-synchronized-to-handle-asynchronized-events:1c55a72c09b2059aac55de6ef1fb52ae&#34;&gt;Using &amp;lsquo;wait()&amp;rsquo;, &amp;lsquo;notify()&amp;rsquo; and &amp;lsquo;synchronized&amp;rsquo; to handle asynchronized events&lt;/h2&gt;
 
 &lt;p&gt;Image a certain situation like this, one thread is waiting for a event, data input for example. The thread should be suspended until this event happens.&lt;/p&gt;
 
@@ -348,9 +380,9 @@ fastboot flash XXX YOUR_IMG_FILE
       <guid>https://zeqiii.github.io/2016/03/08/tips-of-c/c-programming/</guid>
       <description>
 
-&lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
 
-&lt;h3 id=&#34;reinterpret-cast-new-type-expression:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
 
 &lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
 
@@ -365,7 +397,7 @@ funcP(value);
 
 &lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
 
-&lt;h3 id=&#34;macro-with-variable-argument-list:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 
@@ -384,7 +416,7 @@ funcP(value);
 &lt;pre&gt;&lt;code&gt;LOG(&amp;quot;%d,%s&amp;quot;, 1, &amp;quot;hello&amp;quot;)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;size-t:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;size_t&lt;/h3&gt;
+&lt;h3 id=&#34;size-t&#34;&gt;size_t&lt;/h3&gt;
 
 &lt;p&gt;Alias of one of the fundamental unsigned integer types. &lt;code&gt;size_t&lt;/code&gt; is unsigned integer defined in standard C lib, in 64-bit OS, it is long unsigned integer.&lt;/p&gt;
 
@@ -394,20 +426,20 @@ funcP(value);
 
 &lt;p&gt;See more &lt;a href=&#34;http://www.cplusplus.com/reference/cstring/size_t/&#34;&gt;DETAILS&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;mutable:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;mutable&lt;/h3&gt;
+&lt;h3 id=&#34;mutable&#34;&gt;mutable&lt;/h3&gt;
 
 &lt;p&gt;mutable variables always can be changed even if it is in a const function.&lt;/p&gt;
 
 &lt;p&gt;As we know, if a function doesn&amp;rsquo;t change any fields of a class, this function will be declared with &lt;code&gt;const&lt;/code&gt;. But sometimes this kind of functions need to modify some specific fields that have no business with the state of the class. In this condition, these specific fields should declared with the key word &lt;code&gt;mutable&lt;/code&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;volatile:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;volatile&lt;/h3&gt;
+&lt;h3 id=&#34;volatile&#34;&gt;volatile&lt;/h3&gt;
 
 &lt;p&gt;To optimize a program, commonly, the compiler make the executables read/write a variable from registers. But sometimes a varible may be changed frequently.&lt;/p&gt;
 
 &lt;p&gt;If a variable are declared with the key word &lt;code&gt;volatile&lt;/code&gt;, that means the variable can be changed at any moment,
 the compiler will compile the program to make this variable be read/write directly from the memory, which helps to avoid race condition.&lt;/p&gt;
 
-&lt;h3 id=&#34;misc-tips:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;misc tips&lt;/h3&gt;
+&lt;h3 id=&#34;misc-tips&#34;&gt;misc tips&lt;/h3&gt;
 
 &lt;p&gt;Use &lt;code&gt;g++&lt;/code&gt; to compile your cpp file if you use c++ programming language, otherwise there will be some strange errors during complilation like &lt;code&gt;undefined reference to XXX&lt;/code&gt;.&lt;/p&gt;
 </description>
