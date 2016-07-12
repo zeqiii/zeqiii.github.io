@@ -20,11 +20,11 @@
       <guid>https://zeqiii.github.io/2016/07/10/flash-nexus-device-with-compiled-aosp/</guid>
       <description>
 
-&lt;h2 id=&#34;compiling-aosp:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Compiling AOSP&lt;/h2&gt;
+&lt;h2 id=&#34;compiling-aosp&#34;&gt;Compiling AOSP&lt;/h2&gt;
 
 &lt;p&gt;About how to download and build AOSP source code, the android official site has provided us a very detailed instruction, see &lt;a href=&#34;https://source.android.com/source/requirements.html&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;downloading-drivers:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Downloading drivers&lt;/h2&gt;
+&lt;h2 id=&#34;downloading-drivers&#34;&gt;Downloading drivers&lt;/h2&gt;
 
 &lt;p&gt;What we want is to flash the builded AOSP to a real nexus device, not just test the image on an emulator, so we need to download the drivers for a nexus deivce. From &lt;a href=&#34;https://developers.google.com/android/nexus/drivers&#34;&gt;https://developers.google.com/android/nexus/drivers&lt;/a&gt; we download sh files to our android source directory.&lt;/p&gt;
 
@@ -38,7 +38,7 @@
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/vendor.jpg&#34; alt=&#34;vendor&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;flashing:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Flashing&lt;/h2&gt;
+&lt;h2 id=&#34;flashing&#34;&gt;Flashing&lt;/h2&gt;
 
 &lt;p&gt;After the building is completed, we copy these &amp;laquo;img&amp;raquo; file to some directory.&lt;/p&gt;
 

@@ -20,7 +20,7 @@
       <guid>https://zeqiii.github.io/2016/07/12/tips-of-using-linux/</guid>
       <description>
 
-&lt;h2 id=&#34;install-and-switch-between-multiple-java-environments:2b27e5ee5c0f94b8e079b3d0247ed008&#34;&gt;Install and Switch Between Multiple Java Environments&lt;/h2&gt;
+&lt;h2 id=&#34;install-and-switch-between-multiple-java-environments&#34;&gt;Install and Switch Between Multiple Java Environments&lt;/h2&gt;
 
 &lt;p&gt;Compiling android source code, install JBoss, and so on, all need different Java environments like jdk6, jdk7, openjdk&amp;hellip;&lt;/p&gt;
 
@@ -199,11 +199,11 @@ while (true) {
       <guid>https://zeqiii.github.io/2016/07/10/flash-nexus-device-with-compiled-aosp/</guid>
       <description>
 
-&lt;h2 id=&#34;compiling-aosp:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Compiling AOSP&lt;/h2&gt;
+&lt;h2 id=&#34;compiling-aosp&#34;&gt;Compiling AOSP&lt;/h2&gt;
 
 &lt;p&gt;About how to download and build AOSP source code, the android official site has provided us a very detailed instruction, see &lt;a href=&#34;https://source.android.com/source/requirements.html&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;downloading-drivers:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Downloading drivers&lt;/h2&gt;
+&lt;h2 id=&#34;downloading-drivers&#34;&gt;Downloading drivers&lt;/h2&gt;
 
 &lt;p&gt;What we want is to flash the builded AOSP to a real nexus device, not just test the image on an emulator, so we need to download the drivers for a nexus deivce. From &lt;a href=&#34;https://developers.google.com/android/nexus/drivers&#34;&gt;https://developers.google.com/android/nexus/drivers&lt;/a&gt; we download sh files to our android source directory.&lt;/p&gt;
 
@@ -217,7 +217,7 @@ while (true) {
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/vendor.jpg&#34; alt=&#34;vendor&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;flashing:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Flashing&lt;/h2&gt;
+&lt;h2 id=&#34;flashing&#34;&gt;Flashing&lt;/h2&gt;
 
 &lt;p&gt;After the building is completed, we copy these &amp;laquo;img&amp;raquo; file to some directory.&lt;/p&gt;
 
@@ -380,9 +380,9 @@ fastboot flash XXX YOUR_IMG_FILE
       <guid>https://zeqiii.github.io/2016/03/08/tips-of-c/c-programming/</guid>
       <description>
 
-&lt;h2 id=&#34;functions-reserved-words-and-macros&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
+&lt;h2 id=&#34;functions-reserved-words-and-macros:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Functions, Reserved Words and Macros&lt;/h2&gt;
 
-&lt;h3 id=&#34;reinterpret-cast-new-type-expression&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
+&lt;h3 id=&#34;reinterpret-cast-new-type-expression:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;reinterpret_cast &lt;new_type&gt; (expression)&lt;/h3&gt;
 
 &lt;p&gt;Cast the &lt;code&gt;expression&lt;/code&gt; to a &lt;code&gt;new_type&lt;/code&gt;.&lt;/p&gt;
 
@@ -397,7 +397,7 @@ funcP(value);
 
 &lt;p&gt;Of course, this program will crash after being executed.&lt;/p&gt;
 
-&lt;h3 id=&#34;macro-with-variable-argument-list&#34;&gt;Macro with variable argument list&lt;/h3&gt;
+&lt;h3 id=&#34;macro-with-variable-argument-list:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;Macro with variable argument list&lt;/h3&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 
@@ -416,7 +416,7 @@ funcP(value);
 &lt;pre&gt;&lt;code&gt;LOG(&amp;quot;%d,%s&amp;quot;, 1, &amp;quot;hello&amp;quot;)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;size-t&#34;&gt;size_t&lt;/h3&gt;
+&lt;h3 id=&#34;size-t:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;size_t&lt;/h3&gt;
 
 &lt;p&gt;Alias of one of the fundamental unsigned integer types. &lt;code&gt;size_t&lt;/code&gt; is unsigned integer defined in standard C lib, in 64-bit OS, it is long unsigned integer.&lt;/p&gt;
 
@@ -426,20 +426,20 @@ funcP(value);
 
 &lt;p&gt;See more &lt;a href=&#34;http://www.cplusplus.com/reference/cstring/size_t/&#34;&gt;DETAILS&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;mutable&#34;&gt;mutable&lt;/h3&gt;
+&lt;h3 id=&#34;mutable:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;mutable&lt;/h3&gt;
 
 &lt;p&gt;mutable variables always can be changed even if it is in a const function.&lt;/p&gt;
 
 &lt;p&gt;As we know, if a function doesn&amp;rsquo;t change any fields of a class, this function will be declared with &lt;code&gt;const&lt;/code&gt;. But sometimes this kind of functions need to modify some specific fields that have no business with the state of the class. In this condition, these specific fields should declared with the key word &lt;code&gt;mutable&lt;/code&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;volatile&#34;&gt;volatile&lt;/h3&gt;
+&lt;h3 id=&#34;volatile:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;volatile&lt;/h3&gt;
 
 &lt;p&gt;To optimize a program, commonly, the compiler make the executables read/write a variable from registers. But sometimes a varible may be changed frequently.&lt;/p&gt;
 
 &lt;p&gt;If a variable are declared with the key word &lt;code&gt;volatile&lt;/code&gt;, that means the variable can be changed at any moment,
 the compiler will compile the program to make this variable be read/write directly from the memory, which helps to avoid race condition.&lt;/p&gt;
 
-&lt;h3 id=&#34;misc-tips&#34;&gt;misc tips&lt;/h3&gt;
+&lt;h3 id=&#34;misc-tips:f4d4f217ac0e8a971a18d7aee1dbb609&#34;&gt;misc tips&lt;/h3&gt;
 
 &lt;p&gt;Use &lt;code&gt;g++&lt;/code&gt; to compile your cpp file if you use c++ programming language, otherwise there will be some strange errors during complilation like &lt;code&gt;undefined reference to XXX&lt;/code&gt;.&lt;/p&gt;
 </description>
