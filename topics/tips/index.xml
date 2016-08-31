@@ -20,7 +20,7 @@
       <guid>https://zeqiii.github.io/2016/07/12/tips-of-using-linux/</guid>
       <description>
 
-&lt;h2 id=&#34;install-and-switch-between-multiple-java-environments:2b27e5ee5c0f94b8e079b3d0247ed008&#34;&gt;Install and Switch Between Multiple Java Environments&lt;/h2&gt;
+&lt;h2 id=&#34;install-and-switch-between-multiple-java-environments&#34;&gt;Install and Switch Between Multiple Java Environments&lt;/h2&gt;
 
 &lt;p&gt;Compiling android source code, install JBoss, and so on, all need different Java environments like jdk6, jdk7, openjdk&amp;hellip;&lt;/p&gt;
 
@@ -199,11 +199,11 @@ while (true) {
       <guid>https://zeqiii.github.io/2016/07/10/flash-nexus-device-with-compiled-aosp/</guid>
       <description>
 
-&lt;h2 id=&#34;compiling-aosp&#34;&gt;Compiling AOSP&lt;/h2&gt;
+&lt;h2 id=&#34;compiling-aosp:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Compiling AOSP&lt;/h2&gt;
 
 &lt;p&gt;About how to download and build AOSP source code, the android official site has provided us a very detailed instruction, see &lt;a href=&#34;https://source.android.com/source/requirements.html&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;downloading-drivers&#34;&gt;Downloading drivers&lt;/h2&gt;
+&lt;h2 id=&#34;downloading-drivers:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Downloading drivers&lt;/h2&gt;
 
 &lt;p&gt;What we want is to flash the builded AOSP to a real nexus device, not just test the image on an emulator, so we need to download the drivers for a nexus deivce. From &lt;a href=&#34;https://developers.google.com/android/nexus/drivers&#34;&gt;https://developers.google.com/android/nexus/drivers&lt;/a&gt; we download sh files to our android source directory.&lt;/p&gt;
 
@@ -217,7 +217,7 @@ while (true) {
 
 &lt;p&gt;&lt;img src=&#34;https://zeqiii.github.io/img/flash_nexus_device/vendor.jpg&#34; alt=&#34;vendor&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;flashing&#34;&gt;Flashing&lt;/h2&gt;
+&lt;h2 id=&#34;flashing:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Flashing&lt;/h2&gt;
 
 &lt;p&gt;After the building is completed, we copy these &amp;laquo;img&amp;raquo; file to some directory.&lt;/p&gt;
 
@@ -241,6 +241,14 @@ fastboot flash XXX YOUR_IMG_FILE
 
 &lt;pre&gt;&lt;code&gt;fastboot reboot
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;modifying-compiling-and-flashing-aosp:e09e5eea499d5726e62ce1da3fc5dac3&#34;&gt;Modifying, Compiling and flashing AOSP&lt;/h2&gt;
+
+&lt;p&gt;In some case, we need to modify AOSP code. If we just run &lt;code&gt;make&lt;/code&gt; everytime we finished modifying, it&amp;rsquo;ll be too time comsuming.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s better for us to find the &lt;code&gt;Android.mk&lt;/code&gt; file the modified module contains, open it, find &lt;code&gt;LOCAL_MODULE := XXX&lt;/code&gt; or &lt;code&gt;LOCAL_PACKAGE_NAME := XXX&lt;/code&gt;. The &lt;code&gt;XXX&lt;/code&gt; is the module name. Back to the root dir of AOSP, run &lt;code&gt;make XXX&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To re-generate system.img, we just run &lt;code&gt;make systemimage&lt;/code&gt;.&lt;/p&gt;
 </description>
     </item>
     
