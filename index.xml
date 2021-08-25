@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Zeqi的博客</title>
-    <link>http://localhost:1313/</link>
+    <link>https://zeqiii.github.io/</link>
     <description>Recent content on Zeqi的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 23 Aug 2021 19:22:08 +0800</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 23 Aug 2021 19:22:08 +0800</lastBuildDate><atom:link href="https://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>解决&#39;undefined reference to xxx&#39;的编译错误的一个思路</title>
-      <link>http://localhost:1313/posts/%E8%A7%A3%E5%86%B3undefined-reference-to-xxx%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF/</link>
+      <link>https://zeqiii.github.io/posts/%E8%A7%A3%E5%86%B3undefined-reference-to-xxx%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF/</link>
       <pubDate>Mon, 23 Aug 2021 19:22:08 +0800</pubDate>
       
-      <guid>http://localhost:1313/posts/%E8%A7%A3%E5%86%B3undefined-reference-to-xxx%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF/</guid>
+      <guid>https://zeqiii.github.io/posts/%E8%A7%A3%E5%86%B3undefined-reference-to-xxx%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF/</guid>
       <description>一个小实验 编辑hello.h如下：
 #ifndef HELLO_H #define HELLO_H void myprint(const char* name); #endif 编辑hello.c如下：
 #include &amp;lt;stdio.h&amp;gt; void myprint(const char* name) { printf(name); printf(&amp;quot;\n&amp;quot;); _zeqi_printf(&amp;quot;end\n&amp;quot;); } 编辑main.c如下：
