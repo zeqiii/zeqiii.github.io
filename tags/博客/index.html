@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.87.0" />
 
-  <title>Tags &middot; 泽棋的博客</title>
+  <title>博客 &middot; 泽棋的博客</title>
 
     
 
@@ -44,7 +44,7 @@
  
   
   <link rel="alternate" type="application/rss+xml" title="泽棋的博客"
-    href='https://zeqiii.github.io/tags/index.xml' />
+    href='https://zeqiii.github.io/tags/%E5%8D%9A%E5%AE%A2/index.xml' />
   
 
   
@@ -111,7 +111,7 @@
 
     
     <li class="pure-menu-item">
-      <a class="pure-menu-link" href='https://zeqiii.github.io/tags/index.xml'><i
+      <a class="pure-menu-link" href='https://zeqiii.github.io/tags/%E5%8D%9A%E5%AE%A2/index.xml'><i
           class="fas fa-rss fa-fw"></i>RSS</a>
     </li>
     
@@ -211,23 +211,72 @@
 
 
 <div class="header">
-  <h1>Tags</h1>
+  <h1>博客</h1>
 </div>
+
 <div class="content">
-  <ul>
+  
+    <article>
+  <header>
+    <h2><a href="https://zeqiii.github.io/post/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2/">使用hugo搭建github博客</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>26 Aug 2021, 00:00</time>
+  </div>
+
+  
+
   
   
-    <li>
-      <a href="%E5%8D%9A%E5%AE%A2">博客</a>
-      <span>&#40;1&#41;</span>
-    </li>
   
-    <li>
-      <a href="%E7%BC%96%E8%AF%91">编译</a>
-      <span>&#40;1&#41;</span>
-    </li>
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E5%85%B6%E5%AE%83">其它</a>
+    
+  </div>
   
-  </ul>
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/%E5%8D%9A%E5%AE%A2">博客</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  1. 安装hugo并生成“网站” 1.1 安装  参照网站即可： https://www.gohugo.org/
+ 实际的安装只需要去hugo的github的release https://github.com/gohugoio/hugo/releases 中将hugo的可执行文件下载下来即可。例如，对于windows系统，下载windows版的可执行文件即可，为了方便调用，我们可以把可执行文件（hugo.exe）的路径加入到环境变量PATH中。
+1.2 创建站点  执行命令 hugo new site zeqi_blog 创建一个站点，命令会在当前路径创建一个名为 zeqi_blog 的文件夹。
+2. 创建gitbub.io仓库  在github上新建仓库，命名为xxx.github.io，其中，xxx是你的github用户名。
+ 这样创建出来的仓库便可以通过 https://xxx.github.io 进行访问。
+ 创建好之后，使用github Desktop软件（详见 https://desktop.github.com/）将该项目克隆至zeqi_blog文件夹内，如图： 3. 使用hugo生成博客的静态网页 3.1 安装主题  从 https://www.gohugo.org/theme/ 中下载一个主题。主题通常为github上的开源项目，我们以zip压缩包的形式下载。在此，我下载了blackburn主题，链接为 https://themes.gohugo.io/themes/blackburn/。
+ 解压缩zip文件到1.2节中创建的站点的 zeqi_blog/themes 文件夹中，如图：  拷贝 zeqi_blog/themes/blackburn/exampleSite/config.toml 到 zeqi_blog/config.toml，替换原始的 config.toml。
+ 打开 config.toml，参照 https://www.gohugo.org/doc/overview/configuration/、 https://themes.gohugo.io/themes/blackburn/ 给出的指导以及 config.toml 中的注释进行配置。
+在config.toml中 修改配置： baseUrl = &quot;https://zeqiii.github.io/&quot; 修改配置： theme = &quot;blackburn&quot; # 和themes文件夹中的主题文件夹名相同 3.
+  </p>
+
+  
+  <footer>
+    <a href="https://zeqiii.github.io/post/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
 </div>
 
 </div>

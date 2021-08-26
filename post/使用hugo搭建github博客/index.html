@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.87.0" />
+
+  <title>使用hugo搭建github博客 &middot; 泽棋的博客</title>
+
+    
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" type="text/css">
+
+  
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+ 
+  
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/androidstudio.min.css">
+  <script async src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/highlight.min.js"></script>
+  
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://zeqiii.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://zeqiii.github.io/">Blackburn</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/zeqiii" rel="me" target="_blank"><i class="fab fa-github-square fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2021. All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>使用hugo搭建github博客</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>26 Aug 2021, 00:00</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E5%85%B6%E5%AE%83">其它</a>
+    
+  </div>
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/%E5%8D%9A%E5%AE%A2">博客</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  <h2 id="1-安装hugo并生成网站">1. 安装hugo并生成“网站”</h2>
+<h3 id="11-安装">1.1 安装</h3>
+<p>  参照网站即可： <a href="https://www.gohugo.org/">https://www.gohugo.org/</a></p>
+<p>  实际的安装只需要去hugo的github的release <a href="https://github.com/gohugoio/hugo/releases">https://github.com/gohugoio/hugo/releases</a> 中将hugo的可执行文件下载下来即可。例如，对于windows系统，下载windows版的可执行文件即可，为了方便调用，我们可以把可执行文件（hugo.exe）的路径加入到环境变量<code>PATH</code>中。</p>
+<h3 id="12-创建站点">1.2 创建站点</h3>
+<p>  执行命令 <code>hugo new site zeqi_blog</code> 创建一个站点，命令会在当前路径创建一个名为 <code>zeqi_blog</code> 的文件夹。</p>
+<h2 id="2-创建gitbubio仓库">2. 创建gitbub.io仓库</h2>
+<p>  在github上新建仓库，命名为xxx.github.io，其中，xxx是你的github用户名。</p>
+<p>  这样创建出来的仓库便可以通过 <a href="https://xxx.github.io">https://xxx.github.io</a> 进行访问。</p>
+<p>  创建好之后，使用github Desktop软件（详见 <a href="https://desktop.github.com/">https://desktop.github.com/</a>）将该项目克隆至<code>zeqi_blog</code>文件夹内，如图：
+<img src="https://zeqiii.github.io/img/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2/pic2.png" alt="图2"></p>
+<h2 id="3-使用hugo生成博客的静态网页">3. 使用hugo生成博客的静态网页</h2>
+<h3 id="31-安装主题">3.1 安装主题</h3>
+<p>  从 <a href="https://www.gohugo.org/theme/">https://www.gohugo.org/theme/</a> 中下载一个主题。主题通常为github上的开源项目，我们以zip压缩包的形式下载。在此，我下载了blackburn主题，链接为 <a href="https://themes.gohugo.io/themes/blackburn/">https://themes.gohugo.io/themes/blackburn/</a>。</p>
+<p>  解压缩zip文件到1.2节中创建的站点的 <code>zeqi_blog/themes</code> 文件夹中，如图：
+<img src="https://zeqiii.github.io/img/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2/pic1.png" alt="图1"></p>
+<p>  拷贝 <code>zeqi_blog/themes/blackburn/exampleSite/config.toml</code> 到 <code>zeqi_blog/config.toml</code>，替换原始的 <code>config.toml</code>。</p>
+<p>  打开 <code>config.toml</code>，参照 <a href="https://www.gohugo.org/doc/overview/configuration/">https://www.gohugo.org/doc/overview/configuration/</a>、 <a href="https://themes.gohugo.io/themes/blackburn/">https://themes.gohugo.io/themes/blackburn/</a> 给出的指导以及 <code>config.toml</code> 中的注释进行配置。</p>
+<pre><code>在config.toml中
+修改配置： baseUrl = &quot;https://zeqiii.github.io/&quot;
+修改配置： theme = &quot;blackburn&quot;  # 和themes文件夹中的主题文件夹名相同
+</code></pre><h3 id="32-撰写博客并生成静态页面">3.2 撰写博客并生成静态页面</h3>
+<p>  首先，修改config.toml的配置，添加配置：<code>publishdir = &quot;zeqiii.github.io&quot;</code>,使hugo生成的静态页面保存在我们克隆下来的github项目文件夹<code>zeqiii.github.io</code>中。</p>
+<p>  使用markdown语言编写博客。博客的编写格式可以参照<code>zeqi_blog/themes/blackburn/exampleSite/content/post</code>中的示例博客。</p>
+<p>  假设博客的文件名为<code>first_blog.md</code>，将<code>first_blog.md</code>存储在<code>zeqi_blog/content/post</code>文件夹中，然后执行命令<code>hugo</code>，即可在<code>zeqiii.github.io</code>中看到生成的文件。</p>
+<p>  将生成的文件commit并push到github中。</p>
+<p>  访问 <a href="https://zeqiii.github.io">https://zeqiii.github.io</a>，观察效果。</p>
+
+  
+  <h4><i class="fas fa-share-alt" aria-hidden="true"></i>&nbsp;Share!</h4>
+<ul class="share-buttons">
+	<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8hugo%25E6%2590%25AD%25E5%25BB%25BAgithub%25E5%258D%259A%25E5%25AE%25A2%2f" target="_blank" title="Share on Facebook"><i class="fab fa-facebook" aria-hidden="true"></i><span class="sr-only">Share on Facebook</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="https://twitter.com/intent/tweet?source=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8hugo%25E6%2590%25AD%25E5%25BB%25BAgithub%25E5%258D%259A%25E5%25AE%25A2%2f" target="_blank" title="Tweet"><i class="fab fa-twitter" aria-hidden="true"></i><span class="sr-only">Tweet</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="https://plus.google.com/share?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8hugo%25E6%2590%25AD%25E5%25BB%25BAgithub%25E5%258D%259A%25E5%25AE%25A2%2f" target="_blank" title="Share on Google+"><i class="fab fa-google-plus" aria-hidden="true"></i><span class="sr-only">Share on Google+</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://www.tumblr.com/share?v=3&u=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8hugo%25E6%2590%25AD%25E5%25BB%25BAgithub%25E5%258D%259A%25E5%25AE%25A2%2f" target="_blank" title="Post to Tumblr"><i class="fab fa-tumblr" aria-hidden="true"></i><span class="sr-only">Post to Tumblr</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://pinterest.com/pin/create/button/?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8hugo%25E6%2590%25AD%25E5%25BB%25BAgithub%25E5%258D%259A%25E5%25AE%25A2%2f" target="_blank" title="Pin it"><i class="fab fa-pinterest-p" aria-hidden="true"></i><span class="sr-only">Pin it</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://www.reddit.com/submit?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8hugo%25E6%2590%25AD%25E5%25BB%25BAgithub%25E5%258D%259A%25E5%25AE%25A2%2f" target="_blank" title="Submit to Reddit"><i class="fab fa-reddit-alien" aria-hidden="true"></i><span class="sr-only">Submit to Reddit</span></a>
+	</li>
+</ul>
+
+
+<style>
+	ul.share-buttons{
+	  list-style: none;
+	  padding: 0;
+	}
+
+	ul.share-buttons li{
+	  display: inline;
+	}
+
+	ul.share-buttons .sr-only{
+	  position: absolute;
+	  clip: rect(1px 1px 1px 1px);
+	  clip: rect(1px, 1px, 1px, 1px);
+	  padding: 0;
+	  border: 0;
+	  height: 1px;
+	  width: 1px;
+	  overflow: hidden;
+	}
+</style>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://zeqiii.github.io/post/%E8%A7%A3%E5%86%B3undefined-reference-to-xxx%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://zeqiii.github.io/post/%E8%A7%A3%E5%86%B3undefined-reference-to-xxx%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF/">解决&#39;undefined reference to xxx&#39;的编译错误的一个思路</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+  </div>
+</div>
+
+
+  
+  
+  
+  
+
+  
+
+</div>
+
+</div>
+</div>
+<script src="https://zeqiii.github.io/js/ui.js"></script>
+<script src="https://zeqiii.github.io/js/menus.js"></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
