@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.87.0" />
+
+  <title>解决&#39;undefined reference to xxx&#39;的编译错误的一个思路 &middot; 泽棋的博客</title>
+
+    
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" type="text/css">
+
+  
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+ 
+  
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/androidstudio.min.css">
+  <script async src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/highlight.min.js"></script>
+  
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://zeqiii.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://zeqiii.github.io/">Blackburn</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/zeqiii" rel="me" target="_blank"><i class="fab fa-github-square fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2021. All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>解决&#39;undefined reference to xxx&#39;的编译错误的一个思路</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>23 Aug 2021, 00:00</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E6%97%A5%E5%B8%B8%E6%8E%92%E9%94%99">日常排错</a>
+    
+  </div>
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/%E7%BC%96%E8%AF%91">编译</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  <h2 id="一个小实验">一个小实验</h2>
+<p>编辑<code>hello.h</code>如下：</p>
+<pre><code>#ifndef HELLO_H
+#define HELLO_H
+    void myprint(const char* name);
+#endif
+</code></pre><p>编辑<code>hello.c</code>如下：</p>
+<pre><code>#include &lt;stdio.h&gt;
+void myprint(const char* name)
+{
+    printf(name);
+    printf(&quot;\n&quot;);
+    _zeqi_printf(&quot;end\n&quot;);
+}
+</code></pre><p>编辑<code>main.c</code>如下：</p>
+<pre><code>#include &quot;hello.h&quot;
+int main()
+{
+    myprint(&quot;test&quot;);
+    return 0;
+}
+</code></pre><p>执行如下命令进行编译，生成<code>hello.o</code>和<code>main.o</code>。：</p>
+<pre><code>gcc -c hello.c
+gcc -c main.c
+</code></pre><p>执行如下命令生成可执行文件：</p>
+<pre><code>gcc hello.o main.o -o hello
+</code></pre><p>会出现以下错误：</p>
+<pre><code>/usr/bin/ld: hello.o: in function `myprint':
+hello.c:(.text+0x38): undefined reference to `_zeqi_printf'
+collect2: error: ld returned 1 exit status
+</code></pre><p>可知出现错误的原因是<code>hello.c</code>的<code>myprint</code>函数中调用的<code>_zeqi_printf</code>函数未定义。</p>
+<p>解决问题的方法就是让编译器找到<code>_zeqi_printf</code>的定义。为此，编辑<code>repair.c</code>如下：</p>
+<pre><code>#include &lt;stdio.h&gt;
+void _zeqi_printf(const char* name)
+{
+    printf(&quot;zeqi_&quot;);
+    printf(name);
+    printf(&quot;\n&quot;);
+}
+</code></pre><p>执行如下命令编译<code>repaire.c</code>，生成<code>repaire.o</code>：</p>
+<pre><code>gcc -c repair.c
+</code></pre><p>再执行如下命令，成功执行无异常：</p>
+<pre><code>gcc hello.o repair.o main.o -o hello
+</code></pre><h2 id="undefined-reference-to-xxx问题的一种解决思路">&lsquo;undefined reference to xxx&rsquo;问题的一种解决思路</h2>
+<p>**适用场景：**一些静态代码分析工具需要对目标源码进行编译才能执行代码分析。若此时编译出现‘undefined reference to xxx’的错误，则可以用该思路解决。</p>
+<p>思想是缺什么函数补什么函数。编辑<code>my_repair.c</code>，在该文件中定义好所有‘undefined reference to xxx’错误中缺失的函数，函数的参数个数、参数类型、返回值类型则需要通过逆向分析获取。</p>
+<p>定义好<code>my_repair.c</code>之后，编译生成<code>my_repair.o</code>，然后在编译目标程序时，将<code>my_repair.o</code>加入到生成可执行文件的过程中即可。</p>
+
+  
+  <h4><i class="fas fa-share-alt" aria-hidden="true"></i>&nbsp;Share!</h4>
+<ul class="share-buttons">
+	<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E8%25A7%25A3%25E5%2586%25B3undefined-reference-to-xxx%25E7%259A%2584%25E7%25BC%2596%25E8%25AF%2591%25E9%2594%2599%25E8%25AF%25AF%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E6%2580%259D%25E8%25B7%25AF%2f" target="_blank" title="Share on Facebook"><i class="fab fa-facebook" aria-hidden="true"></i><span class="sr-only">Share on Facebook</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="https://twitter.com/intent/tweet?source=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E8%25A7%25A3%25E5%2586%25B3undefined-reference-to-xxx%25E7%259A%2584%25E7%25BC%2596%25E8%25AF%2591%25E9%2594%2599%25E8%25AF%25AF%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E6%2580%259D%25E8%25B7%25AF%2f" target="_blank" title="Tweet"><i class="fab fa-twitter" aria-hidden="true"></i><span class="sr-only">Tweet</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="https://plus.google.com/share?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E8%25A7%25A3%25E5%2586%25B3undefined-reference-to-xxx%25E7%259A%2584%25E7%25BC%2596%25E8%25AF%2591%25E9%2594%2599%25E8%25AF%25AF%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E6%2580%259D%25E8%25B7%25AF%2f" target="_blank" title="Share on Google+"><i class="fab fa-google-plus" aria-hidden="true"></i><span class="sr-only">Share on Google+</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://www.tumblr.com/share?v=3&u=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E8%25A7%25A3%25E5%2586%25B3undefined-reference-to-xxx%25E7%259A%2584%25E7%25BC%2596%25E8%25AF%2591%25E9%2594%2599%25E8%25AF%25AF%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E6%2580%259D%25E8%25B7%25AF%2f" target="_blank" title="Post to Tumblr"><i class="fab fa-tumblr" aria-hidden="true"></i><span class="sr-only">Post to Tumblr</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://pinterest.com/pin/create/button/?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E8%25A7%25A3%25E5%2586%25B3undefined-reference-to-xxx%25E7%259A%2584%25E7%25BC%2596%25E8%25AF%2591%25E9%2594%2599%25E8%25AF%25AF%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E6%2580%259D%25E8%25B7%25AF%2f" target="_blank" title="Pin it"><i class="fab fa-pinterest-p" aria-hidden="true"></i><span class="sr-only">Pin it</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://www.reddit.com/submit?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E8%25A7%25A3%25E5%2586%25B3undefined-reference-to-xxx%25E7%259A%2584%25E7%25BC%2596%25E8%25AF%2591%25E9%2594%2599%25E8%25AF%25AF%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E6%2580%259D%25E8%25B7%25AF%2f" target="_blank" title="Submit to Reddit"><i class="fab fa-reddit-alien" aria-hidden="true"></i><span class="sr-only">Submit to Reddit</span></a>
+	</li>
+</ul>
+
+
+<style>
+	ul.share-buttons{
+	  list-style: none;
+	  padding: 0;
+	}
+
+	ul.share-buttons li{
+	  display: inline;
+	}
+
+	ul.share-buttons .sr-only{
+	  position: absolute;
+	  clip: rect(1px 1px 1px 1px);
+	  clip: rect(1px, 1px, 1px, 1px);
+	  padding: 0;
+	  border: 0;
+	  height: 1px;
+	  width: 1px;
+	  overflow: hidden;
+	}
+</style>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+  </div>
+</div>
+
+
+  
+  
+  
+  
+
+  
+
+</div>
+
+</div>
+</div>
+<script src="https://zeqiii.github.io/js/ui.js"></script>
+<script src="https://zeqiii.github.io/js/menus.js"></script>
+
+
+
+
+
+
+
+
+<script src="https://zeqiii.github.io/js/math-code.js"></script>
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+</body>
+</html>
+

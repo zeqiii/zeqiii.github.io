@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>泽棋的博客</title>
+    <link>https://zeqiii.github.io/</link>
+    <description>Recent content on 泽棋的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>&amp;copy; 2021. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 23 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解决&#39;undefined reference to xxx&#39;的编译错误的一个思路</title>
+      <link>https://zeqiii.github.io/post/%E8%A7%A3%E5%86%B3undefined-reference-to-xxx%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF/</link>
+      <pubDate>Mon, 23 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://zeqiii.github.io/post/%E8%A7%A3%E5%86%B3undefined-reference-to-xxx%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%B7%AF/</guid>
+      <description>一个小实验 编辑hello.h如下：
+#ifndef HELLO_H #define HELLO_H void myprint(const char* name); #endif 编辑hello.c如下：
+#include &amp;lt;stdio.h&amp;gt; void myprint(const char* name) { printf(name); printf(&amp;quot;\n&amp;quot;); _zeqi_printf(&amp;quot;end\n&amp;quot;); } 编辑main.c如下：
+#include &amp;quot;hello.h&amp;quot; int main() { myprint(&amp;quot;test&amp;quot;); return 0; } 执行如下命令进行编译，生成hello.o和main.o。：
+gcc -c hello.c gcc -c main.c 执行如下命令生成可执行文件：
+gcc hello.o main.o -o hello 会出现以下错误：
+/usr/bin/ld: hello.o: in function `myprint&#39;: hello.c:(.text+0x38): undefined reference to `_zeqi_printf&#39; collect2: error: ld returned 1 exit status 可知出现错误的原因是hello.c的myprint函数中调用的_zeqi_printf函数未定义。
+解决问题的方法就是让编译器找到_zeqi_printf的定义。为此，编辑repair.c如下：
+#include &amp;lt;stdio.h&amp;gt; void _zeqi_printf(const char* name) { printf(&amp;quot;zeqi_&amp;quot;); printf(name); printf(&amp;quot;\n&amp;quot;); } 执行如下命令编译repaire.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://zeqiii.github.io/about/</link>
+      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://zeqiii.github.io/about/</guid>
+      <description>Hugo is a static site engine written in Go.
+It makes use of a variety of open source projects including:
+ Cobra Viper J Walter Weatherman Cast  Learn more and contribute on GitHub.
+Setup Some fun facts about Hugo:
+ Built in Go Loosely inspired by Jekyll Primarily developed by spf13 on the train while commuting to and from Manhattan. Coded in Vim using spf13-vim  Have questions or suggestions?</description>
+    </item>
+    
+    <item>
+      <title>Contact</title>
+      <link>https://zeqiii.github.io/contact/</link>
+      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://zeqiii.github.io/contact/</guid>
+      <description> &amp;lt;div class=&amp;quot;pure-u-1 pure-u-md-1-3&amp;quot;&amp;gt; &amp;lt;label for=&amp;quot;last-name&amp;quot;&amp;gt;Last Name&amp;lt;/label&amp;gt; &amp;lt;input id=&amp;quot;last-name&amp;quot; class=&amp;quot;pure-u-23-24&amp;quot; type=&amp;quot;text&amp;quot;&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;pure-u-1 pure-u-md-1-3&amp;quot;&amp;gt; &amp;lt;label for=&amp;quot;email&amp;quot;&amp;gt;E-Mail&amp;lt;/label&amp;gt; &amp;lt;input id=&amp;quot;email&amp;quot; class=&amp;quot;pure-u-23-24&amp;quot; type=&amp;quot;email&amp;quot; required&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;pure-u-1 pure-u-md-1-3&amp;quot;&amp;gt; &amp;lt;label for=&amp;quot;city&amp;quot;&amp;gt;City&amp;lt;/label&amp;gt; &amp;lt;input id=&amp;quot;city&amp;quot; class=&amp;quot;pure-u-23-24&amp;quot; type=&amp;quot;text&amp;quot;&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;pure-u-1 pure-u-md-1-3&amp;quot;&amp;gt; &amp;lt;label for=&amp;quot;state&amp;quot;&amp;gt;State&amp;lt;/label&amp;gt; &amp;lt;select id=&amp;quot;state&amp;quot; class=&amp;quot;pure-input-1-2&amp;quot;&amp;gt; &amp;lt;option&amp;gt;AL&amp;lt;/option&amp;gt; &amp;lt;option&amp;gt;CA&amp;lt;/option&amp;gt; &amp;lt;option&amp;gt;IL&amp;lt;/option&amp;gt; &amp;lt;/select&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;fieldset class=&amp;quot;pure-group&amp;quot;&amp;gt; &amp;lt;input type=&amp;quot;text&amp;quot; class=&amp;quot;pure-input-1-2&amp;quot; placeholder=&amp;quot;A title&amp;quot;&amp;gt; &amp;lt;textarea class=&amp;quot;pure-input-1-2&amp;quot; placeholder=&amp;quot;Your message&amp;quot;&amp;gt;&amp;lt;/textarea&amp;gt; &amp;lt;/fieldset&amp;gt; &amp;lt;button type=&amp;quot;submit&amp;quot; class=&amp;quot;pure-button pure-button-primary&amp;quot;&amp;gt;Send&amp;lt;/button&amp;gt;  </description>
+    </item>
+    
+  </channel>
+</rss>
