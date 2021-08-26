@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.87.0" />
+
+  <title>使用DataflowSanitizr实现污点追踪 &middot; 泽棋的博客</title>
+
+    
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://zeqiii.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" type="text/css">
+
+  
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+ 
+  
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/androidstudio.min.css">
+  <script async src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/highlight.min.js"></script>
+  
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://zeqiii.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://zeqiii.github.io/">Blackburn</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://zeqiii.github.io/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/zeqiii" rel="me" target="_blank"><i class="fab fa-github-square fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2021. All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>使用DataflowSanitizr实现污点追踪</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>26 Aug 2021, 00:00</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E7%BC%96%E8%AF%91">编译</a>
+    
+  </div>
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/llvm">llvm</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  <p>示例程序 <code>test.c</code></p>
+<pre><code>#include &lt;sanitizer/dfsan_interface.h&gt;
+#include &lt;assert.h&gt;
+int main(void) {
+    int i = 1;
+    dfsan_label i_label = dfsan_create_label(&quot;i&quot;, 0);
+    dfsan_set_label(i_label, &amp;i, sizeof(i));
+
+    int j = 2;
+    dfsan_label j_label = dfsan_create_label(&quot;j&quot;, 0);
+    dfsan_set_label(j_label, &amp;j, sizeof(j));
+
+    int k = 3;
+    dfsan_label k_label = dfsan_create_label(&quot;k&quot;, 0);
+    dfsan_set_label(k_label, &amp;k, sizeof(k));
+
+    dfsan_label ij_label = dfsan_get_label(i + j);
+    assert(dfsan_has_label(ij_label, i_label));
+    assert(dfsan_has_label(ij_label, j_label));
+    assert(!dfsan_has_label(ij_label, k_label));
+
+    dfsan_label ijk_label = dfsan_get_label(i + j + k);
+    assert(dfsan_has_label(ijk_label, i_label));
+    assert(dfsan_has_label(ijk_label, j_label));
+    assert(dfsan_has_label(ijk_label, k_label));
+
+    return 0;
+}
+</code></pre><p>sanitizer/dfsan_interface.h中的API定义：</p>
+<pre><code>/// Creates and returns a base label with the given description and user data.
+dfsan_label dfsan_create_label(const char *desc, void *userdata);
+/// Sets the label for each address in [addr,addr+size) to \c label.
+void dfsan_set_label(dfsan_label label, void *addr, size_t size);
+/// Sets the label for each address in [addr,addr+size) to the union of the
+/// current label for that address and \c label.
+void dfsan_add_label(dfsan_label label, void *addr, size_t size);
+/// Retrieves the label associated with the given data.
+///
+/// The type of 'data' is arbitrary.  The function accepts a value of any type,
+/// which can be truncated or extended (implicitly or explicitly) as necessary.
+/// The truncation/extension operations will preserve the label of the original
+/// value.
+dfsan_label dfsan_get_label(long data);
+/// Retrieves a pointer to the dfsan_label_info struct for the given label.
+const struct dfsan_label_info *dfsan_get_label_info(dfsan_label label);
+/// Returns whether the given label label contains the label elem.
+int dfsan_has_label(dfsan_label label, dfsan_label elem);
+/// If the given label label contains a label with the description desc, returns
+/// that label, else returns 0.
+dfsan_label dfsan_has_label_with_desc(dfsan_label label, const char *desc);
+
+</code></pre><p>详见 <a href="https://clang.llvm.org/docs/DataFlowSanitizerDesign.html">https://clang.llvm.org/docs/DataFlowSanitizerDesign.html</a></p>
+<p>编译命令：</p>
+<pre><code>clang -fsanitize=dataflow test.c
+</code></pre><h2 id="一些错误及其解决方法">一些错误及其解决方法</h2>
+<p>###错误1：/usr/bin/ld: cannot find /home/ubuntu/llvm/llvm-project/build/lib/clang/11.0.0/lib/linux/libclang_rt.dfsan-x86_64.a: No such file or directory</p>
+<p>进入/home/ubuntu/llvm/llvm-project/build/lib/clang/11.0.0文件夹下发现只有一个include文件夹，由于DFSan属于compiler-rt，而compiler-rt不会默认编译，因此将compiler-rt加入编译选项中重新编译，具体方法如下：</p>
+<pre><code>cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS=&quot;clang;compiler-rt&quot; -G &quot;Unix Makefiles&quot; ../llvm
+make
+</code></pre>
+  
+  <h4><i class="fas fa-share-alt" aria-hidden="true"></i>&nbsp;Share!</h4>
+<ul class="share-buttons">
+	<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8dataflowsanitizer%25E5%25AE%259E%25E7%258E%25B0%25E6%25B1%25A1%25E7%2582%25B9%25E8%25BF%25BD%25E8%25B8%25AA%2f" target="_blank" title="Share on Facebook"><i class="fab fa-facebook" aria-hidden="true"></i><span class="sr-only">Share on Facebook</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="https://twitter.com/intent/tweet?source=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8dataflowsanitizer%25E5%25AE%259E%25E7%258E%25B0%25E6%25B1%25A1%25E7%2582%25B9%25E8%25BF%25BD%25E8%25B8%25AA%2f" target="_blank" title="Tweet"><i class="fab fa-twitter" aria-hidden="true"></i><span class="sr-only">Tweet</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="https://plus.google.com/share?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8dataflowsanitizer%25E5%25AE%259E%25E7%258E%25B0%25E6%25B1%25A1%25E7%2582%25B9%25E8%25BF%25BD%25E8%25B8%25AA%2f" target="_blank" title="Share on Google+"><i class="fab fa-google-plus" aria-hidden="true"></i><span class="sr-only">Share on Google+</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://www.tumblr.com/share?v=3&u=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8dataflowsanitizer%25E5%25AE%259E%25E7%258E%25B0%25E6%25B1%25A1%25E7%2582%25B9%25E8%25BF%25BD%25E8%25B8%25AA%2f" target="_blank" title="Post to Tumblr"><i class="fab fa-tumblr" aria-hidden="true"></i><span class="sr-only">Post to Tumblr</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://pinterest.com/pin/create/button/?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8dataflowsanitizer%25E5%25AE%259E%25E7%258E%25B0%25E6%25B1%25A1%25E7%2582%25B9%25E8%25BF%25BD%25E8%25B8%25AA%2f" target="_blank" title="Pin it"><i class="fab fa-pinterest-p" aria-hidden="true"></i><span class="sr-only">Pin it</span></a>
+	</li>&nbsp;&nbsp;&nbsp;
+	<li><a href="http://www.reddit.com/submit?url=https%3a%2f%2fzeqiii.github.io%2fpost%2f%25E4%25BD%25BF%25E7%2594%25A8dataflowsanitizer%25E5%25AE%259E%25E7%258E%25B0%25E6%25B1%25A1%25E7%2582%25B9%25E8%25BF%25BD%25E8%25B8%25AA%2f" target="_blank" title="Submit to Reddit"><i class="fab fa-reddit-alien" aria-hidden="true"></i><span class="sr-only">Submit to Reddit</span></a>
+	</li>
+</ul>
+
+
+<style>
+	ul.share-buttons{
+	  list-style: none;
+	  padding: 0;
+	}
+
+	ul.share-buttons li{
+	  display: inline;
+	}
+
+	ul.share-buttons .sr-only{
+	  position: absolute;
+	  clip: rect(1px 1px 1px 1px);
+	  clip: rect(1px, 1px, 1px, 1px);
+	  padding: 0;
+	  border: 0;
+	  height: 1px;
+	  width: 1px;
+	  overflow: hidden;
+	}
+</style>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://zeqiii.github.io/post/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://zeqiii.github.io/post/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2/">使用hugo搭建github博客</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+  </div>
+</div>
+
+
+  
+  
+  
+  
+
+  
+
+</div>
+
+</div>
+</div>
+<script src="https://zeqiii.github.io/js/ui.js"></script>
+<script src="https://zeqiii.github.io/js/menus.js"></script>
+
+
+
+
+
+
+
+
+<script src="https://zeqiii.github.io/js/math-code.js"></script>
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+</body>
+</html>
+
