@@ -298,7 +298,7 @@ dfsan_label dfsan_has_label_with_desc(dfsan_label label, const char *desc);
 <p>编译命令：</p>
 <pre><code>clang -fsanitize=dataflow test.c
 </code></pre><h2 id="一些错误及其解决方法">一些错误及其解决方法</h2>
-<p>###错误1：/usr/bin/ld: cannot find /home/ubuntu/llvm/llvm-project/build/lib/clang/11.0.0/lib/linux/libclang_rt.dfsan-x86_64.a: No such file or directory</p>
+<h3 id="错误1usrbinld-cannot-find-homeubuntullvmllvm-projectbuildlibclang1100liblinuxlibclang_rtdfsan-x86_64a-no-such-file-or-directory">错误1：/usr/bin/ld: cannot find /home/ubuntu/llvm/llvm-project/build/lib/clang/11.0.0/lib/linux/libclang_rt.dfsan-x86_64.a: No such file or directory</h3>
 <p>进入/home/ubuntu/llvm/llvm-project/build/lib/clang/11.0.0文件夹下发现只有一个include文件夹，由于DFSan属于compiler-rt，而compiler-rt不会默认编译，因此将compiler-rt加入编译选项中重新编译，具体方法如下：</p>
 <pre><code>cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS=&quot;clang;compiler-rt&quot; -G &quot;Unix Makefiles&quot; ../llvm
 make
