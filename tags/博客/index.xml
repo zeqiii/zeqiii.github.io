@@ -19,8 +19,10 @@
 1.2 创建站点  执行命令 hugo new site zeqi_blog 创建一个站点，命令会在当前路径创建一个名为 zeqi_blog 的文件夹。
 2. 创建gitbub.io仓库  在github上新建仓库，命名为xxx.github.io，其中，xxx是你的github用户名。
  这样创建出来的仓库便可以通过 https://xxx.github.io 进行访问。
- 创建好之后，使用github Desktop软件（详见 https://desktop.github.com/）将该项目克隆至zeqi_blog文件夹内，如图： 3. 使用hugo生成博客的静态网页 3.1 安装主题  从 https://www.gohugo.org/theme/ 中下载一个主题。主题通常为github上的开源项目，我们以zip压缩包的形式下载。在此，我下载了blackburn主题，链接为 https://themes.gohugo.io/themes/blackburn/。
- 解压缩zip文件到1.2节中创建的站点的 zeqi_blog/themes 文件夹中，如图：  拷贝 zeqi_blog/themes/blackburn/exampleSite/config.toml 到 zeqi_blog/config.toml，替换原始的 config.toml。
+ 创建好之后，使用github Desktop软件（详见 https://desktop.github.com/）将该项目克隆至zeqi_blog文件夹内，如图：
+3. 使用hugo生成博客的静态网页 3.1 安装主题  从 https://www.gohugo.org/theme/ 中下载一个主题。主题通常为github上的开源项目，我们以zip压缩包的形式下载。在此，我下载了blackburn主题，链接为 https://themes.gohugo.io/themes/blackburn/。
+ 解压缩zip文件到1.2节中创建的站点的 zeqi_blog/themes 文件夹中，如图：
+ 拷贝 zeqi_blog/themes/blackburn/exampleSite/config.toml 到 zeqi_blog/config.toml，替换原始的 config.toml。
  打开 config.toml，参照 https://www.gohugo.org/doc/overview/configuration/、 https://themes.gohugo.io/themes/blackburn/ 给出的指导以及 config.toml 中的注释进行配置。
 在config.toml中 修改配置： baseUrl = &amp;quot;https://zeqiii.github.io/&amp;quot; 修改配置： theme = &amp;quot;blackburn&amp;quot; # 和themes文件夹中的主题文件夹名相同 3.</description>
     </item>
