@@ -219,6 +219,58 @@
   
     <article>
   <header>
+    <h2><a href="https://zeqiii.github.io/post/%E8%A7%A3%E5%86%B3phdr-segment-not-covered-by-load-segment%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF/">解决&#39;PHDR segment not covered by LOAD segment&#39;的编译错误</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>27 Aug 2021, 00:00</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E6%97%A5%E5%B8%B8%E6%8E%92%E9%94%99">日常排错</a>
+    
+  </div>
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/%E7%BC%96%E8%AF%91">编译</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  出错的Linux环境中，编译用的是xPacks的嵌入式程序开发工具链，编译调用的是arm-none-eabi-gcc，通过 --version 命令发现其版本为2020年的新版本。
+相反，在windows环境下，编译不会出错。编译调用的是2018年的版本，是7.x的老版本。
+因此，将Linux环境下的工具链替换为与windows环境相同的老版本即可。
+具体PHDR segment相关的知识尚未理解。
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://zeqiii.github.io/post/%E4%BD%BF%E7%94%A8dataflowsanitizer%E5%AE%9E%E7%8E%B0%E6%B1%A1%E7%82%B9%E8%BF%BD%E8%B8%AA/">使用DataflowSanitizr实现污点追踪</a></h2>
 
     <div class="post-meta">
@@ -236,7 +288,7 @@
   <div>
     <i class="fa fa-folder fa-fw"></i>
     
-      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E7%BC%96%E8%AF%91">编译</a>
+      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E5%B7%A5%E5%85%B7">工具</a>
     
   </div>
   
@@ -248,7 +300,9 @@
   <div>
     <i class="fa fa-tags fa-fw"></i>
     
-      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/llvm">llvm</a>
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/llvm">llvm</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/%E7%BC%96%E8%AF%91">编译</a>
     
   </div>
   
