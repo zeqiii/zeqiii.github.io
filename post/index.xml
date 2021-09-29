@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>&amp;copy; 2021. All rights reserved.</copyright>
-    <lastBuildDate>Fri, 27 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zeqiii.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 29 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zeqiii.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>自然语言处理中的pos tags</title>
+      <link>https://zeqiii.github.io/post/nlp%E7%9A%84pos-tag/</link>
+      <pubDate>Wed, 29 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://zeqiii.github.io/post/nlp%E7%9A%84pos-tag/</guid>
+      <description>NLP pos-tag 从句级别 S - 简单的陈述句。 SBAR - 从属连词引导的从句。 SBARQ - wh-开头的单词或者wh-开头的短语的直接问句。 SINV - 倒装句。 SQ - 倒装的是/否疑问句，或者主从句是一个wh-开头的问句，在SBARQ中跟随着wh-短语。
+短语级别 WHADJP - wh-形容词(wh-adjective)短语。 WHAVP - wh-副词(wh-adverb)短语。 WHNP - wh-名词短语。 WHPP- wh-介词短语。 ADJP - 形容词短语。 ADVP - 副词短语。 CONJP - 连词短语。 FRAG - fragment（片段）？ INTJ - 感叹词，插入语。类似于POS tag UH（插入语, yes）。 LST - 标记列表。 包括周围的标点符号。 NAC - 不是一种句子中的成分，用来显示在一个名词短语中，特定的置于名词之前的修饰语的范围？ NP - 名词短语。 NX - 用来复杂的名词短语前标识名词短语的头部。 PP - 介词短语。 PRN - 插入语。 PRT - 小品词（与动词构成短语动词的副词或介词, look for, put off）。 QP - 量词短语（例如，复杂的度量/数量短语），在名词短语中运用。 RRC - 简化的关系从句。 UCP - Unlike Coordinated Phrase。 VP - 动词短语。 X - 不知道，不确定或者不在支架表中。</description>
+    </item>
+    
     <item>
       <title>解决&#39;PHDR segment not covered by LOAD segment&#39;的编译错误</title>
       <link>https://zeqiii.github.io/post/%E8%A7%A3%E5%86%B3phdr-segment-not-covered-by-load-segment%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF/</link>
