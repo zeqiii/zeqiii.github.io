@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>&amp;copy; 2021. All rights reserved.</copyright>
-    <lastBuildDate>Wed, 29 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 30 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zeqiii.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Universal Dependencies</title>
+      <link>https://zeqiii.github.io/post/universal-dependencies/</link>
+      <pubDate>Thu, 30 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://zeqiii.github.io/post/universal-dependencies/</guid>
+      <description>https://universaldependencies.org/ Universal Dependencies (UD) is a framework for consistent annotation of grammar (parts of speech, morphological features, and syntactic dependencies) across different human languages. UD是一个为了对不同人类语言的语法（词性、词法特性、句法依赖）进行连续标记的框架。
+Morphology The morphological specification of a (syntactic) word in the UD scheme consists of three levels of representation:
+ A lemma representing the semantic content of the word. A part-of-speech tag representing the abstract lexical category associated with the word. A set of features representing lexical and grammatical properties that are associated with the particular word form.</description>
+    </item>
+    
     <item>
       <title>自然语言处理中的pos tags</title>
       <link>https://zeqiii.github.io/post/nlp%E7%9A%84pos-tag/</link>

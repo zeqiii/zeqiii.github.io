@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.87.0" />
 
-  <title>自然语言处理中的pos tags &middot; 泽棋的博客</title>
+  <title>Universal Dependencies &middot; 泽棋的博客</title>
 
     
 
@@ -203,7 +203,7 @@
 
 
 <div class="header">
-  <h1>自然语言处理中的pos tags</h1>
+  <h1>Universal Dependencies</h1>
   <h2></h2>
 </div>
 <div class="content">
@@ -212,7 +212,7 @@
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>29 Sep 2021, 00:00</time>
+    <time>30 Sep 2021, 00:00</time>
   </div>
 
   
@@ -243,86 +243,73 @@
 
 </div>
 
-  <h2 id="从句级别">从句级别</h2>
-<p>S - 简单的陈述句。</p>
-<p>SBAR - 从属连词引导的从句。</p>
-<p>SBARQ - wh-开头的单词或者wh-开头的短语的直接问句。</p>
-<p>SINV - 倒装句。</p>
-<p>SQ - 倒装的是/否疑问句，或者主从句是一个wh-开头的问句，在SBARQ中跟随着wh-短语。</p>
-<h2 id="短语级别">短语级别</h2>
-<p>WHADJP - wh-形容词(wh-adjective)短语。</p>
-<p>WHAVP - wh-副词(wh-adverb)短语。</p>
-<p>WHNP - wh-名词短语。</p>
-<p>WHPP- wh-介词短语。</p>
-<p>ADJP - 形容词短语。</p>
-<p>ADVP - 副词短语。</p>
-<p>CONJP - 连词短语。</p>
-<p>FRAG - fragment（片段）？</p>
-<p>INTJ - 感叹词，插入语。类似于POS tag UH（插入语, yes）。</p>
-<p>LST -  标记列表。 包括周围的标点符号。</p>
-<p>NAC - 不是一种句子中的成分，用来显示在一个名词短语中，特定的置于名词之前的修饰语的范围？</p>
-<p>NP - 名词短语。</p>
-<p>NX - 用来复杂的名词短语前标识名词短语的头部。</p>
-<p>PP - 介词短语。</p>
-<p>PRN - 插入语。</p>
-<p>PRT - 小品词（与动词构成短语动词的副词或介词, look for, put off）。</p>
-<p>QP - 量词短语（例如，复杂的度量/数量短语），在名词短语中运用。</p>
-<p>RRC - 简化的关系从句。</p>
-<p>UCP - Unlike Coordinated Phrase。</p>
-<p>VP - 动词短语。</p>
-<p>X - 不知道，不确定或者不在支架表中。</p>
-<h2 id="词汇级别">词汇级别</h2>
-<p>CC - 并列连词 and, or</p>
-<p>IN - 介词或者从属连词(after, as long as, as though)</p>
-<p>CD - 基数词 one, two,</p>
-<p>DT - 限定词（the, some, my）</p>
-<p>PDT - 前置限定词（both, a lot of）</p>
-<p>EX - 存在词（there）</p>
-<p>FW - 外来词</p>
-<p>JJ - 形容词 several, nice</p>
-<p>JJR - 形容词比较级</p>
-<p>JJS - 形容词最高级</p>
-<p>LS - 列表标记</p>
-<p>MD - 情态动词</p>
-<p>NN - 名词，单数</p>
-<p>NNS -名词，复数</p>
-<p>NNP - 专有名词，单数</p>
-<p>NNPS - 专有名词，复数</p>
-<p>POS - 所有格结尾(-’s)</p>
-<p>PRP - 人称代词(they, you)</p>
-<p>PRP$ - 所有格代名词(your, his)</p>
-<p>RB - 副词</p>
-<p>RBR - 副词的比较级</p>
-<p>RBS - 副词的最高级</p>
-<p>RP - 小品词（与动词构成短语动词的副词或介词 look for, take off）</p>
-<p>SYM - 符号</p>
-<p>TO - to</p>
-<p>UH - 感叹词(yes)</p>
-<p>VB - 动词原形</p>
-<p>VBD - 动词过去式</p>
-<p>VBG - 动名词或现在分词</p>
-<p>VBN - 动词过去分词</p>
-<p>VBP - 动词，非第三人称单数现在式</p>
-<p>VBZ - 动词，第三人称单数现在式</p>
-<p>WDT - wh-限定词(which)</p>
-<p>WP - wh-代名词(what)</p>
-<p>WP$ - 所有格的wh-代名词(whose)</p>
-<p>WRB - wh-副词(where, why)</p>
+  <p><a href="https://universaldependencies.org/">https://universaldependencies.org/</a>
+Universal Dependencies (UD) is a framework for consistent annotation of grammar (parts of speech, morphological features, and syntactic dependencies) across different human languages.
+UD是一个为了对不同人类语言的语法（词性、词法特性、句法依赖）进行连续标记的框架。</p>
+<h2 id="morphology">Morphology</h2>
+<p>The morphological specification of a (syntactic) word in the UD scheme consists of three levels of representation:</p>
+<ul>
+<li>A lemma representing the semantic content of the word.</li>
+<li>A part-of-speech tag representing the abstract lexical category associated with the word.</li>
+<li>A set of features representing lexical and grammatical properties that are associated with the particular word form.</li>
+</ul>
+<p>UD对一个词汇的词法形态表示由3级表示构成：</p>
+<ul>
+<li>词汇的词元。The LEMMA field should contain the canonical or base form of the word. LEMMA域包含词汇的基本形式。</li>
+<li>词性标签。</li>
+<li>代表词汇在词法和语法上的属性的特征集合。</li>
+</ul>
+<h3 id="词性标签part-of-speech-tags">词性标签（Part-of-Speech tags）</h3>
+<p>UD只定义了17种通用词性标签（universal POS tags），更细粒度的词性分类采用通用属性（universal features）。</p>
+<ul>
+<li>ADJ: adjective</li>
+<li>ADP: adposition</li>
+<li>ADV: adverb</li>
+<li>AUX: auxiliary</li>
+<li>CCONJ: coordinating conjunction</li>
+<li>DET: determiner</li>
+<li>INTJ: interjection</li>
+<li>NOUN: noun</li>
+<li>NUM: numeral</li>
+<li>PART: particle</li>
+<li>PRON: pronoun</li>
+<li>PROPN: proper noun</li>
+<li>PUNCT: punctuation</li>
+<li>SCONJ: subordinating conjunction</li>
+<li>SYM: symbol</li>
+<li>VERB: verb</li>
+<li>X: other</li>
+</ul>
+<p><a href="https://universaldependencies.org/format.html">CoNLL-U format</a>定义了额外的词性标签XPOS。不同的语言有不同的XPOS。</p>
+<p>每个词汇有且只能有一个POS tag。</p>
+<h3 id="特征features">特征（Features）</h3>
+<p>Features are additional pieces of information about the word, its part of speech and morphosyntactic properties. 特征是关于词语及其词性、词形属性的额外信息。</p>
+<p>特征的表示形式是 <strong>Name=Value</strong>，每个词语可以拥有多个特征，特征之间通过“|”分割，例如：<strong>Gender=Masc|Number=Sing</strong>。</p>
+<p>UD的<a href="https://universaldependencies.org/u/feat/index.html">inventory of features</a>定义了词汇的特征。</p>
+<p>特征的分类包含以下：</p>
+<ul>
+<li>Lexical features：词素、词元的属性。</li>
+<li>Inflectional features：屈折（？）属性。（<a href="https://baike.baidu.com/item/%E5%B1%88%E6%8A%98%E8%AF%AD/6140830?fr=aladdin">屈折语</a>）</li>
+<li>Layered features：详见<a href="https://universaldependencies.org/u/overview/feat-layers.html">https://universaldependencies.org/u/overview/feat-layers.html</a></li>
+</ul>
+<h2 id="syntax">Syntax</h2>
+<p>Syntactic annotation in the UD scheme consists of typed dependency relations between words. UD scheme的语法标注包含词与词之间的类型化依赖关系。</p>
+<p>Universal dependencies详见<a href="https://universaldependencies.org/u/dep/index.html">https://universaldependencies.org/u/dep/index.html</a></p>
 
   
   <h4><i class="fas fa-share-alt" aria-hidden="true"></i>&nbsp;Share!</h4>
 <ul class="share-buttons">
-	<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fzeqiii.github.io%2fpost%2fnlp%25E7%259A%2584pos-tag%2f" target="_blank" title="Share on Facebook"><i class="fab fa-facebook" aria-hidden="true"></i><span class="sr-only">Share on Facebook</span></a>
+	<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fzeqiii.github.io%2fpost%2funiversal-dependencies%2f" target="_blank" title="Share on Facebook"><i class="fab fa-facebook" aria-hidden="true"></i><span class="sr-only">Share on Facebook</span></a>
 	</li>&nbsp;&nbsp;&nbsp;
-	<li><a href="https://twitter.com/intent/tweet?source=https%3a%2f%2fzeqiii.github.io%2fpost%2fnlp%25E7%259A%2584pos-tag%2f" target="_blank" title="Tweet"><i class="fab fa-twitter" aria-hidden="true"></i><span class="sr-only">Tweet</span></a>
+	<li><a href="https://twitter.com/intent/tweet?source=https%3a%2f%2fzeqiii.github.io%2fpost%2funiversal-dependencies%2f" target="_blank" title="Tweet"><i class="fab fa-twitter" aria-hidden="true"></i><span class="sr-only">Tweet</span></a>
 	</li>&nbsp;&nbsp;&nbsp;
-	<li><a href="https://plus.google.com/share?url=https%3a%2f%2fzeqiii.github.io%2fpost%2fnlp%25E7%259A%2584pos-tag%2f" target="_blank" title="Share on Google+"><i class="fab fa-google-plus" aria-hidden="true"></i><span class="sr-only">Share on Google+</span></a>
+	<li><a href="https://plus.google.com/share?url=https%3a%2f%2fzeqiii.github.io%2fpost%2funiversal-dependencies%2f" target="_blank" title="Share on Google+"><i class="fab fa-google-plus" aria-hidden="true"></i><span class="sr-only">Share on Google+</span></a>
 	</li>&nbsp;&nbsp;&nbsp;
-	<li><a href="http://www.tumblr.com/share?v=3&u=https%3a%2f%2fzeqiii.github.io%2fpost%2fnlp%25E7%259A%2584pos-tag%2f" target="_blank" title="Post to Tumblr"><i class="fab fa-tumblr" aria-hidden="true"></i><span class="sr-only">Post to Tumblr</span></a>
+	<li><a href="http://www.tumblr.com/share?v=3&u=https%3a%2f%2fzeqiii.github.io%2fpost%2funiversal-dependencies%2f" target="_blank" title="Post to Tumblr"><i class="fab fa-tumblr" aria-hidden="true"></i><span class="sr-only">Post to Tumblr</span></a>
 	</li>&nbsp;&nbsp;&nbsp;
-	<li><a href="http://pinterest.com/pin/create/button/?url=https%3a%2f%2fzeqiii.github.io%2fpost%2fnlp%25E7%259A%2584pos-tag%2f" target="_blank" title="Pin it"><i class="fab fa-pinterest-p" aria-hidden="true"></i><span class="sr-only">Pin it</span></a>
+	<li><a href="http://pinterest.com/pin/create/button/?url=https%3a%2f%2fzeqiii.github.io%2fpost%2funiversal-dependencies%2f" target="_blank" title="Pin it"><i class="fab fa-pinterest-p" aria-hidden="true"></i><span class="sr-only">Pin it</span></a>
 	</li>&nbsp;&nbsp;&nbsp;
-	<li><a href="http://www.reddit.com/submit?url=https%3a%2f%2fzeqiii.github.io%2fpost%2fnlp%25E7%259A%2584pos-tag%2f" target="_blank" title="Submit to Reddit"><i class="fab fa-reddit-alien" aria-hidden="true"></i><span class="sr-only">Submit to Reddit</span></a>
+	<li><a href="http://www.reddit.com/submit?url=https%3a%2f%2fzeqiii.github.io%2fpost%2funiversal-dependencies%2f" target="_blank" title="Submit to Reddit"><i class="fab fa-reddit-alien" aria-hidden="true"></i><span class="sr-only">Submit to Reddit</span></a>
 	</li>
 </ul>
 
@@ -354,13 +341,13 @@
 <div class="prev-next-post pure-g">
   <div class="pure-u-1-24" style="text-align: left;">
     
-    <a href="https://zeqiii.github.io/post/%E8%A7%A3%E5%86%B3phdr-segment-not-covered-by-load-segment%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF/"><i class="fa fa-chevron-left"></i></a>
+    <a href="https://zeqiii.github.io/post/nlp%E7%9A%84pos-tag/"><i class="fa fa-chevron-left"></i></a>
     
   </div>
   <div class="pure-u-10-24">
     
     <nav class="prev">
-      <a href="https://zeqiii.github.io/post/%E8%A7%A3%E5%86%B3phdr-segment-not-covered-by-load-segment%E7%9A%84%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF/">解决&#39;PHDR segment not covered by LOAD segment&#39;的编译错误</a>
+      <a href="https://zeqiii.github.io/post/nlp%E7%9A%84pos-tag/">自然语言处理中的pos tags</a>
     </nav>
     
   </div>
@@ -369,14 +356,8 @@
   </div>
   <div class="pure-u-10-24">
     
-    <nav class="next">
-      <a href="https://zeqiii.github.io/post/universal-dependencies/">Universal Dependencies</a>
-    </nav>
-    
   </div>
   <div class="pure-u-1-24" style="text-align: right;">
-    
-    <a href="https://zeqiii.github.io/post/universal-dependencies/"><i class="fa fa-chevron-right"></i></a>
     
   </div>
 </div>
@@ -403,9 +384,6 @@
 
 
 
-<script src="https://zeqiii.github.io/js/math-code.js"></script>
-  <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-  
 
 
 </body>
