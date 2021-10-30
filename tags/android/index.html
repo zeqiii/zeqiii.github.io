@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.87.0" />
 
-  <title>Tags &middot; 泽棋的博客</title>
+  <title>Android &middot; 泽棋的博客</title>
 
     
 
@@ -44,7 +44,7 @@
  
   
   <link rel="alternate" type="application/rss+xml" title="泽棋的博客"
-    href='https://zeqiii.github.io/tags/index.xml' />
+    href='https://zeqiii.github.io/tags/android/index.xml' />
   
 
   
@@ -111,7 +111,7 @@
 
     
     <li class="pure-menu-item">
-      <a class="pure-menu-link" href='https://zeqiii.github.io/tags/index.xml'><i
+      <a class="pure-menu-link" href='https://zeqiii.github.io/tags/android/index.xml'><i
           class="fas fa-rss fa-fw"></i>RSS</a>
     </li>
     
@@ -211,38 +211,119 @@
 
 
 <div class="header">
-  <h1>Tags</h1>
+  <h1>Android</h1>
 </div>
+
 <div class="content">
-  <ul>
+  
+    <article>
+  <header>
+    <h2><a href="https://zeqiii.github.io/post/android%E5%BC%80%E5%8F%91%E5%B0%8Ftips/">Android开发小Tips（持续更新）</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>30 Oct 2021, 00:00</time>
+  </div>
+
+  
+
   
   
-    <li>
-      <a href="%E7%BC%96%E8%AF%91">编译</a>
-      <span>&#40;3&#41;</span>
-    </li>
   
-    <li>
-      <a href="android">android</a>
-      <span>&#40;2&#41;</span>
-    </li>
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF">知识积累</a>
+    
+  </div>
   
-    <li>
-      <a href="nlp">nlp</a>
-      <span>&#40;2&#41;</span>
-    </li>
   
-    <li>
-      <a href="llvm">llvm</a>
-      <span>&#40;1&#41;</span>
-    </li>
+
   
-    <li>
-      <a href="%E5%8D%9A%E5%AE%A2">博客</a>
-      <span>&#40;1&#41;</span>
-    </li>
   
-  </ul>
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/android">Android</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Windows下更改AndroidStudio的.android文件夹默认路径 AndroidStudio默认会把.android文件夹创建在C盘中。
+要变更.android的路径，首先，创建环境变量ANDROID_SDK_HOME，值设置为你想变更新路径，例如D:\sdk
+然后把原有的C盘中的.android文件夹拷贝到新路径中，修改avd文件夹下安卓模拟器的.ini配置，将配置 文件中的路径改为新路径。
+重启AndroidStudio即可。
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://zeqiii.github.io/post/android%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6/">好用的Android渗透测试开源框架</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>30 Oct 2021, 00:00</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://zeqiii.github.io/topics/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF">知识积累</a>
+    
+  </div>
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://zeqiii.github.io/tags/android">Android</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  MobSF框架 docs详见：https://mobsf.github.io/docs/#/
+其中，动态调试环境的搭建是需要注意的，详见：https://mobsf.github.io/docs/#/dynamic_analyzer
+Drozer 有几处需要注意的：
+1、需要注意的是，drozer只兼容python2.7。
+2、其依赖的protobuf也必须安装老版本的才行，具体命令：pip install protobuf==x.x.x
+3、命令行运行drozer必须cd到drozer的安装路径下执行，否则可能提示出现错误。
+4、如果存在import error错误，可以把DROZER_HOME/Lib/site-packages下的文件夹拷贝到python安装目录下的site-packages内。
+drozer的项目地址为：https://github.com/FSecureLABS/drozer
+  </p>
+
+  
+</article>
+
+  
 </div>
 
 </div>

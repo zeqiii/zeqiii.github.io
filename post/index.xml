@@ -7,7 +7,35 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>&amp;copy; 2021. All rights reserved.</copyright>
-    <lastBuildDate>Thu, 30 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zeqiii.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 30 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://zeqiii.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android开发小Tips（持续更新）</title>
+      <link>https://zeqiii.github.io/post/android%E5%BC%80%E5%8F%91%E5%B0%8Ftips/</link>
+      <pubDate>Sat, 30 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://zeqiii.github.io/post/android%E5%BC%80%E5%8F%91%E5%B0%8Ftips/</guid>
+      <description>Windows下更改AndroidStudio的.android文件夹默认路径 AndroidStudio默认会把.android文件夹创建在C盘中。
+要变更.android的路径，首先，创建环境变量ANDROID_SDK_HOME，值设置为你想变更新路径，例如D:\sdk
+然后把原有的C盘中的.android文件夹拷贝到新路径中，修改avd文件夹下安卓模拟器的.ini配置，将配置 文件中的路径改为新路径。
+重启AndroidStudio即可。</description>
+    </item>
+    
+    <item>
+      <title>好用的Android渗透测试开源框架</title>
+      <link>https://zeqiii.github.io/post/android%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Sat, 30 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://zeqiii.github.io/post/android%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6/</guid>
+      <description>MobSF框架 docs详见：https://mobsf.github.io/docs/#/
+其中，动态调试环境的搭建是需要注意的，详见：https://mobsf.github.io/docs/#/dynamic_analyzer
+Drozer 有几处需要注意的：
+1、需要注意的是，drozer只兼容python2.7。
+2、其依赖的protobuf也必须安装老版本的才行，具体命令：pip install protobuf==x.x.x
+3、命令行运行drozer必须cd到drozer的安装路径下执行，否则可能提示出现错误。
+4、如果存在import error错误，可以把DROZER_HOME/Lib/site-packages下的文件夹拷贝到python安装目录下的site-packages内。
+drozer的项目地址为：https://github.com/FSecureLABS/drozer</description>
+    </item>
+    
     <item>
       <title>Universal Dependencies</title>
       <link>https://zeqiii.github.io/post/universal-dependencies/</link>
